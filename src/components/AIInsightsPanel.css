@@ -1,0 +1,369 @@
+/* AIInsightsPanel Component Styles */
+
+/* CSS Variables for consistent theming */
+:root {
+  --ai-mental: #8B5CF6;
+  --ai-mental-hover: #7C3AED;
+  --ai-surface: #FFFFFF;
+  --ai-background: #F7FAFC;
+  --ai-text: #1A202C;
+  --ai-text-secondary: #718096;
+  --ai-border: #E2E8F0;
+  --ai-high-importance: #EF4444;
+  --ai-medium-importance: #F59E0B;
+  --ai-low-importance: #10B981;
+  --ai-high-confidence: #10B981;
+  --ai-medium-confidence: #F59E0B;
+  --ai-low-confidence: #EF4444;
+}
+
+/* Floating AI Button */
+.ai-insights-fab {
+  position: fixed;
+  bottom: 110px;
+  right: 30px;
+  background-color: var(--ai-mental);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ai-insights-fab:hover {
+  transform: scale(1.1);
+}
+
+.ai-insights-fab:focus {
+  outline: 2px solid var(--ai-mental);
+  outline-offset: 2px;
+}
+
+/* Panel Container */
+.ai-insights-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  max-height: 80vh;
+  background-color: var(--ai-surface);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel Header */
+.ai-insights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--ai-border);
+  background: linear-gradient(135deg, var(--ai-mental) 0%, var(--ai-mental-hover) 100%);
+  color: white;
+}
+
+.ai-insights-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-insights-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.ai-insights-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ai-insights-close:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Tab Navigation */
+.ai-insights-tabs {
+  display: flex;
+  background-color: var(--ai-background);
+}
+
+.ai-insights-tab {
+  flex: 1;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ai-text-secondary);
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.ai-insights-tab:hover {
+  background-color: rgba(139, 92, 246, 0.05);
+  color: var(--ai-text);
+}
+
+.ai-insights-tab:focus {
+  outline: 2px solid var(--ai-mental);
+  outline-offset: -2px;
+}
+
+.ai-insights-tab.active {
+  color: var(--ai-mental);
+  background-color: var(--ai-surface);
+  border-bottom-color: var(--ai-mental);
+}
+
+/* Content Area */
+.ai-insights-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Insight Items */
+.ai-insight-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: var(--ai-background);
+  border-radius: 8px;
+  border-left: 4px solid var(--ai-border);
+  transition: border-color 0.2s ease;
+}
+
+.ai-insight-item.high-importance {
+  border-left-color: var(--ai-high-importance);
+}
+
+.ai-insight-item.medium-importance {
+  border-left-color: var(--ai-medium-importance);
+}
+
+.ai-insight-item.low-importance {
+  border-left-color: var(--ai-low-importance);
+}
+
+.ai-insight-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ai-insight-icon {
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.ai-insight-type {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ai-text-secondary);
+}
+
+.ai-insight-message {
+  color: var(--ai-text);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.ai-insight-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-insight-importance {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ai-insight-importance.high {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--ai-high-importance);
+}
+
+.ai-insight-importance.medium {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--ai-medium-importance);
+}
+
+.ai-insight-importance.low {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--ai-low-importance);
+}
+
+.ai-insight-timestamp {
+  font-size: 11px;
+  color: var(--ai-text-secondary);
+}
+
+/* Prediction Items */
+.ai-prediction-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: var(--ai-background);
+  border-radius: 8px;
+  border: 1px solid var(--ai-border);
+}
+
+.ai-prediction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ai-prediction-type {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ai-text);
+}
+
+.ai-prediction-confidence {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.ai-prediction-confidence.high {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--ai-high-confidence);
+}
+
+.ai-prediction-confidence.medium {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--ai-medium-confidence);
+}
+
+.ai-prediction-confidence.low {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--ai-low-confidence);
+}
+
+.ai-prediction-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ai-mental);
+  margin-bottom: 4px;
+}
+
+.ai-prediction-description {
+  color: var(--ai-text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Empty State */
+.ai-insights-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ai-text-secondary);
+}
+
+.ai-insights-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.ai-insights-empty-message {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ai-insights-panel {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 85vh;
+  }
+  
+  .ai-insights-content {
+    padding: 15px;
+  }
+  
+  .ai-insights-fab {
+    bottom: 90px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .ai-insights-fab,
+  .ai-insights-tab,
+  .ai-insights-close {
+    transition: none;
+  }
+  
+  .ai-insights-fab:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ai-insights-panel {
+    border: 2px solid var(--ai-text);
+  }
+  
+  .ai-insight-item,
+  .ai-prediction-item {
+    border: 1px solid var(--ai-text);
+  }
+}
+
+/* Scrollbar styling for content area */
+.ai-insights-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-insights-content::-webkit-scrollbar-track {
+  background: var(--ai-background);
+  border-radius: 3px;
+}
+
+.ai-insights-content::-webkit-scrollbar-thumb {
+  background: var(--ai-text-secondary);
+  border-radius: 3px;
+}
+
+.ai-insights-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-text);
+}

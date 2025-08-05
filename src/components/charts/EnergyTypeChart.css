@@ -1,0 +1,41 @@
+/* EnergyTypeChart Component Styles */
+
+.energy-type-chart {
+  background-color: var(--energy-color-background);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 400px; /* Default height */
+}
+
+.energy-type-chart[data-chart-height] {
+  height: attr(data-chart-height);
+}
+
+/* Responsive chart container */
+.energy-type-chart canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .energy-type-chart {
+    border: 2px solid var(--energy-color-text);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .energy-type-chart canvas {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .energy-type-chart {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

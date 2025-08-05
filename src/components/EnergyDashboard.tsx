@@ -162,20 +162,34 @@ export const EnergyDashboard: React.FC = () => {
               <div className="energy-types-container">
                 {(['physical', 'mental', 'emotional', 'creative'] as EnergyType[]).map(type => {
                   const isSelected = selectedEnergyTypes.includes(type);
-                  const ariaPressed = isSelected ? 'true' : 'false';
                   
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => handleEnergyTypeToggle(type)}
-                      className="energy-type-button"
-                      data-energy-type={type}
-                      aria-pressed={ariaPressed}
-                      title={`Toggle ${type} energy visualization`}
-                    >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                  );
+                  if (isSelected) {
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => handleEnergyTypeToggle(type)}
+                        className="energy-type-button"
+                        data-energy-type={type}
+                        aria-pressed="true"
+                        title={`Toggle ${type} energy visualization`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => handleEnergyTypeToggle(type)}
+                        className="energy-type-button"
+                        data-energy-type={type}
+                        aria-pressed="false"
+                        title={`Toggle ${type} energy visualization`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    );
+                  }
                 })}
               </div>
             </div>

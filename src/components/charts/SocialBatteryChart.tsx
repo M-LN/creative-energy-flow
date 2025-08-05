@@ -14,6 +14,7 @@ import { Line, Scatter } from 'react-chartjs-2';
 import { SocialBatteryData, EnergyLevel } from '../../types/energy';
 import { ENERGY_COLORS } from '../../utils/colors';
 import { format } from 'date-fns';
+import './SocialBatteryChart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -325,13 +326,8 @@ export const SocialBatteryChart: React.FC<SocialBatteryChartProps> = ({
 
   return (
     <div 
-      style={{ 
-        height, 
-        backgroundColor: ENERGY_COLORS.background,
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      }}
+      className="social-battery-chart"
+      data-chart-height={typeof height === 'number' ? `${height}px` : height}
     >
       {showCorrelation && energyData ? (
         <Scatter data={chartData as any} options={options} />

@@ -1,0 +1,19 @@
+.weekly-energy-heatmap-legend-cell[data-energy-level="0"] {
+  background-color: var(--energy-low);
+}
+
+.weekly-energy-heatmap-legend-cell[data-energy-level="25"] {
+  background-color: var(--energy-moderate-low);
+}
+
+.weekly-energy-heatmap-legend-cell[data-energy-level="50"] {
+  background-color: var(--energy-medium);
+}
+
+.weekly-energy-heatmap-legend-cell[data-energy-level="75"] {
+  background-color: var(--energy-moderate-high);
+}
+
+.weekly-energy-heatmap-legend-cell[data-energy-level="100"] {
+  background-color: var(--energy-high);
+}

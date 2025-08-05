@@ -1,0 +1,364 @@
+/* EnergyInputForm Component Styles */
+
+/* CSS Variables for consistent theming */
+:root {
+  --energy-creative: #8B5CF6;
+  --energy-creative-hover: #7C3AED;
+  --energy-surface: #FFFFFF;
+  --energy-background: #F7FAFC;
+  --energy-text: #1A202C;
+  --energy-text-secondary: #718096;
+  --energy-high: #10B981;
+  --energy-good: #F59E0B;
+  --energy-low: #F97316;
+  --energy-very-low: #EF4444;
+}
+
+/* Floating Add Button */
+.energy-input-fab {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: var(--energy-creative);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.energy-input-fab:hover {
+  transform: scale(1.1);
+}
+
+.energy-input-fab:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+}
+
+/* Modal Overlay */
+.energy-input-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* Modal Container */
+.energy-input-modal {
+  background-color: var(--energy-surface);
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Header */
+.energy-input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.energy-input-title {
+  color: var(--energy-text);
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.energy-input-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--energy-text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.energy-input-close:hover {
+  color: var(--energy-text);
+}
+
+.energy-input-close:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+}
+
+/* Form Field Groups */
+.energy-input-field {
+  margin-bottom: 25px;
+}
+
+/* Labels */
+.energy-input-label {
+  display: block;
+  color: var(--energy-text);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Date/Time Input */
+.energy-input-datetime {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--energy-text-secondary);
+  background-color: var(--energy-background);
+  color: var(--energy-text);
+  font-size: 14px;
+}
+
+.energy-input-datetime:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+  border-color: var(--energy-creative);
+}
+
+/* Energy Slider Container */
+.energy-slider-container {
+  margin-bottom: 25px;
+}
+
+.energy-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.energy-slider-label {
+  color: var(--energy-text);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.energy-slider-values {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Energy Value Display */
+.energy-value {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.energy-value[data-level="high"] {
+  color: var(--energy-high);
+}
+
+.energy-value[data-level="good"] {
+  color: var(--energy-good);
+}
+
+.energy-value[data-level="low"] {
+  color: var(--energy-low);
+}
+
+.energy-value[data-level="very-low"] {
+  color: var(--energy-very-low);
+}
+
+.energy-description {
+  color: var(--energy-text-secondary);
+  font-size: 12px;
+}
+
+/* Range Slider */
+.energy-range-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, 
+    var(--energy-very-low) 0%, 
+    var(--energy-low) 25%, 
+    var(--energy-good) 50%, 
+    var(--energy-high) 75%, 
+    var(--energy-high) 100%);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.energy-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--energy-creative);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.energy-range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--energy-creative);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.energy-range-slider:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+}
+
+/* Overall Energy Display */
+.energy-overall-display {
+  background-color: var(--energy-background);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.energy-overall-label {
+  color: var(--energy-text-secondary);
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.energy-overall-value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.energy-overall-value[data-level="high"] {
+  color: var(--energy-high);
+}
+
+.energy-overall-value[data-level="good"] {
+  color: var(--energy-good);
+}
+
+.energy-overall-value[data-level="low"] {
+  color: var(--energy-low);
+}
+
+.energy-overall-value[data-level="very-low"] {
+  color: var(--energy-very-low);
+}
+
+/* Notes Textarea */
+.energy-notes-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--energy-text-secondary);
+  background-color: var(--energy-background);
+  color: var(--energy-text);
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.energy-notes-textarea:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+  border-color: var(--energy-creative);
+}
+
+.energy-notes-textarea::placeholder {
+  color: var(--energy-text-secondary);
+}
+
+/* Submit Button */
+.energy-submit-button {
+  width: 100%;
+  background-color: var(--energy-creative);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.energy-submit-button:hover {
+  background-color: var(--energy-creative-hover);
+}
+
+.energy-submit-button:focus {
+  outline: 2px solid var(--energy-creative);
+  outline-offset: 2px;
+}
+
+.energy-submit-button:disabled {
+  background-color: var(--energy-text-secondary);
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .energy-input-overlay {
+    padding: 10px;
+  }
+  
+  .energy-input-modal {
+    padding: 20px;
+    max-height: 95vh;
+  }
+  
+  .energy-input-title {
+    font-size: 20px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .energy-input-fab,
+  .energy-input-close,
+  .energy-submit-button {
+    transition: none;
+  }
+  
+  .energy-input-fab:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .energy-input-modal {
+    border: 2px solid var(--energy-text);
+  }
+  
+  .energy-input-datetime,
+  .energy-notes-textarea {
+    border: 2px solid var(--energy-text);
+  }
+}

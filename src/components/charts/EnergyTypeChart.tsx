@@ -12,6 +12,7 @@ import { Bar } from 'react-chartjs-2';
 import { EnergyLevel, EnergyType } from '../../types/energy';
 import { ENERGY_COLORS, getEnergyTypeColor } from '../../utils/colors';
 import { format } from 'date-fns';
+import './EnergyTypeChart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -194,13 +195,8 @@ export const EnergyTypeChart: React.FC<EnergyTypeChartProps> = ({
 
   return (
     <div 
-      style={{ 
-        height, 
-        backgroundColor: ENERGY_COLORS.background,
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      }}
+      className="energy-type-chart"
+      data-chart-height={typeof height === 'number' ? `${height}px` : height}
     >
       <Bar data={chartData} options={options} />
     </div>

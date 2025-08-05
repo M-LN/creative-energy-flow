@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { EnergyLevel } from '../../types/energy';
 import { ENERGY_COLORS, getEnergyColor } from '../../utils/colors';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import './WeeklyEnergyHeatmap.css';
 
 interface WeeklyEnergyHeatmapProps {
   data: EnergyLevel[];
@@ -72,30 +73,18 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
 
   return (
     <div 
-      style={{ 
-        height: Math.max(height, totalHeight + 40), 
-        backgroundColor: ENERGY_COLORS.background,
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden',
-      }}
+      className="weekly-energy-heatmap"
+      data-chart-height={`${Math.max(height, totalHeight + 40)}px`}
     >
-      <h3 style={{
-        margin: '0 0 16px 0',
-        color: ENERGY_COLORS.text,
-        fontSize: '16px',
-        fontWeight: 'bold',
-        fontFamily: 'Inter, sans-serif',
-      }}>
+      <h3 className="weekly-energy-heatmap-title">
         {energyType.charAt(0).toUpperCase() + energyType.slice(1)} Energy Heatmap
       </h3>
       
-      <div style={{ position: 'relative', overflow: 'auto' }}>
+      <div className="weekly-energy-heatmap-container">
         <svg 
+          className="weekly-energy-heatmap-svg"
           width={totalWidth + 40} 
           height={totalHeight}
-          style={{ fontFamily: 'Inter, sans-serif' }}
         >
           {/* Month labels */}
           {monthLabels.map((label, index) => (
@@ -130,6 +119,7 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
             week.map((dayData, dayIndex) => (
               <g key={`${weekIndex}-${dayIndex}`}>
                 <rect
+                  className="weekly-energy-heatmap-cell"
                   x={40 + weekIndex * (cellSize + cellGap) + cellGap}
                   y={25 + dayIndex * (cellSize + cellGap) + cellGap}
                   width={cellSize}
@@ -138,7 +128,7 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
                   stroke={ENERGY_COLORS.background}
                   strokeWidth={1}
                   rx={3}
-                  style={{ cursor: 'pointer' }}
+                  data-energy-value={dayData.energy !== null ? Math.round(dayData.energy) : "no-data"}
                 >
                   <title>
                     {format(dayData.day, 'MMM dd, yyyy')}
@@ -150,12 +140,11 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
                 </rect>
                 {dayData.energy !== null && (
                   <text
+                    className={`weekly-energy-heatmap-tooltip ${dayData.energy > 50 ? 'weekly-energy-heatmap-tooltip-light' : 'weekly-energy-heatmap-tooltip-dark'}`}
                     x={40 + weekIndex * (cellSize + cellGap) + cellGap + cellSize / 2}
                     y={25 + dayIndex * (cellSize + cellGap) + cellGap + cellSize / 2 + 3}
                     fontSize="8"
-                    fill={dayData.energy > 50 ? ENERGY_COLORS.background : ENERGY_COLORS.text}
                     textAnchor="middle"
-                    style={{ pointerEvents: 'none' }}
                   >
                     {Math.round(dayData.energy)}
                   </text>
@@ -165,41 +154,21 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
           )}
         </svg>
         
-        {/* Legend */}
-        <div style={{
-          marginTop: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          fontSize: '11px',
-          color: ENERGY_COLORS.textSecondary,
-        }}>
+          {/* Legend */}
+        <div className="weekly-energy-heatmap-legend">
           <span>Low</span>
-          <div style={{ display: 'flex', gap: '2px' }}>
+          <div className="weekly-energy-heatmap-legend-gradient">
             {[0, 25, 50, 75, 100].map(level => (
               <div
                 key={level}
-                style={{
-                  width: '12px',
-                  height: '12px',
-                  backgroundColor: getEnergyColor(level),
-                  borderRadius: '2px',
-                }}
+                className={`weekly-energy-heatmap-legend-cell weekly-energy-heatmap-legend-cell-${level}`}
+                data-energy-level={level}
               />
             ))}
           </div>
           <span>High</span>
-        </div>
-        
-        {/* Statistics */}
-        <div style={{
-          marginTop: '12px',
-          display: 'flex',
-          justifyContent: 'space-around',
-          fontSize: '12px',
-          color: ENERGY_COLORS.text,
-        }}>
+        </div>        {/* Statistics */}
+        <div className="weekly-energy-heatmap-legend-labels">
           {(() => {
             const validData = heatmapData.flat().filter(d => d.energy !== null);
             if (validData.length === 0) return null;
