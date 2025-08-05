@@ -1,0 +1,41 @@
+{
+  "name": "Creative Energy Flow",
+  "short_name": "EnergyFlow",
+  "description": "AI-powered creative energy and social battery management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "health", "utilities"],
+  "icons": [
+    {
+      "src": "assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Energy Check-in",
+      "short_name": "Check-in",
+      "description": "Quick energy level update",
+      "url": "/?action=checkin",
+      "icons": [{ "src": "assets/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "AI Insights",
+      "short_name": "Insights",
+      "description": "View AI recommendations",
+      "url": "/?action=insights",
+      "icons": [{ "src": "assets/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

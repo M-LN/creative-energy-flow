@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Energy Flow</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192x192.png">
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="description" content="AI-powered creative energy and social battery management">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1>Creative Energy Flow</h1>
+            <div class="ai-status" id="aiStatus">AI Ready</div>
+        </header>
+        
+        <main class="main-content">
+            <!-- Energy Dashboard -->
+            <section class="energy-dashboard" id="energyDashboard">
+                <h2>Energy Dashboard</h2>
+                <div class="energy-meter">
+                    <div class="energy-level" id="energyLevel"></div>
+                </div>
+                <div class="social-battery">
+                    <div class="battery-level" id="socialBattery"></div>
+                </div>
+                <div class="ai-recommendations" id="aiRecommendations">
+                    <!-- AI recommendations will be populated here -->
+                </div>
+            </section>
+
+            <!-- AI Insights -->
+            <section class="ai-insights" id="aiInsights">
+                <h2>AI Insights</h2>
+                <div class="insights-container" id="insightsContainer">
+                    <!-- AI insights will be populated here -->
+                </div>
+            </section>
+
+            <!-- Schedule Optimizer -->
+            <section class="schedule-optimizer" id="scheduleOptimizer">
+                <h2>Smart Schedule</h2>
+                <div class="schedule-container" id="scheduleContainer">
+                    <!-- Optimized schedule will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
