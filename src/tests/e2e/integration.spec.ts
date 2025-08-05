@@ -88,7 +88,8 @@ test.describe('Creative Energy Flow PWA Integration', () => {
     await expect(page.locator('.dashboard-cards')).toBeVisible();
     
     // Check that overview cards are present
-    await expect(page.locator('.card')).toHaveCount.toBeGreaterThan(0);
+    const cardCount = await page.locator('.card').count();
+    expect(cardCount).toBeGreaterThan(0);
     
     // Check quick action buttons
     await expect(page.locator('[data-action="quick-energy-log"]')).toBeVisible();
