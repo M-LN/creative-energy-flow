@@ -14,6 +14,7 @@ import { Line } from 'react-chartjs-2';
 import { EnergyLevel, EnergyType, TimeRange } from '../../types/energy';
 import { ENERGY_COLORS, getEnergyTypeColor } from '../../utils/colors';
 import { format } from 'date-fns';
+import './EnergyFlowChart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -219,13 +220,8 @@ export const EnergyFlowChart: React.FC<EnergyFlowChartProps> = ({
 
   return (
     <div 
-      style={{ 
-        height, 
-        backgroundColor: ENERGY_COLORS.background,
-        borderRadius: '12px',
-        padding: '16px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      }}
+      className="energy-flow-chart"
+      data-chart-height={typeof height === 'number' ? `${height}px` : height}
     >
       <Line data={chartData} options={options} />
     </div>

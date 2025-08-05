@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { EnergyDashboard } from './components/EnergyDashboard';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
 import { EnergyLevel } from './types/energy';
@@ -15,47 +15,55 @@ function App() {
     overall: 67.5
   });
 
+  // Using direct string literals for ARIA values instead of expressions
+
   return (
     <div className="App">
       {/* View Toggle */}
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        zIndex: 1000,
-        display: 'flex',
-        gap: '8px'
-      }}>
-        <button
-          onClick={() => setCurrentView('enhanced')}
-          style={{
-            backgroundColor: currentView === 'enhanced' ? '#4FD1C7' : '#EDF2F7',
-            color: currentView === 'enhanced' ? 'white' : '#4A5568',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '8px 12px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          🏠 Home
-        </button>
-        <button
-          onClick={() => setCurrentView('analytics')}
-          style={{
-            backgroundColor: currentView === 'analytics' ? '#4FD1C7' : '#EDF2F7',
-            color: currentView === 'analytics' ? 'white' : '#4A5568',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '8px 12px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          📊 Analytics
-        </button>
+      <div className="view-toggle">
+        {currentView === 'enhanced' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('enhanced')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to home view"
+          >
+            🏠 Home
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('enhanced')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to home view"
+          >
+            🏠 Home
+          </button>
+        )}
+        
+        {currentView === 'analytics' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('analytics')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to analytics view"
+          >
+            📊 Analytics
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('analytics')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to analytics view"
+          >
+            📊 Analytics
+          </button>
+        )}
       </div>
 
       {/* Main Content */}

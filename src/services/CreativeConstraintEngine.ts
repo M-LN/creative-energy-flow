@@ -331,8 +331,6 @@ export class CreativeConstraintEngine {
     availableTime: number, // minutes
     energyLevel: EnergyLevel
   ): CreativeConstraint[] {
-    const suggestions: CreativeConstraint[] = [];
-    
     // Time-based suggestions
     const timeBasedTemplates = this.getTimeBasedTemplates(timeOfDay);
     

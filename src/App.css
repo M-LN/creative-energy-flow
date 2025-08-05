@@ -120,3 +120,55 @@ select:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* View Toggle Styles */
+.view-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 8px;
+}
+
+.view-toggle-button {
+  background-color: #EDF2F7;
+  color: #4A5568;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-button:hover {
+  background-color: #E2E8F0;
+  transform: translateY(-1px);
+}
+
+.view-toggle-button:focus {
+  outline: 2px solid #4FD1C7;
+  outline-offset: 2px;
+}
+
+.view-toggle-button.active {
+  background-color: #4FD1C7;
+  color: white;
+}
+
+.view-toggle-button.active:hover {
+  background-color: #38B2AC;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .view-toggle-button {
+    transition: none;
+  }
+  
+  .view-toggle-button:hover {
+    transform: none;
+  }
+}

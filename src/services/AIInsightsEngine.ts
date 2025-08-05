@@ -303,9 +303,8 @@ export class AIInsightsEngine {
   }
 
   private static predictEnergyForDate(historical: EnergyLevel[], targetDate: Date): EnergyLevel {
-    // Simple prediction based on day of week and time patterns
+    // Simple prediction based on day of week patterns
     const dayOfWeek = targetDate.getDay();
-    const hour = targetDate.getHours();
     
     const similarEntries = historical.filter(entry => 
       entry.timestamp.getDay() === dayOfWeek

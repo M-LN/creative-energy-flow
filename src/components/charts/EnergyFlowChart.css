@@ -1,0 +1,41 @@
+/* EnergyFlowChart Component Styles */
+
+.energy-flow-chart {
+  background-color: var(--energy-color-background);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 400px; /* Default height */
+}
+
+.energy-flow-chart[data-chart-height] {
+  height: attr(data-chart-height);
+}
+
+/* Responsive chart container */
+.energy-flow-chart canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .energy-flow-chart {
+    border: 2px solid var(--energy-color-text);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .energy-flow-chart canvas {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .energy-flow-chart {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

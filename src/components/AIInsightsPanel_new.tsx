@@ -53,7 +53,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
     setActiveTab(tab);
   };
 
-  // Using direct string literals for ARIA values instead of expressions
+  // No variable expressions for ARIA values, using string literals directly
 
   if (!isOpen) {
     return (

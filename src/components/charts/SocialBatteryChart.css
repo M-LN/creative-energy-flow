@@ -1,0 +1,41 @@
+/* SocialBatteryChart Component Styles */
+
+.social-battery-chart {
+  background-color: var(--energy-color-background);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 400px; /* Default height */
+}
+
+.social-battery-chart[data-chart-height] {
+  height: attr(data-chart-height);
+}
+
+/* Responsive chart container */
+.social-battery-chart canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .social-battery-chart {
+    border: 2px solid var(--energy-color-text);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .social-battery-chart canvas {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .social-battery-chart {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
