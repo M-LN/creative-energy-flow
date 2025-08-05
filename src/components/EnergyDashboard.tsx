@@ -8,7 +8,7 @@ import { AIInsightsPanel } from './AIInsightsPanel';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
 import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
-import { ENERGY_COLORS } from '../utils/colors';
+import './EnergyDashboard.css';
 
 export const EnergyDashboard: React.FC = () => {
   // State for user-added energy data
@@ -94,75 +94,36 @@ export const EnergyDashboard: React.FC = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: ENERGY_COLORS.background,
-      padding: '20px',
-      fontFamily: 'Inter, sans-serif',
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-      }}>
+    <div className="energy-dashboard">
+      <div className="dashboard-container">
         {/* Header */}
-        <header style={{
-          marginBottom: '30px',
-          textAlign: 'center',
-        }}>
-          <h1 style={{
-            color: ENERGY_COLORS.text,
-            fontSize: '32px',
-            fontWeight: 'bold',
-            margin: '0 0 10px 0',
-          }}>
+        <header className="dashboard-header">
+          <h1 className="dashboard-title">
             Creative Energy Flow
           </h1>
-          <p style={{
-            color: ENERGY_COLORS.textSecondary,
-            fontSize: '16px',
-            margin: 0,
-          }}>
+          <p className="dashboard-subtitle">
             Track and visualize your energy patterns to optimize your creative flow
           </p>
         </header>
 
         {/* Controls */}
-        <div style={{
-          backgroundColor: ENERGY_COLORS.surface,
-          borderRadius: '12px',
-          padding: '20px',
-          marginBottom: '30px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '20px',
-            alignItems: 'start',
-          }}>
+        <div className="controls-panel">
+          <div className="controls-grid">
             {/* Data Source Selector */}
-            <div>
-              <label style={{
-                display: 'block',
-                color: ENERGY_COLORS.text,
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '8px',
-              }}>
+            <div className="control-group">
+              <label 
+                htmlFor="data-source-select"
+                className="control-label"
+              >
                 Data Source
               </label>
               <select
+                id="data-source-select"
+                aria-label="Select data source for energy tracking"
+                title="Choose which data to display: sample data, your personal data, or both"
                 value={dataSource}
                 onChange={(e) => setDataSource(e.target.value as 'sample' | 'user' | 'both')}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  border: `1px solid ${ENERGY_COLORS.textSecondary}`,
-                  backgroundColor: ENERGY_COLORS.background,
-                  color: ENERGY_COLORS.text,
-                  fontSize: '14px',
-                }}
+                className="control-select"
               >
                 <option value="sample">Sample Data Only</option>
                 <option value="user">My Data Only {userEnergyData.length > 0 ? `(${userEnergyData.length} entries)` : '(No entries yet)'}</option>
@@ -171,28 +132,20 @@ export const EnergyDashboard: React.FC = () => {
             </div>
 
             {/* Time Range Selector */}
-            <div>
-              <label style={{
-                display: 'block',
-                color: ENERGY_COLORS.text,
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '8px',
-              }}>
+            <div className="control-group">
+              <label 
+                htmlFor="time-range-select"
+                className="control-label"
+              >
                 Time Range
               </label>
               <select
+                id="time-range-select"
+                aria-label="Select time range for energy data display"
+                title="Choose the time period to display energy data for"
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value as TimeRange)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  border: `1px solid ${ENERGY_COLORS.gridLines}`,
-                  backgroundColor: ENERGY_COLORS.surface,
-                  color: ENERGY_COLORS.text,
-                  fontSize: '14px',
-                }}
+                className="control-select"
               >
                 <option value="day">Today</option>
                 <option value="week">This Week</option>
@@ -202,66 +155,46 @@ export const EnergyDashboard: React.FC = () => {
             </div>
 
             {/* Energy Types */}
-            <div>
-              <label style={{
-                display: 'block',
-                color: ENERGY_COLORS.text,
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '8px',
-              }}>
+            <div className="control-group">
+              <label className="control-label">
                 Energy Types
               </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {(['physical', 'mental', 'emotional', 'creative'] as EnergyType[]).map(type => (
-                  <button
-                    key={type}
-                    onClick={() => handleEnergyTypeToggle(type)}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '20px',
-                      border: 'none',
-                      backgroundColor: selectedEnergyTypes.includes(type) 
-                        ? ENERGY_COLORS[type] 
-                        : ENERGY_COLORS.gridLines,
-                      color: selectedEnergyTypes.includes(type) 
-                        ? ENERGY_COLORS.surface 
-                        : ENERGY_COLORS.text,
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
-                ))}
+              <div className="energy-types-container">
+                {(['physical', 'mental', 'emotional', 'creative'] as EnergyType[]).map(type => {
+                  const isSelected = selectedEnergyTypes.includes(type);
+                  const ariaPressed = isSelected ? 'true' : 'false';
+                  
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => handleEnergyTypeToggle(type)}
+                      className="energy-type-button"
+                      data-energy-type={type}
+                      aria-pressed={ariaPressed}
+                      title={`Toggle ${type} energy visualization`}
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Heatmap Energy Type */}
-            <div>
-              <label style={{
-                display: 'block',
-                color: ENERGY_COLORS.text,
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '8px',
-              }}>
+            <div className="control-group">
+              <label 
+                htmlFor="heatmap-select"
+                className="control-label"
+              >
                 Heatmap View
               </label>
               <select
+                id="heatmap-select"
+                aria-label="Select energy type for heatmap visualization"
+                title="Choose which energy type to display in the weekly heatmap"
                 value={heatmapEnergyType}
                 onChange={(e) => setHeatmapEnergyType(e.target.value as 'overall' | EnergyType)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  border: `1px solid ${ENERGY_COLORS.gridLines}`,
-                  backgroundColor: ENERGY_COLORS.surface,
-                  color: ENERGY_COLORS.text,
-                  fontSize: '14px',
-                }}
+                className="control-select"
               >
                 <option value="overall">Overall Energy</option>
                 <option value="physical">Physical Energy</option>
@@ -272,38 +205,28 @@ export const EnergyDashboard: React.FC = () => {
             </div>
 
             {/* Social Correlation Toggle */}
-            <div>
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                color: ENERGY_COLORS.text,
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-              }}>
+            <div className="control-group">
+              <label className="social-correlation-label">
                 <input
                   type="checkbox"
                   checked={showSocialCorrelation}
                   onChange={(e) => setShowSocialCorrelation(e.target.checked)}
-                  style={{
-                    marginRight: '8px',
-                    accentColor: ENERGY_COLORS.social,
-                  }}
+                  className="social-correlation-checkbox"
+                  aria-describedby="social-correlation-help"
                 />
                 Show Social Correlation
+                <span id="social-correlation-help" className="sr-only">
+                  Display correlation between social battery and energy levels
+                </span>
               </label>
             </div>
           </div>
         </div>
 
         {/* Charts Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: '30px',
-        }}>
+        <div className="charts-grid">
           {/* Main Energy Flow Chart */}
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="chart-full-width">
             <EnergyFlowChart
               data={filteredData}
               energyTypes={selectedEnergyTypes}
@@ -332,7 +255,7 @@ export const EnergyDashboard: React.FC = () => {
           />
 
           {/* Weekly Heatmap */}
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="chart-full-width">
             <WeeklyEnergyHeatmap
               data={dailyAverages}
               weeks={12}
@@ -343,45 +266,29 @@ export const EnergyDashboard: React.FC = () => {
         </div>
 
         {/* Statistics Summary */}
-        <div style={{
-          marginTop: '30px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '20px',
-        }}>
+        <div className="statistics-grid">
           {selectedEnergyTypes.map(energyType => {
             const stats = EnergyDataService.calculateStatistics(filteredData, energyType);
             return stats ? (
               <div
                 key={energyType}
-                style={{
-                  backgroundColor: ENERGY_COLORS.surface,
-                  borderRadius: '12px',
-                  padding: '20px',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  borderLeft: `4px solid ${ENERGY_COLORS[energyType]}`,
-                }}
+                className="statistic-card"
+                data-energy-type={energyType}
               >
-                <h3 style={{
-                  color: ENERGY_COLORS.text,
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  margin: '0 0 12px 0',
-                  textTransform: 'capitalize',
-                }}>
+                <h3 className="statistic-title">
                   {energyType} Energy
                 </h3>
-                <div style={{ fontSize: '14px', color: ENERGY_COLORS.textSecondary }}>
-                  <div style={{ marginBottom: '4px' }}>
+                <div className="statistic-content">
+                  <div className="statistic-item">
                     <strong>Average:</strong> {stats.average}%
                   </div>
-                  <div style={{ marginBottom: '4px' }}>
+                  <div className="statistic-item">
                     <strong>Range:</strong> {stats.min}% - {stats.max}%
                   </div>
-                  <div style={{ marginBottom: '4px' }}>
+                  <div className="statistic-item">
                     <strong>Trend:</strong> {stats.trend > 0 ? '+' : ''}{stats.trend}%
                   </div>
-                  <div>
+                  <div className="statistic-item">
                     <strong>Social Correlation:</strong> {Math.round(stats.correlationWithSocial * 100)}%
                   </div>
                 </div>
