@@ -1,0 +1,30 @@
+{
+  "short_name": "Energy Flow",
+  "name": "Creative Energy Flow - PWA",
+  "description": "Track and visualize your creative energy patterns with AI-powered insights",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#F7B731",
+  "background_color": "#FFF8E7",
+  "scope": "/",
+  "categories": ["productivity", "health", "lifestyle"],
+  "lang": "en-US"
+}
