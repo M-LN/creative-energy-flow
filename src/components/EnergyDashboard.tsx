@@ -1,17 +1,62 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { EnergyFlowChart } from './charts/EnergyFlowChart';
 import { SocialBatteryChart } from './charts/SocialBatteryChart';
 import { EnergyTypeChart } from './charts/EnergyTypeChart';
 import { WeeklyEnergyHeatmap } from './charts/WeeklyEnergyHeatmap';
+import { EnergyInputForm } from './EnergyInputForm';
+import { AIInsightsPanel } from './AIInsightsPanel';
 import { EnergyDataService } from '../data/energyDataService';
-import { EnergyType, TimeRange } from '../types/energy';
+import { StorageService } from '../services/StorageService';
+import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
 import { ENERGY_COLORS } from '../utils/colors';
 
 export const EnergyDashboard: React.FC = () => {
+  // State for user-added energy data
+  const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
+  const [showInputForm, setShowInputForm] = useState(false);
+  const [showAIInsights, setShowAIInsights] = useState(false);
+  const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
+
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    const savedData = StorageService.loadEnergyData();
+    if (savedData.length > 0) {
+      // Convert string timestamps back to Date objects
+      const processedData = savedData.map((entry: any) => ({
+        ...entry,
+        timestamp: new Date(entry.timestamp)
+      }));
+      setUserEnergyData(processedData);
+      
+      // If user has data, default to showing it
+      setDataSource('both');
+    }
+  }, []);
+
+  // Save data whenever userEnergyData changes
+  useEffect(() => {
+    if (userEnergyData.length > 0) {
+      StorageService.saveEnergyData(userEnergyData);
+    }
+  }, [userEnergyData]);
+
   // Generate sample data
-  const energyData = useMemo(() => EnergyDataService.generateEnergyData(30), []);
+  const sampleEnergyData = useMemo(() => EnergyDataService.generateEnergyData(30), []);
   const socialData = useMemo(() => EnergyDataService.generateSocialBatteryData(30), []);
-  const dailyAverages = useMemo(() => EnergyDataService.getDailyAverages(energyData), [energyData]);
+  
+  // Combine user data with sample data based on data source selection
+  const combinedEnergyData = useMemo(() => {
+    switch (dataSource) {
+      case 'user':
+        return userEnergyData.length > 0 ? userEnergyData : sampleEnergyData;
+      case 'both':
+        return [...sampleEnergyData, ...userEnergyData].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      default:
+        return sampleEnergyData;
+    }
+  }, [sampleEnergyData, userEnergyData, dataSource]);
+
+  const dailyAverages = useMemo(() => EnergyDataService.getDailyAverages(combinedEnergyData), [combinedEnergyData]);
   
   // State for chart configuration
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
@@ -25,11 +70,11 @@ export const EnergyDashboard: React.FC = () => {
     const startDate = new Date(now.getTime() - daysBack * 24 * 60 * 60 * 1000);
     
     return EnergyDataService.getEnergyDataByRange(
-      timeRange === 'day' ? energyData : dailyAverages, 
+      timeRange === 'day' ? combinedEnergyData : dailyAverages, 
       startDate, 
       now
     );
-  }, [energyData, dailyAverages, timeRange]);
+  }, [combinedEnergyData, dailyAverages, timeRange]);
 
   const handleEnergyTypeToggle = (energyType: EnergyType) => {
     setSelectedEnergyTypes(prev => 
@@ -37,6 +82,15 @@ export const EnergyDashboard: React.FC = () => {
         ? prev.filter(type => type !== energyType)
         : [...prev, energyType]
     );
+  };
+
+  const handleAddEnergyEntry = (entry: EnergyLevel) => {
+    setUserEnergyData(prev => [...prev, entry].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
+    
+    // Switch to showing user data or both if we're currently only showing sample data
+    if (dataSource === 'sample') {
+      setDataSource('both');
+    }
   };
 
   return (
@@ -86,6 +140,36 @@ export const EnergyDashboard: React.FC = () => {
             gap: '20px',
             alignItems: 'start',
           }}>
+            {/* Data Source Selector */}
+            <div>
+              <label style={{
+                display: 'block',
+                color: ENERGY_COLORS.text,
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '8px',
+              }}>
+                Data Source
+              </label>
+              <select
+                value={dataSource}
+                onChange={(e) => setDataSource(e.target.value as 'sample' | 'user' | 'both')}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${ENERGY_COLORS.textSecondary}`,
+                  backgroundColor: ENERGY_COLORS.background,
+                  color: ENERGY_COLORS.text,
+                  fontSize: '14px',
+                }}
+              >
+                <option value="sample">Sample Data Only</option>
+                <option value="user">My Data Only {userEnergyData.length > 0 ? `(${userEnergyData.length} entries)` : '(No entries yet)'}</option>
+                <option value="both">Sample + My Data</option>
+              </select>
+            </div>
+
             {/* Time Range Selector */}
             <div>
               <label style={{
@@ -305,6 +389,20 @@ export const EnergyDashboard: React.FC = () => {
             ) : null;
           })}
         </div>
+
+        {/* Energy Input Form */}
+        <EnergyInputForm
+          onAddEntry={handleAddEnergyEntry}
+          onToggleForm={() => setShowInputForm(!showInputForm)}
+          isOpen={showInputForm}
+        />
+
+        {/* AI Insights Panel */}
+        <AIInsightsPanel
+          data={combinedEnergyData}
+          isOpen={showAIInsights}
+          onToggle={() => setShowAIInsights(!showAIInsights)}
+        />
       </div>
     </div>
   );
