@@ -259,22 +259,37 @@ export class DependencyResolver {
   }
 
   private async initializeEnergyTracking(): Promise<void> {
+    const { EnergyTrackingFeature } = await import('@/features/energy-tracking/EnergyTrackingFeature');
+    const feature = EnergyTrackingFeature.getInstance();
+    await feature.initialize();
     this.eventSystem.emit('feature:energy-tracking-ready', {}, 'DependencyResolver');
   }
 
   private async initializeSocialBattery(): Promise<void> {
+    const { SocialBatteryFeature } = await import('@/features/social-battery/SocialBatteryFeature');
+    const feature = SocialBatteryFeature.getInstance();
+    await feature.initialize();
     this.eventSystem.emit('feature:social-battery-ready', {}, 'DependencyResolver');
   }
 
   private async initializeCharts(): Promise<void> {
+    const { ChartsFeature } = await import('@/features/charts/ChartsFeature');
+    const feature = ChartsFeature.getInstance();
+    await feature.initialize();
     this.eventSystem.emit('feature:charts-ready', {}, 'DependencyResolver');
   }
 
   private async initializeAIInsights(): Promise<void> {
+    const { AIInsightsFeature } = await import('@/features/ai-insights/AIInsightsFeature');
+    const feature = AIInsightsFeature.getInstance();
+    await feature.initialize();
     this.eventSystem.emit('feature:ai-insights-ready', {}, 'DependencyResolver');
   }
 
   private async initializePWA(): Promise<void> {
+    const { PWAFeature } = await import('@/features/pwa/PWAFeature');
+    const feature = PWAFeature.getInstance();
+    await feature.initialize();
     this.eventSystem.emit('feature:pwa-ready', {}, 'DependencyResolver');
   }
 
