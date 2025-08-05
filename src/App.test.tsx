@@ -2,8 +2,14 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders Creative Energy Flow header', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const headerElement = screen.getByText(/Creative Energy Flow/i);
+  expect(headerElement).toBeInTheDocument();
+});
+
+test('renders energy tracking description', () => {
+  render(<App />);
+  const descriptionElement = screen.getByText(/Track and visualize your energy patterns/i);
+  expect(descriptionElement).toBeInTheDocument();
 });
