@@ -1,0 +1,195 @@
+.daily-summary {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.daily-summary__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-background);
+}
+
+.daily-summary__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.daily-summary__average {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+}
+
+.daily-summary__average-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.daily-summary__average-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.daily-summary__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.daily-summary__stat-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.daily-summary__stat-title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.daily-summary__type-stats,
+.daily-summary__time-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.daily-summary__type-stat,
+.daily-summary__time-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: var(--color-background);
+  border-radius: var(--border-radius-small);
+}
+
+.daily-summary__type-info,
+.daily-summary__time-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.daily-summary__type-name,
+.daily-summary__time-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.daily-summary__type-count,
+.daily-summary__time-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.daily-summary__type-avg,
+.daily-summary__time-avg {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.daily-summary__recent {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 2px solid var(--color-background);
+}
+
+.daily-summary__recent-title {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.daily-summary__recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Empty state */
+.daily-summary__empty {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.daily-summary__empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.daily-summary__empty-text {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+}
+
+.daily-summary__empty-subtitle {
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .daily-summary {
+    padding: var(--spacing-md);
+  }
+  
+  .daily-summary__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .daily-summary__average {
+    align-self: flex-end;
+  }
+  
+  .daily-summary__stats {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .daily-summary {
+    padding: var(--spacing-sm);
+  }
+  
+  .daily-summary__header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+  }
+  
+  .daily-summary__title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .daily-summary__empty {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  .daily-summary__empty-icon {
+    font-size: 2rem;
+  }
+}

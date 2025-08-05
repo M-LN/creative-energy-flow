@@ -1,0 +1,39 @@
+/* Color palette based on Warm Creative theme */
+:root {
+  /* Primary colors */
+  --color-primary: #FF6B35; /* Warm orange - high energy */
+  --color-secondary: #E55D75; /* Deep coral - medium energy */
+  --color-accent: #F7B731; /* Golden yellow - creative energy */
+  --color-background: #FFF8E7; /* Soft cream */
+  --color-text: #2C3E50; /* Charcoal */
+
+  /* Energy level colors */
+  --color-energy-low: #E55D75;
+  --color-energy-medium: #F7B731;
+  --color-energy-high: #FF6B35;
+
+  /* Component styling */
+  --border-radius: 12px;
+  --border-radius-small: 8px;
+  --shadow-light: 0 2px 8px rgba(255, 107, 53, 0.1);
+  --shadow-medium: 0 4px 16px rgba(255, 107, 53, 0.15);
+  --transition-standard: all 0.3s ease;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Typography */
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
