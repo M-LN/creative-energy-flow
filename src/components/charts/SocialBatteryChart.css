@@ -1,6 +1,11 @@
 /* SocialBatteryChart Component Styles */
 
 .social-battery-chart {
+  /* Map global theme variables to chart variables */
+  --energy-color-background: var(--color-surface);
+  --energy-color-text: var(--color-text);
+  
+  /* Layout styles */
   background-color: var(--energy-color-background);
   border-radius: 12px;
   padding: 16px;

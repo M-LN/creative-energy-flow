@@ -1,5 +1,43 @@
 /* Goal Dashboard and Components Styles */
+
+/* Map global theme variables to local goal dashboard variables */
 .goal-dashboard {
+  /* Background colors */
+  --bg-primary: var(--color-background);
+  --bg-secondary: var(--color-surface);
+  --bg-tertiary: var(--color-background-secondary);
+  --bg-hover: var(--color-surface-hover);
+  
+  /* Text colors */
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  
+  /* Primary colors */
+  --primary-color: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+  --primary-light: var(--color-primary-light);
+  
+  /* Accent colors */
+  --accent-color: var(--color-accent);
+  --accent-hover: var(--color-accent-hover);
+  
+  /* Status colors */
+  --success-color: var(--color-success);
+  --warning-color: var(--color-warning);
+  --error-color: var(--color-error);
+  --info-color: var(--color-info);
+  
+  /* Border and surface colors */
+  --border-color: var(--color-border);
+  --divider-color: var(--color-divider);
+  --surface-color: var(--color-surface);
+  --surface-hover: var(--color-surface-hover);
+  
+  /* Neutral color */
+  --neutral-color: var(--color-text-muted);
+  
+  /* Layout */
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -312,6 +350,7 @@
   border-radius: 20px;
   transition: all 0.5s ease;
   background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+  width: var(--progress-width, 0%);
 }
 
 .progress-fill[style*="var(--success-color)"] {
@@ -1505,4 +1544,68 @@
     text-align: center;
     gap: 12px;
   }
+}
+
+/* Dynamic Status Colors */
+.status-badge.active {
+  background-color: var(--primary-color);
+}
+
+.status-badge.completed {
+  background-color: var(--success-color);
+}
+
+.status-badge.paused {
+  background-color: var(--warning-color);
+}
+
+.status-badge.archived {
+  background-color: var(--neutral-color);
+}
+
+/* Dynamic Progress Colors */
+.progress-fill.progress-complete {
+  background: linear-gradient(90deg, var(--success-color), #4ade80);
+}
+
+.progress-fill.progress-high {
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+}
+
+.progress-fill.progress-medium {
+  background: linear-gradient(90deg, var(--warning-color), #fbbf24);
+}
+
+.progress-fill.progress-low {
+  background: linear-gradient(90deg, var(--error-color), #f87171);
+}
+
+/* Difficulty Colors */
+.difficulty-badge.easy {
+  color: var(--success-color);
+}
+
+.difficulty-badge.medium {
+  color: var(--warning-color);
+}
+
+.difficulty-badge.hard {
+  color: var(--error-color);
+}
+
+/* Performance and Trend Bars */
+.performance-fill {
+  width: var(--progress-width, 0%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.trend-fill {
+  height: var(--trend-height, 20%);
+  width: 100%;
+  background: linear-gradient(180deg, var(--primary-color), var(--primary-hover));
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
 }

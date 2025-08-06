@@ -1,6 +1,17 @@
 /* WeeklyEnergyHeatmap Component Styles */
 
 .weekly-energy-heatmap {
+  /* Map global theme variables to chart variables */
+  --energy-color-background: var(--color-surface);
+  --energy-color-text: var(--color-text);
+  --energy-color-text-secondary: var(--color-text-secondary);
+  --energy-color-low: var(--color-error);
+  --energy-color-medium-low: #ff9800;
+  --energy-color-medium: var(--color-warning);
+  --energy-color-medium-high: #8bc34a;
+  --energy-color-high: var(--color-success);
+  
+  /* Layout styles */
   background-color: var(--energy-color-background);
   border-radius: 12px;
   padding: 16px;

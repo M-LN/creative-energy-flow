@@ -4,18 +4,26 @@ import { EnhancedDashboard } from './components/EnhancedDashboard';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { DataExportPanel } from './components/DataExportPanel';
 import { GoalDashboard } from './components/goals/GoalDashboard';
+import RecommendationDashboard from './components/recommendations/RecommendationDashboard';
+import { SocialOptimizationDashboard } from './components/socialOptimization/SocialOptimizationDashboard';
+import IntegrationDashboard from './components/integration/IntegrationDashboard';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { EnergyLevel, EnergyReading } from './types/energy';
+import { EnergyLevel, EnergyReading, SocialBatteryData } from './types/energy';
 import { PWAService } from './services/PWAService';
+import { EnergyRecommendationService } from './services/EnergyRecommendationService';
+import { SocialOptimizationService } from './services/SocialOptimizationService';
+import { calendarService } from './services/CalendarIntegrationService';
+import { productivityService } from './services/ProductivityIntegrationService';
 import { SampleEnergyReadings } from './data/sampleEnergyReadings';
+import { EnergyDataService } from './data/energyDataService';
 import './styles/globals.css';
 import './App.css';
 import './styles/responsive-enhancements.css';
 import './styles/chart-enhancements.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'enhanced' | 'analytics' | 'goals' | 'data'>('enhanced');
+  const [currentView, setCurrentView] = useState<'enhanced' | 'analytics' | 'goals' | 'recommendations' | 'social-optimization' | 'integration' | 'data'>('enhanced');
   const [currentEnergy, setCurrentEnergy] = useState<EnergyLevel>({
     timestamp: new Date(),
     physical: 65,
@@ -28,6 +36,7 @@ function App() {
   // Sample energy readings for export/import demo and goal tracking
   const [energyReadings, setEnergyReadings] = useState<EnergyReading[]>([]);
   const [energyData, setEnergyData] = useState<EnergyLevel[]>([]);
+  const [socialData, setSocialData] = useState<SocialBatteryData[]>([]);
 
   // Initialize sample data and PWA service
   useEffect(() => {
@@ -36,6 +45,10 @@ function App() {
     // Load sample energy readings
     const sampleData = SampleEnergyReadings.generateSampleReadings(30);
     setEnergyReadings(sampleData);
+    
+    // Load sample social battery data
+    const sampleSocialData = EnergyDataService.generateSocialBatteryData(30);
+    setSocialData(sampleSocialData);
     
     // Convert readings to EnergyLevel format for goal tracking
     const energyLevels: EnergyLevel[] = sampleData.map(reading => ({
@@ -47,7 +60,31 @@ function App() {
       overall: reading.level * 10
     }));
     setEnergyData(energyLevels);
+    
+    // Initialize recommendations with sample data
+    EnergyRecommendationService.analyzeAndRecommend(sampleData).catch(console.error);
+    
+    // Initialize integration services
+    calendarService.loadFromStorage();
+    productivityService.loadFromStorage();
   }, []);
+
+  // Initialize social optimization when data is available
+  useEffect(() => {
+    if (energyData.length > 0 && socialData.length > 0) {
+      initializeSocialOptimization();
+    }
+  }, [energyData, socialData]);
+
+  // Initialize social optimization analysis
+  const initializeSocialOptimization = async () => {
+    try {
+      // Generate social optimization analysis with sample data
+      await SocialOptimizationService.generateOptimizationAnalysis(socialData, energyData);
+    } catch (error) {
+      console.error('Error initializing social optimization:', error);
+    }
+  };
 
   const handleDataImported = (importedData: EnergyReading[]) => {
     // Merge imported data with existing data, avoiding duplicates
@@ -143,6 +180,72 @@ function App() {
           </button>
         )}
         
+        {currentView === 'recommendations' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('recommendations')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to recommendations view"
+          >
+            💡 Insights
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('recommendations')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to recommendations view"
+          >
+            💡 Insights
+          </button>
+        )}
+        
+        {currentView === 'social-optimization' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('social-optimization')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to social optimization view"
+          >
+            🧘‍♀️ Social
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('social-optimization')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to social optimization view"
+          >
+            🧘‍♀️ Social
+          </button>
+        )}
+        
+        {currentView === 'integration' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('integration')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to integration view"
+          >
+            📅 Integration
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('integration')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to integration view"
+          >
+            📅 Integration
+          </button>
+        )}
+        
         {currentView === 'data' ? (
           <button
             type="button"
@@ -179,6 +282,12 @@ function App() {
           energyData={energyData}
           onDataUpdate={setEnergyData}
         />
+      ) : currentView === 'recommendations' ? (
+        <RecommendationDashboard />
+      ) : currentView === 'social-optimization' ? (
+        <SocialOptimizationDashboard />
+      ) : currentView === 'integration' ? (
+        <IntegrationDashboard />
       ) : (
         <DataExportPanel
           energyData={energyReadings}

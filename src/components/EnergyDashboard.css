@@ -1,18 +1,18 @@
-/* Root level CSS variables for dynamic theming */
-:root {
-  --energy-background: #f8fafc;
-  --energy-surface: #ffffff;
-  --energy-text: #1e293b;
-  --energy-text-secondary: #64748b;
-  --energy-grid-lines: #e2e8f0;
-  --energy-physical: #ef4444;
-  --energy-mental: #3b82f6;
-  --energy-emotional: #f59e0b;
-  --energy-creative: #8b5cf6;
-  --energy-social: #10b981;
-}
-
+/* Energy Dashboard - Theme-aware CSS */
 .energy-dashboard {
+  /* Map global theme variables to energy dashboard variables */
+  --energy-background: var(--color-background);
+  --energy-surface: var(--color-surface);
+  --energy-text: var(--color-text);
+  --energy-text-secondary: var(--color-text-secondary);
+  --energy-grid-lines: var(--color-border);
+  --energy-physical: var(--color-error);
+  --energy-mental: var(--color-info);
+  --energy-emotional: var(--color-warning);
+  --energy-creative: var(--color-primary);
+  --energy-social: var(--color-success);
+  
+  /* Layout styles */
   min-height: 100vh;
   padding: 20px;
   font-family: 'Inter', sans-serif;

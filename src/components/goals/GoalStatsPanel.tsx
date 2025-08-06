@@ -177,7 +177,7 @@ export const GoalStatsPanel: React.FC<GoalStatsPanelProps> = ({
               <div className="performance-bar">
                 <div 
                   className="performance-fill"
-                  style={{ width: `${Math.min(100, data.avgProgress)}%` }}
+                  style={{ ['--progress-width' as any]: `${Math.min(100, data.avgProgress)}%` }}
                 />
               </div>
             </div>
@@ -194,7 +194,7 @@ export const GoalStatsPanel: React.FC<GoalStatsPanelProps> = ({
               <div 
                 className="trend-fill"
                 style={{ 
-                  height: `${Math.max(20, (week.completions / Math.max(1, Math.max(...analyticsData.monthlyCompletions.map(w => w.completions)))) * 100)}%` 
+                  ['--trend-height' as any]: `${Math.max(20, (week.completions / Math.max(1, Math.max(...analyticsData.monthlyCompletions.map(w => w.completions)))) * 100)}%` 
                 }}
                 title={`${week.completions} goals completed`}
               />

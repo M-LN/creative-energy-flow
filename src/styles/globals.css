@@ -137,8 +137,10 @@ body {
 }
 
 /* Dark theme scrollbar for Firefox */
-.theme-dark {
-  scrollbar-color: var(--color-border) var(--color-background-secondary);
+@supports (scrollbar-color: auto) {
+  .theme-dark {
+    scrollbar-color: var(--color-border) var(--color-background-secondary);
+  }
 }
 
 /* Focus styles */

@@ -22,13 +22,8 @@ export const GoalSuggestions: React.FC<GoalSuggestionsProps> = ({
     return icons[energyType as keyof typeof icons] || '⚡';
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    const colors = {
-      easy: 'var(--success-color)',
-      medium: 'var(--warning-color)',
-      hard: 'var(--error-color)'
-    };
-    return colors[difficulty as keyof typeof colors] || 'var(--neutral-color)';
+  const getDifficultyClass = (difficulty: string) => {
+    return `difficulty-badge ${difficulty}`;
   };
 
   const getDifficultyIcon = (difficulty: string) => {
@@ -80,8 +75,7 @@ export const GoalSuggestions: React.FC<GoalSuggestionsProps> = ({
               </div>
               <div className="suggestion-difficulty">
                 <span 
-                  className="difficulty-badge"
-                  style={{ color: getDifficultyColor(suggestion.difficulty) }}
+                  className={getDifficultyClass(suggestion.difficulty)}
                 >
                   {getDifficultyIcon(suggestion.difficulty)}
                   {suggestion.difficulty.charAt(0).toUpperCase() + suggestion.difficulty.slice(1)}

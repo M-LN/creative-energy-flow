@@ -1,17 +1,19 @@
 /* EnergyInputForm Component Styles */
 
-/* CSS Variables for consistent theming */
-:root {
-  --energy-creative: #8B5CF6;
-  --energy-creative-hover: #7C3AED;
-  --energy-surface: #FFFFFF;
-  --energy-background: #F7FAFC;
-  --energy-text: #1A202C;
-  --energy-text-secondary: #718096;
-  --energy-high: #10B981;
-  --energy-good: #F59E0B;
-  --energy-low: #F97316;
-  --energy-very-low: #EF4444;
+/* Map global theme variables to energy input variables */
+.energy-input-fab,
+.energy-input-modal,
+.energy-input-overlay {
+  --energy-creative: var(--color-primary);
+  --energy-creative-hover: var(--color-primary-hover);
+  --energy-surface: var(--color-surface);
+  --energy-background: var(--color-background);
+  --energy-text: var(--color-text);
+  --energy-text-secondary: var(--color-text-secondary);
+  --energy-high: var(--color-success);
+  --energy-good: var(--color-warning);
+  --energy-low: var(--color-error);
+  --energy-very-low: var(--color-error);
 }
 
 /* Floating Add Button */

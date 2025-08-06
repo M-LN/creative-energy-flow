@@ -37,25 +37,19 @@ export const GoalCard: React.FC<GoalCardProps> = ({
     return labels[metric as keyof typeof labels] || metric;
   };
 
-  const getStatusColor = (status: string) => {
-    const colors = {
-      active: 'var(--primary-color)',
-      completed: 'var(--success-color)',
-      paused: 'var(--warning-color)',
-      archived: 'var(--neutral-color)'
-    };
-    return colors[status as keyof typeof colors] || 'var(--neutral-color)';
+  const getStatusClass = (status: string) => {
+    return `status-badge ${status}`;
+  };
+
+  const getProgressClass = (progress: number) => {
+    if (progress >= 100) return 'progress-fill progress-complete';
+    if (progress >= 75) return 'progress-fill progress-high';
+    if (progress >= 50) return 'progress-fill progress-medium';
+    return 'progress-fill progress-low';
   };
 
   const formatDate = (date: Date) => {
     return format(date, 'MMM dd, yyyy');
-  };
-
-  const getProgressColor = (progress: number) => {
-    if (progress >= 100) return 'var(--success-color)';
-    if (progress >= 75) return 'var(--primary-color)';
-    if (progress >= 50) return 'var(--warning-color)';
-    return 'var(--error-color)';
   };
 
   const completedMilestones = goal.milestones.filter(m => m.reached).length;
@@ -83,8 +77,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({
         </div>
         <div className="goal-status">
           <span 
-            className="status-badge"
-            style={{ backgroundColor: getStatusColor(goal.status) }}
+            className={getStatusClass(goal.status)}
           >
             {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
           </span>
@@ -105,10 +98,9 @@ export const GoalCard: React.FC<GoalCardProps> = ({
         </div>
         <div className="progress-bar">
           <div 
-            className="progress-fill"
+            className={getProgressClass(goal.progress)}
             style={{ 
-              width: `${Math.min(100, goal.progress)}%`,
-              backgroundColor: getProgressColor(goal.progress)
+              ['--progress-width' as any]: `${Math.min(100, goal.progress)}%`
             }}
           />
         </div>
