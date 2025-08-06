@@ -238,13 +238,6 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             <div className="summary-label">Total Hours</div>
           </div>
         </div>
-
-        <nav className="bottom-nav">
-          <button className="nav-btn active">🏠 Home</button>
-          <button className="nav-btn">📊 Analytics</button>
-          <button className="nav-btn">🖼️ Gallery</button>
-          <button className="nav-btn">🎯 Focus</button>
-        </nav>
       </div>
     </div>
   );

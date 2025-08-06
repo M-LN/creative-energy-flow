@@ -251,41 +251,6 @@
   font-weight: 500;
 }
 
-/* Bottom Navigation */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid #E2E8F0;
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.nav-btn {
-  background: transparent;
-  border: none;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: all 200ms ease-in-out;
-}
-
-.nav-btn.active {
-  color: #2D3748;
-}
-
-.nav-btn:not(.active) {
-  color: #718096;
-}
-
-.nav-btn:hover {
-  background: #F7FAFC;
-}
-
 /* Responsive Design */
 @media (max-width: 480px) {
   .dashboard-container {

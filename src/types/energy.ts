@@ -9,6 +9,15 @@ export interface EnergyLevel {
   overall: number; // calculated average or weighted score
 }
 
+export interface EnergyReading {
+  id: number;
+  timestamp: string;
+  type: EnergyType;
+  level: number; // 0-10
+  notes?: string;
+  tags?: string[];
+}
+
 export interface SocialBatteryData {
   timestamp: Date;
   level: number; // 0-100
