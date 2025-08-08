@@ -277,15 +277,36 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .energy-dashboard {
-    padding: 10px;
+    padding: 12px;
   }
   
   .dashboard-title {
-    font-size: 24px;
+    font-size: 22px;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 14px;
   }
   
   .controls-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .control-group {
+    margin-bottom: 16px;
+  }
+  
+  .control-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  
+  .control-group select,
+  .control-group button {
+    min-height: 44px; /* Better touch targets */
+    font-size: 14px;
+    padding: 12px;
   }
   
   .charts-grid {
@@ -293,25 +314,96 @@
     gap: 20px;
   }
   
+  .chart-container {
+    padding: 16px;
+  }
+  
   .statistics-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  /* Better touch targets for help icons */
+  .help-icon {
+    padding: 8px;
+    margin: -8px;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
+  .energy-dashboard {
+    padding: 8px;
+  }
+  
   .dashboard-title {
-    font-size: 20px;
+    font-size: 18px;
   }
   
   .dashboard-subtitle {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .controls-panel {
-    padding: 15px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .control-group {
+    margin-bottom: 12px;
+  }
+  
+  .control-group select,
+  .control-group button {
+    width: 100%;
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px;
   }
   
   .charts-grid {
-    gap: 15px;
+    gap: 16px;
+  }
+  
+  .chart-container {
+    padding: 12px;
+  }
+  
+  .chart-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .statistics-grid {
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+  }
+  
+  /* Stack buttons vertically on very small screens */
+  .dashboard-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .dashboard-actions button {
+    width: 100%;
   }
 }

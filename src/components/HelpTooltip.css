@@ -97,6 +97,49 @@
   border-right-color: var(--color-border);
 }
 
+/* Mobile Improvements */
+@media (max-width: 768px) {
+  .help-tooltip {
+    max-width: 250px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .help-tooltip-content {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .help-tooltip {
+    max-width: calc(100vw - 40px);
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .help-tooltip-content {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  /* Adjust tooltip positioning on small screens */
+  .help-tooltip-top,
+  .help-tooltip-bottom {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
+  
+  .help-tooltip-left,
+  .help-tooltip-right {
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
+}
+
 /* Quick Tip */
 .quick-tip {
   background: var(--color-surface);

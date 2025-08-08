@@ -304,21 +304,99 @@
 }
 
 /* Responsive Design */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .dashboard-container {
+    padding: 12px;
+  }
+  
+  .dashboard-title {
+    font-size: 20px;
+  }
+  
+  .energy-status-card {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .energy-input-form {
+    padding: 16px;
+  }
+  
+  .constraint-card {
     padding: 16px;
   }
   
   .constraint-meta {
     gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    font-size: 14px;
+    padding: 12px 20px;
+    min-height: 44px; /* Minimum touch target size */
+    border-radius: 8px;
+  }
+  
+  .timer-display {
+    font-size: 24px;
+  }
+  
+  /* Better touch targets for mobile */
+  .help-icon {
+    padding: 8px;
+    margin: -8px;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 8px;
+  }
+  
+  .dashboard-header {
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 18px;
+  }
+  
+  .energy-status-card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .energy-input-form {
+    padding: 12px;
+  }
+  
+  .constraint-meta {
+    gap: 6px;
   }
   
   .btn {
     font-size: 12px;
-    padding: 6px 12px;
+    padding: 10px 16px;
+    min-height: 44px;
   }
   
   .timer-display {
     font-size: 20px;
+  }
+  
+  /* Stack elements vertically on small screens */
+  .constraint-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .constraint-actions .btn {
+    width: 100%;
   }
 }
