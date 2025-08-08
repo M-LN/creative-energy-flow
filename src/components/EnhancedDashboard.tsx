@@ -210,8 +210,8 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         {/* Quick Tips for User Guidance */}
         <div className="quick-tips-section">
           <QuickTip
-            title="Energy Tracking Tip"
-            description="Log your energy levels throughout the day to discover your natural productivity patterns!"
+            title="👋 Welcome! Energy Tracking Tip"
+            description="Log your energy levels throughout the day to discover your natural productivity patterns! Click the floating ? button for more help."
             icon="💡"
             onDismiss={() => console.log('Quick tip dismissed')}
           />

@@ -9,6 +9,7 @@ import { SocialOptimizationDashboard } from './components/socialOptimization/Soc
 import IntegrationDashboard from './components/integration/IntegrationDashboard';
 import { ThemeToggle } from './components/ThemeToggle';
 import { WelcomeTooltip } from './components/WelcomeTooltip';
+import { HelpPanel, FloatingHelpButton } from './components/HelpPanel';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { EnergyLevel, EnergyReading, SocialBatteryData } from './types/energy';
 import { PWAService } from './services/PWAService';
@@ -30,6 +31,7 @@ function App() {
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
     return !hasSeenWelcome;
   });
+  const [showHelpPanel, setShowHelpPanel] = useState(false);
   const [currentEnergy, setCurrentEnergy] = useState<EnergyLevel>({
     timestamp: new Date(),
     physical: 65,
@@ -310,6 +312,15 @@ function App() {
       {showWelcome && (
         <WelcomeTooltip onComplete={() => setShowWelcome(false)} />
       )}
+
+      {/* Floating Help Button */}
+      <FloatingHelpButton onClick={() => setShowHelpPanel(true)} />
+      
+      {/* Help Panel */}
+      <HelpPanel 
+        isOpen={showHelpPanel} 
+        onClose={() => setShowHelpPanel(false)} 
+      />
       </div>
     </ThemeProvider>
   );
