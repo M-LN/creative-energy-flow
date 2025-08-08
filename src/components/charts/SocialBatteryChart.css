@@ -10,7 +10,7 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 400px; /* Default height */
+  /* Height is controlled by React props, not CSS */
 }
 
 .social-battery-chart[data-chart-height] {

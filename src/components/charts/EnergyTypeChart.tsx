@@ -36,7 +36,7 @@ export const EnergyTypeChart: React.FC<EnergyTypeChartProps> = ({
   energyTypes,
   stacked = true,
   timeRange = 'week',
-  height = 400,
+  height = 500,
 }) => {
   const chartData = useMemo(() => {
     const labels = data.map(entry => {
@@ -196,7 +196,7 @@ export const EnergyTypeChart: React.FC<EnergyTypeChartProps> = ({
   return (
     <div 
       className="energy-type-chart"
-      data-chart-height={typeof height === 'number' ? `${height}px` : height}
+      style={{ height: typeof height === 'number' ? `${height}px` : height }}
     >
       <Bar data={chartData} options={options} />
     </div>

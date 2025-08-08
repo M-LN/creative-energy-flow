@@ -3,7 +3,6 @@ import { EnergyFlowChart } from './charts/EnergyFlowChart';
 import { SocialBatteryChart } from './charts/SocialBatteryChart';
 import { EnergyTypeChart } from './charts/EnergyTypeChart';
 import { WeeklyEnergyHeatmap } from './charts/WeeklyEnergyHeatmap';
-import { EnergyInputForm } from './EnergyInputForm';
 import { AIInsightsPanel } from './AIInsightsPanel';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
@@ -13,7 +12,6 @@ import './EnergyDashboard.css';
 export const EnergyDashboard: React.FC = () => {
   // State for user-added energy data
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
-  const [showInputForm, setShowInputForm] = useState(false);
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
 
@@ -82,15 +80,6 @@ export const EnergyDashboard: React.FC = () => {
         ? prev.filter(type => type !== energyType)
         : [...prev, energyType]
     );
-  };
-
-  const handleAddEnergyEntry = (entry: EnergyLevel) => {
-    setUserEnergyData(prev => [...prev, entry].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
-    
-    // Switch to showing user data or both if we're currently only showing sample data
-    if (dataSource === 'sample') {
-      setDataSource('both');
-    }
   };
 
   return (
@@ -247,7 +236,7 @@ export const EnergyDashboard: React.FC = () => {
               timeRange={timeRange}
               showArea={false}
               showOverall={true}
-              height={400}
+              height={500}
             />
           </div>
 
@@ -256,7 +245,7 @@ export const EnergyDashboard: React.FC = () => {
             socialData={socialData}
             energyData={showSocialCorrelation ? dailyAverages : undefined}
             showCorrelation={showSocialCorrelation}
-            height={350}
+            height={500}
           />
 
           {/* Energy Type Breakdown */}
@@ -265,7 +254,7 @@ export const EnergyDashboard: React.FC = () => {
             energyTypes={selectedEnergyTypes}
             stacked={false}
             timeRange={timeRange}
-            height={350}
+            height={500}
           />
 
           {/* Weekly Heatmap */}
@@ -274,7 +263,7 @@ export const EnergyDashboard: React.FC = () => {
               data={dailyAverages}
               weeks={12}
               energyType={heatmapEnergyType}
-              height={300}
+              height={400}
             />
           </div>
         </div>
@@ -310,13 +299,6 @@ export const EnergyDashboard: React.FC = () => {
             ) : null;
           })}
         </div>
-
-        {/* Energy Input Form */}
-        <EnergyInputForm
-          onAddEntry={handleAddEnergyEntry}
-          onToggleForm={() => setShowInputForm(!showInputForm)}
-          isOpen={showInputForm}
-        />
 
         {/* AI Insights Panel */}
         <AIInsightsPanel

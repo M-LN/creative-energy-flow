@@ -1,0 +1,168 @@
+/* Help Tooltip and Quick Tip Components */
+
+/* Help Tooltip */
+.help-tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.help-tooltip {
+  position: absolute;
+  z-index: 1000;
+  padding: 8px 12px;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 200px;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.help-tooltip-content {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.help-tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+}
+
+/* Tooltip Positions */
+.help-tooltip-top {
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.help-tooltip-top .help-tooltip-arrow {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--color-border);
+}
+
+.help-tooltip-bottom {
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.help-tooltip-bottom .help-tooltip-arrow {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: var(--color-border);
+}
+
+.help-tooltip-left {
+  right: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.help-tooltip-left .help-tooltip-arrow {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: var(--color-border);
+}
+
+.help-tooltip-right {
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.help-tooltip-right .help-tooltip-arrow {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: var(--color-border);
+}
+
+/* Quick Tip */
+.quick-tip {
+  background: linear-gradient(135deg, var(--color-info), var(--color-info-hover));
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quick-tip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.quick-tip-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quick-tip-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.quick-tip-dismiss {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 2px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.quick-tip-dismiss:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.quick-tip-description {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.95;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .help-tooltip {
+    max-width: 150px;
+    padding: 6px 8px;
+  }
+  
+  .help-tooltip-content {
+    font-size: 11px;
+  }
+  
+  .quick-tip {
+    margin: 12px 0;
+    padding: 12px;
+  }
+}

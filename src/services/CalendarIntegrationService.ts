@@ -11,8 +11,7 @@ import {
   MeetingEnergyStats,
   SyncStatus
 } from '../types/integration';
-import { EnergyLevel } from '../types/energy';
-import { addMinutes, format, startOfDay, endOfDay, isWithinInterval, parseISO } from 'date-fns';
+import { addMinutes, format, isWithinInterval } from 'date-fns';
 
 export class CalendarIntegrationService {
   private static instance: CalendarIntegrationService;
@@ -328,7 +327,6 @@ export class CalendarIntegrationService {
   }
 
   private generateSchedulingReasoning(slot: TimeSlot, request: SmartSchedulingRequest): string {
-    const hour = slot.start.getHours();
     const energyLevel = slot.energyLevel;
     
     let reasoning = `Scheduled for ${format(slot.start, 'HH:mm')} `;
@@ -403,7 +401,6 @@ export class CalendarIntegrationService {
     // Find high-energy meetings in low-energy times
     events.forEach(event => {
       if (event.startTime > now && event.energyCost >= 7) {
-        const hour = event.startTime.getHours();
         const predictedEnergy = this.predictEnergyLevel(event.startTime);
         
         if (predictedEnergy < 6) {

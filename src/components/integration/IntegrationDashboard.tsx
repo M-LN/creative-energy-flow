@@ -8,8 +8,7 @@ import {
   Task,
   ScheduleOptimization,
   IntegrationAnalytics,
-  SyncStatus,
-  SmartSchedulingResult
+  SyncStatus
 } from '../../types/integration';
 import { calendarService } from '../../services/CalendarIntegrationService';
 import { productivityService } from '../../services/ProductivityIntegrationService';
@@ -84,7 +83,7 @@ const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
 
   useEffect(() => {
     loadIntegrationData();
-  }, []);
+  }, [loadIntegrationData]);
 
   // Provider connection handlers
   const handleConnectCalendar = async (provider: Omit<CalendarProvider, 'isConnected' | 'lastSync'>) => {
@@ -436,8 +435,6 @@ const TasksTab: React.FC<{
   const filteredTasks = filterStatus === 'all' 
     ? tasks 
     : tasks.filter(task => task.status === filterStatus);
-
-  const todoTasks = filteredTasks.filter(t => t.status === 'todo' || t.status === 'in-progress');
 
   return (
     <div className="tasks-tab">

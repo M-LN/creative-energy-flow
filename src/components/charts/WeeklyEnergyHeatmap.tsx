@@ -15,7 +15,7 @@ export const WeeklyEnergyHeatmap: React.FC<WeeklyEnergyHeatmapProps> = ({
   data,
   weeks = 12,
   energyType = 'overall',
-  height = 300,
+  height = 400,
 }) => {
   const heatmapData = useMemo(() => {
     // Group data by weeks and days

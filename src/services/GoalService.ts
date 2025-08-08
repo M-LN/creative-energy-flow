@@ -1,7 +1,7 @@
 // Goal Management Service - Handle goal creation, tracking, and analytics
-import { EnergyGoal, GoalType, GoalMetric, GoalStatus, GoalProgress, GoalStats, GoalCalculation, GoalSuggestion, GoalMilestone } from '../types/goals';
+import { EnergyGoal, GoalMetric, GoalStatus, GoalStats, GoalSuggestion, GoalMilestone } from '../types/goals';
 import { EnergyLevel, EnergyType } from '../types/energy';
-import { format, startOfDay, endOfDay, subDays, differenceInDays, addDays, isAfter, isBefore } from 'date-fns';
+import { format, startOfDay, endOfDay, subDays } from 'date-fns';
 
 export class GoalService {
   private static readonly STORAGE_KEY = 'energy-goals';

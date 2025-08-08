@@ -18,7 +18,6 @@ export const GoalStatsPanel: React.FC<GoalStatsPanelProps> = ({
   const analyticsData = useMemo(() => {
     const now = new Date();
     const oneWeekAgo = subDays(now, 7);
-    const oneMonthAgo = subDays(now, 30);
 
     // Calculate weekly progress
     const weeklyProgress = goals.filter(g => 
@@ -175,6 +174,7 @@ export const GoalStatsPanel: React.FC<GoalStatsPanelProps> = ({
                 </div>
               </div>
               <div className="performance-bar">
+                {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div 
                   className="performance-fill"
                   style={{ ['--progress-width' as any]: `${Math.min(100, data.avgProgress)}%` }}
@@ -191,6 +191,7 @@ export const GoalStatsPanel: React.FC<GoalStatsPanelProps> = ({
         <div className="trend-chart">
           {analyticsData.monthlyCompletions.map((week, index) => (
             <div key={index} className="trend-bar">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className="trend-fill"
                 style={{ 

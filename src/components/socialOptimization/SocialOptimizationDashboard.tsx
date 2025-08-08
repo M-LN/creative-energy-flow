@@ -3,7 +3,7 @@
  * Comprehensive interface for social battery optimization and suggestions
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SocialOptimizationService } from '../../services/SocialOptimizationService';
 import { 
   SocialOptimizationSuggestion, 
@@ -27,11 +27,7 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
   const [filter, setFilter] = useState<'all' | 'immediate' | 'daily-routine' | 'weekly-planning' | 'lifestyle-change'>('all');
   const [sortBy, setSortBy] = useState<'priority' | 'confidence' | 'category' | 'recent'>('priority');
 
-  useEffect(() => {
-    loadOptimizationData();
-  }, [filter, sortBy]);
-
-  const loadOptimizationData = async () => {
+  const loadOptimizationData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -51,7 +47,11 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, sortBy]);
+
+  useEffect(() => {
+    loadOptimizationData();
+  }, [loadOptimizationData]);
 
   const handleImplementSuggestion = async (suggestionId: string) => {
     const success = SocialOptimizationService.implementSuggestion(suggestionId);

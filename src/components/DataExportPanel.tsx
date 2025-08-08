@@ -141,16 +141,22 @@ export const DataExportPanel: React.FC<DataExportPanelProps> = ({
           </div>
           <div className="stat-item">
             <span className="stat-label">Date Range:</span>
-            <span className="stat-value">
+            <span className="stat-value date-range-value">
               {stats.dateRange.start === 'N/A' 
                 ? 'No data' 
-                : `${stats.dateRange.start.split('T')[0]} to ${stats.dateRange.end.split('T')[0]}`
+                : (
+                    <div>
+                      <div>{stats.dateRange.start.split('T')[0]}</div>
+                      <div className="date-range-separator">to</div>
+                      <div>{stats.dateRange.end.split('T')[0]}</div>
+                    </div>
+                  )
               }
             </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Energy Types:</span>
-            <span className="stat-value">{stats.energyTypes.join(', ')}</span>
+            <span className="stat-value energy-types-value">{stats.energyTypes.join(', ')}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Average Energy:</span>

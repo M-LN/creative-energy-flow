@@ -42,7 +42,7 @@ export const EnergyFlowChart: React.FC<EnergyFlowChartProps> = ({
   timeRange,
   showArea = false,
   showOverall = true,
-  height = 400,
+  height = 500,
 }) => {
   const chartData = useMemo(() => {
     const labels = data.map(entry => {
@@ -221,7 +221,7 @@ export const EnergyFlowChart: React.FC<EnergyFlowChartProps> = ({
   return (
     <div 
       className="energy-flow-chart"
-      data-chart-height={typeof height === 'number' ? `${height}px` : height}
+      style={{ height: typeof height === 'number' ? `${height}px` : height }}
     >
       <Line data={chartData} options={options} />
     </div>

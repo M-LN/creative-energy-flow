@@ -166,6 +166,10 @@
   gap: 30px;
 }
 
+.charts-grid > * {
+  min-height: 500px;
+}
+
 .chart-full-width {
   grid-column: 1 / -1;
 }
@@ -251,6 +255,7 @@
   
   .charts-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   
   .statistics-grid {
@@ -269,5 +274,9 @@
   
   .controls-panel {
     padding: 15px;
+  }
+  
+  .charts-grid {
+    gap: 15px;
   }
 }

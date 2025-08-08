@@ -9,7 +9,7 @@ import {
   SocialOptimizationAnalysis,
   OptimizationContext 
 } from '../types/socialOptimization';
-import { addDays, differenceInHours, getHours, getDay, format } from 'date-fns';
+import { differenceInHours, getHours, getDay, format } from 'date-fns';
 
 export class SocialPatternEngine {
   

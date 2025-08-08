@@ -3,12 +3,9 @@ import {
   EnergyPattern, 
   EnergyRecommendation, 
   PatternAnalysis, 
-  AnalysisInsight,
-  RecommendationType,
-  RecommendationCategory,
-  PersonalityProfile
+  AnalysisInsight
 } from '../types/recommendations';
-import { format, isToday, isYesterday, startOfWeek, endOfWeek, startOfMonth, endOfMonth, differenceInDays, parseISO, getHours } from 'date-fns';
+import { getHours } from 'date-fns';
 
 /**
  * Energy Pattern Analysis Engine

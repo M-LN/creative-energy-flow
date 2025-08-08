@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyRecommendationService } from '../../services/EnergyRecommendationService';
 import { 
   EnergyRecommendation, 
@@ -18,14 +18,10 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
   const [recommendations, setRecommendations] = useState<EnergyRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'patterns' | 'recommendations' | 'insights'>('recommendations');
-  const [filter, setFilter] = useState<RecommendationFilter>({});
-  const [sortBy, setSortBy] = useState<RecommendationSort>({ field: 'priority', direction: 'desc' });
+  const [filter] = useState<RecommendationFilter>({});
+  const [sortBy] = useState<RecommendationSort>({ field: 'priority', direction: 'desc' });
 
-  useEffect(() => {
-    loadRecommendations();
-  }, [filter, sortBy]);
-
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -41,7 +37,11 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, sortBy]);
+
+  useEffect(() => {
+    loadRecommendations();
+  }, [loadRecommendations]);
 
   const handleImplementRecommendation = async (id: string) => {
     const success = EnergyRecommendationService.implementRecommendation(id);

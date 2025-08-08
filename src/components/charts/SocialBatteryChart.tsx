@@ -38,7 +38,7 @@ export const SocialBatteryChart: React.FC<SocialBatteryChartProps> = ({
   socialData,
   energyData,
   showCorrelation = false,
-  height = 400,
+  height = 500,
 }) => {
   const chartData = useMemo(() => {
     if (showCorrelation && energyData) {
@@ -327,7 +327,7 @@ export const SocialBatteryChart: React.FC<SocialBatteryChartProps> = ({
   return (
     <div 
       className="social-battery-chart"
-      data-chart-height={typeof height === 'number' ? `${height}px` : height}
+      style={{ height: typeof height === 'number' ? `${height}px` : height }}
     >
       {showCorrelation && energyData ? (
         <Scatter data={chartData as any} options={options} />

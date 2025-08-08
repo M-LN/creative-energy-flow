@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyDashboard } from './components/EnergyDashboard';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
 import { PWAInstallButton } from './components/PWAInstallButton';
@@ -8,6 +8,7 @@ import RecommendationDashboard from './components/recommendations/Recommendation
 import { SocialOptimizationDashboard } from './components/socialOptimization/SocialOptimizationDashboard';
 import IntegrationDashboard from './components/integration/IntegrationDashboard';
 import { ThemeToggle } from './components/ThemeToggle';
+import { WelcomeTooltip } from './components/WelcomeTooltip';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { EnergyLevel, EnergyReading, SocialBatteryData } from './types/energy';
 import { PWAService } from './services/PWAService';
@@ -24,6 +25,11 @@ import './styles/chart-enhancements.css';
 
 function App() {
   const [currentView, setCurrentView] = useState<'enhanced' | 'analytics' | 'goals' | 'recommendations' | 'social-optimization' | 'integration' | 'data'>('enhanced');
+  const [showWelcome, setShowWelcome] = useState(() => {
+    // Show welcome tour for first-time users
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    return !hasSeenWelcome;
+  });
   const [currentEnergy, setCurrentEnergy] = useState<EnergyLevel>({
     timestamp: new Date(),
     physical: 65,
@@ -69,22 +75,22 @@ function App() {
     productivityService.loadFromStorage();
   }, []);
 
-  // Initialize social optimization when data is available
-  useEffect(() => {
-    if (energyData.length > 0 && socialData.length > 0) {
-      initializeSocialOptimization();
-    }
-  }, [energyData, socialData]);
-
   // Initialize social optimization analysis
-  const initializeSocialOptimization = async () => {
+  const initializeSocialOptimization = useCallback(async () => {
     try {
       // Generate social optimization analysis with sample data
       await SocialOptimizationService.generateOptimizationAnalysis(socialData, energyData);
     } catch (error) {
       console.error('Error initializing social optimization:', error);
     }
-  };
+  }, [socialData, energyData]);
+
+  // Initialize social optimization when data is available
+  useEffect(() => {
+    if (energyData.length > 0 && socialData.length > 0) {
+      initializeSocialOptimization();
+    }
+  }, [energyData, socialData, initializeSocialOptimization]);
 
   const handleDataImported = (importedData: EnergyReading[]) => {
     // Merge imported data with existing data, avoiding duplicates
@@ -94,6 +100,10 @@ function App() {
     if (newReadings.length > 0) {
       setEnergyReadings(prev => [...prev, ...newReadings]);
     }
+  };
+
+  const handleEnergyDataUpdate = (updatedEnergyData: EnergyLevel[]) => {
+    setEnergyData(updatedEnergyData);
   };
 
   // Using direct string literals for ARIA values instead of expressions
@@ -274,6 +284,7 @@ function App() {
         <EnhancedDashboard
           currentEnergy={currentEnergy}
           onEnergyUpdate={setCurrentEnergy}
+          onEnergyDataUpdate={handleEnergyDataUpdate}
         />
       ) : currentView === 'analytics' ? (
         <EnergyDashboard />
@@ -293,6 +304,11 @@ function App() {
           energyData={energyReadings}
           onDataImported={handleDataImported}
         />
+      )}
+
+      {/* Welcome Tour for First-Time Users */}
+      {showWelcome && (
+        <WelcomeTooltip onComplete={() => setShowWelcome(false)} />
       )}
       </div>
     </ThemeProvider>

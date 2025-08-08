@@ -58,7 +58,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
   if (!isOpen) {
     return (
       <button
-        className="ai-insights-toggle-button"
+        className="ai-insights-fab"
         onClick={onToggle}
         title="AI Insights"
         aria-label="Open AI Insights Panel"
@@ -69,21 +69,20 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
   }
 
   return (
-    <div className="ai-insights-modal-overlay">
-      <div className="ai-insights-modal">
-        {/* Header */}
-        <div className="ai-insights-modal-header">
-          <h2 className="ai-insights-modal-title">
-            🤖 AI Insights
-          </h2>
-          <button
-            className="ai-insights-close-button"
-            onClick={onToggle}
-            aria-label="Close AI Insights Panel"
-          >
-            ×
-          </button>
-        </div>
+    <div className="ai-insights-panel">
+      {/* Header */}
+      <div className="ai-insights-header">
+        <h2 className="ai-insights-title">
+          🤖 AI Insights
+        </h2>
+        <button
+          className="ai-insights-close"
+          onClick={onToggle}
+          aria-label="Close AI Insights Panel"
+        >
+          ×
+        </button>
+      </div>
 
         {/* Tabs */}
         <div className="ai-insights-tabs" role="tablist" aria-label="AI Insights Navigation">
@@ -259,7 +258,6 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
             )}
           </div>
         )}
-      </div>
     </div>
   );
 };

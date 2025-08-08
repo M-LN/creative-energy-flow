@@ -15,7 +15,7 @@ import {
   SmartSchedulingResult,
   SyncStatus
 } from '../types/integration';
-import { addMinutes, addDays, isAfter, isBefore, startOfDay, endOfDay, format } from 'date-fns';
+import { addMinutes, addDays, format } from 'date-fns';
 
 export class ProductivityIntegrationService {
   private static instance: ProductivityIntegrationService;
@@ -392,7 +392,6 @@ export class ProductivityIntegrationService {
   }
 
   private generateTaskSchedulingReasoning(slot: TimeSlot, task: Task): string {
-    const hour = slot.start.getHours();
     const energyLevel = slot.energyLevel;
     
     let reasoning = `Scheduled "${task.title}" for ${format(slot.start, 'MMM dd, HH:mm')} `;
@@ -461,10 +460,6 @@ export class ProductivityIntegrationService {
   }
 
   private analyzeProcrastinationPattern(): ProcrastinationPattern {
-    const overdueTasks = this.tasks.filter(task => 
-      task.dueDate && task.dueDate < new Date() && task.status !== 'completed'
-    );
-    
     const frequentDelayTimes = ['14:00', '16:00', '17:00']; // Common procrastination times
     
     return {

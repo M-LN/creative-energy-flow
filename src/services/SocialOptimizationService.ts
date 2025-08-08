@@ -8,8 +8,7 @@ import {
   SocialOptimizationSuggestion, 
   SocialOptimizationAnalysis, 
   SocialOptimizationPreferences,
-  SocialOptimizationMetrics,
-  OptimizationContext 
+  SocialOptimizationMetrics
 } from '../types/socialOptimization';
 import { SocialPatternEngine } from './SocialPatternEngine';
 

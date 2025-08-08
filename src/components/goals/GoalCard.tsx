@@ -97,6 +97,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({
           </span>
         </div>
         <div className="progress-bar">
+          {/* eslint-disable-next-line react/forbid-dom-props */}
           <div 
             className={getProgressClass(goal.progress)}
             style={{ 

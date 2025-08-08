@@ -1,5 +1,5 @@
 // Goal Management Dashboard - Main interface for viewing and managing energy goals
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyGoal, GoalStats, GoalSuggestion } from '../../types/goals';
 import { EnergyLevel } from '../../types/energy';
 import { GoalService } from '../../services/GoalService';
@@ -30,12 +30,35 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
     loadGoals();
   }, []);
 
+  const updateAllGoalProgress = useCallback(async () => {
+    const updatedGoals: EnergyGoal[] = [];
+    
+    for (const goal of goals) {
+      if (goal.status === 'active') {
+        const updatedGoal = GoalService.updateGoalProgress(goal.id, energyData);
+        if (updatedGoal) {
+          updatedGoals.push(updatedGoal);
+        } else {
+          updatedGoals.push(goal);
+        }
+      } else {
+        updatedGoals.push(goal);
+      }
+    }
+    
+    setGoals(updatedGoals);
+    
+    // Update stats after progress update
+    const newStats = GoalService.getGoalStats();
+    setGoalStats(newStats);
+  }, [goals, energyData]);
+
   // Update goal progress when energy data changes
   useEffect(() => {
     if (goals.length > 0 && energyData.length > 0) {
       updateAllGoalProgress();
     }
-  }, [energyData]);
+  }, [energyData, goals.length, updateAllGoalProgress]);
 
   // Generate suggestions when we have enough data
   useEffect(() => {
@@ -58,29 +81,6 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const updateAllGoalProgress = async () => {
-    const updatedGoals: EnergyGoal[] = [];
-    
-    for (const goal of goals) {
-      if (goal.status === 'active') {
-        const updatedGoal = GoalService.updateGoalProgress(goal.id, energyData);
-        if (updatedGoal) {
-          updatedGoals.push(updatedGoal);
-        } else {
-          updatedGoals.push(goal);
-        }
-      } else {
-        updatedGoals.push(goal);
-      }
-    }
-    
-    setGoals(updatedGoals);
-    
-    // Update stats after progress update
-    const newStats = GoalService.getGoalStats();
-    setGoalStats(newStats);
   };
 
   const handleCreateGoal = (goalData: Omit<EnergyGoal, 'id' | 'createdAt' | 'currentValue' | 'progress' | 'streak' | 'milestones'>) => {

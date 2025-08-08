@@ -88,14 +88,7 @@ describe('PWA Service Worker', () => {
 
 // Test PWA installation detection
 describe('PWA Installation', () => {
-  let mockBeforeInstallPrompt: any;
-
   beforeEach(() => {
-    mockBeforeInstallPrompt = {
-      prompt: jest.fn(() => Promise.resolve()),
-      userChoice: Promise.resolve({ outcome: 'accepted' })
-    };
-    
     // Mock window.addEventListener for beforeinstallprompt
     window.addEventListener = jest.fn();
   });

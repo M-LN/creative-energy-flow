@@ -1,4 +1,4 @@
-import { EnergyType, EnergyReading } from './energy';
+import { EnergyType } from './energy';
 
 /**
  * Types for Energy Pattern Recommendations System

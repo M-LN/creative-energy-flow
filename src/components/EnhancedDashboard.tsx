@@ -1,24 +1,44 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { EnergyLevel, SocialBatteryData } from '../types/energy';
 import { CreativeConstraint, CreativeConstraintEngine, ConstraintSession } from '../services/CreativeConstraintEngine';
+import { EnergyInputForm } from './EnergyInputForm';
+import { StorageService } from '../services/StorageService';
+import { ToastContainer, useToast } from './ToastNotification';
 import './EnhancedDashboard.css';
 
 interface EnhancedDashboardProps {
   currentEnergy: EnergyLevel;
   socialBattery?: SocialBatteryData;
   onEnergyUpdate: (energy: EnergyLevel) => void;
+  onEnergyDataUpdate?: (energyData: EnergyLevel[]) => void;
 }
 
 export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   currentEnergy,
   socialBattery,
-  onEnergyUpdate
+  onEnergyUpdate,
+  onEnergyDataUpdate
 }) => {
   const [dailyConstraint, setDailyConstraint] = useState<CreativeConstraint | null>(null);
   const [currentSession, setCurrentSession] = useState<ConstraintSession | null>(null);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [completedSessions, setCompletedSessions] = useState<ConstraintSession[]>([]);
+  const [showEnergyForm, setShowEnergyForm] = useState(false);
+  const [energyDataHistory, setEnergyDataHistory] = useState<EnergyLevel[]>([]);
+  const { toasts, removeToast, showSuccess, showError } = useToast();
+
+  // Load energy data from storage on mount
+  useEffect(() => {
+    const savedData = StorageService.loadEnergyData();
+    if (savedData.length > 0) {
+      const processedData = savedData.map((entry: any) => ({
+        ...entry,
+        timestamp: new Date(entry.timestamp)
+      }));
+      setEnergyDataHistory(processedData);
+    }
+  }, []);
 
   const generateTodaysConstraint = useCallback(() => {
     const constraint = CreativeConstraintEngine.generateDailyConstraint(currentEnergy);
@@ -90,6 +110,36 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     setCurrentSession(null);
     setTimerRunning(false);
     setTimeRemaining(0);
+  };
+
+  const handleAddEnergyEntry = (entry: EnergyLevel) => {
+    try {
+      // Update current energy state
+      onEnergyUpdate(entry);
+      
+      // Add to energy data history and save to storage
+      const updatedHistory = [...energyDataHistory, entry].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      setEnergyDataHistory(updatedHistory);
+      StorageService.saveEnergyData(updatedHistory);
+      
+      // Update parent component with new data if callback provided
+      if (onEnergyDataUpdate) {
+        onEnergyDataUpdate(updatedHistory);
+      }
+      
+      // Close the form
+      setShowEnergyForm(false);
+      
+      // Show success notification
+      showSuccess('Energy Entry Added! 🌟', `Physical: ${entry.physical}% • Mental: ${entry.mental}% • Emotional: ${entry.emotional}% • Creative: ${entry.creative}%`);
+    } catch (error) {
+      console.error('Error saving energy entry:', error);
+      showError('Failed to Save Entry', 'There was an error saving your energy entry. Please try again.');
+    }
+  };
+
+  const toggleEnergyForm = () => {
+    setShowEnergyForm(!showEnergyForm);
   };
 
   const formatTime = (seconds: number): string => {
@@ -239,6 +289,16 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Energy Input Form */}
+      <EnergyInputForm
+        isOpen={showEnergyForm}
+        onAddEntry={handleAddEnergyEntry}
+        onToggleForm={toggleEnergyForm}
+      />
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
     </div>
   );
 };
