@@ -4,7 +4,7 @@ import { CreativeConstraint, CreativeConstraintEngine, ConstraintSession } from 
 import { EnergyInputForm } from './EnergyInputForm';
 import { StorageService } from '../services/StorageService';
 import { ToastContainer, useToast } from './ToastNotification';
-import { HelpTooltip, QuickTip } from './HelpTooltip';
+import { HelpTooltip } from './HelpTooltip';
 import { LoadingSpinner, EmptyState } from './LoadingSpinner';
 import './EnhancedDashboard.css';
 
@@ -21,11 +21,6 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   onEnergyUpdate,
   onEnergyDataUpdate
 }) => {
-  const [showQuickTip, setShowQuickTip] = useState(() => {
-    // Only show quick tip if user hasn't dismissed it
-    const dismissed = localStorage.getItem('quickTipDismissed');
-    return !dismissed;
-  });
   const [dailyConstraint, setDailyConstraint] = useState<CreativeConstraint | null>(null);
   const [currentSession, setCurrentSession] = useState<ConstraintSession | null>(null);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -211,21 +206,6 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             </h1>
           </div>
         </header>
-
-        {/* Quick Tips for User Guidance */}
-        {showQuickTip && (
-          <div className="quick-tips-section">
-            <QuickTip
-              title="� Energy Tracking Tip"
-              description="Log your energy levels throughout the day to discover your patterns! Use the ? button for more help."
-              icon="💡"
-              onDismiss={() => {
-                setShowQuickTip(false);
-                localStorage.setItem('quickTipDismissed', 'true');
-              }}
-            />
-          </div>
-        )}
 
         <div className="energy-status-card">
           <div className="energy-row">
