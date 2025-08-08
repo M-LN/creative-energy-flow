@@ -4,7 +4,6 @@ import { CreativeConstraint, CreativeConstraintEngine, ConstraintSession } from 
 import { EnergyInputForm } from './EnergyInputForm';
 import { StorageService } from '../services/StorageService';
 import { ToastContainer, useToast } from './ToastNotification';
-import { HelpTooltip } from './HelpTooltip';
 import { LoadingSpinner, EmptyState } from './LoadingSpinner';
 import './EnhancedDashboard.css';
 
@@ -197,12 +196,6 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           <div className="header-title-container">
             <h1 className="dashboard-title">
               ☀️ Creative Energy Flow
-              <HelpTooltip 
-                position="bottom"
-                content="Track your daily energy levels and get personalized creative constraints to boost your productivity and well-being."
-              >
-                <span className="help-icon">?</span>
-              </HelpTooltip>
             </h1>
           </div>
         </header>
@@ -236,12 +229,6 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           <div className={`constraint-card ${currentSession ? 'active' : ''}`}>
             <div className="constraint-header">
               <h3 className="constraint-card-title">{dailyConstraint.title}</h3>
-              <HelpTooltip 
-                position="left"
-                content="Creative constraints are focused exercises designed to boost your creativity and productivity. Click start to begin your timed session!"
-              >
-                <span className="help-icon">ℹ️</span>
-              </HelpTooltip>
             </div>
             <p className="constraint-card-description">{dailyConstraint.description}</p>
             
