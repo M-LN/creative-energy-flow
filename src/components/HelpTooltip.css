@@ -99,29 +99,32 @@
 
 /* Quick Tip */
 .quick-tip {
-  background: linear-gradient(135deg, var(--color-info), var(--color-info-hover));
-  border-radius: 12px;
-  padding: 16px;
-  margin: 16px 0;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-info);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  color: var(--color-text);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
 }
 
 .quick-tip-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .quick-tip-icon {
-  font-size: 18px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
 .quick-tip-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   flex: 1;
 }
@@ -129,7 +132,7 @@
 .quick-tip-dismiss {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 2px;
   border-radius: 2px;
@@ -139,12 +142,14 @@
 }
 
 .quick-tip-dismiss:hover {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+  background-color: var(--color-border);
 }
 
 .quick-tip-description {
   margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.4;
   opacity: 0.95;

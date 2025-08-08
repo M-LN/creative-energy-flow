@@ -21,6 +21,11 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   onEnergyUpdate,
   onEnergyDataUpdate
 }) => {
+  const [showQuickTip, setShowQuickTip] = useState(() => {
+    // Only show quick tip if user hasn't dismissed it
+    const dismissed = localStorage.getItem('quickTipDismissed');
+    return !dismissed;
+  });
   const [dailyConstraint, setDailyConstraint] = useState<CreativeConstraint | null>(null);
   const [currentSession, setCurrentSession] = useState<ConstraintSession | null>(null);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -208,14 +213,19 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         </header>
 
         {/* Quick Tips for User Guidance */}
-        <div className="quick-tips-section">
-          <QuickTip
-            title="👋 Welcome! Energy Tracking Tip"
-            description="Log your energy levels throughout the day to discover your natural productivity patterns! Click the floating ? button for more help."
-            icon="💡"
-            onDismiss={() => console.log('Quick tip dismissed')}
-          />
-        </div>
+        {showQuickTip && (
+          <div className="quick-tips-section">
+            <QuickTip
+              title="� Energy Tracking Tip"
+              description="Log your energy levels throughout the day to discover your patterns! Use the ? button for more help."
+              icon="💡"
+              onDismiss={() => {
+                setShowQuickTip(false);
+                localStorage.setItem('quickTipDismissed', 'true');
+              }}
+            />
+          </div>
+        )}
 
         <div className="energy-status-card">
           <div className="energy-row">

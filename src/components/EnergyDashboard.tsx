@@ -16,6 +16,11 @@ export const EnergyDashboard: React.FC = () => {
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
+  const [showAnalyticsQuickTip, setShowAnalyticsQuickTip] = useState(() => {
+    // Only show analytics quick tip if user hasn't dismissed it
+    const dismissed = localStorage.getItem('analyticsQuickTipDismissed');
+    return !dismissed;
+  });
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -104,13 +109,19 @@ export const EnergyDashboard: React.FC = () => {
             </p>
           </div>
           {/* Quick Tip for Analytics */}
-          <div className="analytics-quick-tip">
-            <QuickTip
-              title="Analytics Pro Tip"
-              description="Switch between data sources to compare your actual patterns with sample data. Look for trends in your peak energy times!"
-              icon="🔍"
-            />
-          </div>
+          {showAnalyticsQuickTip && (
+            <div className="analytics-quick-tip">
+              <QuickTip
+                title="📊 Analytics Pro Tip"
+                description="Switch between data sources to compare patterns. Look for trends in your peak energy times!"
+                icon="🔍"
+                onDismiss={() => {
+                  setShowAnalyticsQuickTip(false);
+                  localStorage.setItem('analyticsQuickTipDismissed', 'true');
+                }}
+              />
+            </div>
+          )}
         </header>
 
         {/* Controls */}
