@@ -30,11 +30,34 @@
   text-align: center;
 }
 
+.header-content {
+  margin-bottom: 20px;
+}
+
 .dashboard-title {
   font-size: 32px;
   font-weight: bold;
   margin: 0 0 10px 0;
   color: var(--energy-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.help-icon {
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.help-icon:hover {
+  opacity: 1;
+}
+
+.analytics-quick-tip {
+  margin-top: 15px;
 }
 
 .dashboard-subtitle {

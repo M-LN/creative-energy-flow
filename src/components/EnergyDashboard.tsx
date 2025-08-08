@@ -7,6 +7,8 @@ import { AIInsightsPanel } from './AIInsightsPanel';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
 import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
+import { HelpTooltip, QuickTip } from './HelpTooltip';
+import { LoadingSpinner } from './LoadingSpinner';
 import './EnergyDashboard.css';
 
 export const EnergyDashboard: React.FC = () => {
@@ -87,12 +89,28 @@ export const EnergyDashboard: React.FC = () => {
       <div className="dashboard-container">
         {/* Header */}
         <header className="dashboard-header">
-          <h1 className="dashboard-title">
-            Creative Energy Flow
-          </h1>
-          <p className="dashboard-subtitle">
-            Track and visualize your energy patterns to optimize your creative flow
-          </p>
+          <div className="header-content">
+            <h1 className="dashboard-title">
+              Creative Energy Flow
+              <HelpTooltip 
+                position="bottom"
+                content="Analyze your energy patterns with interactive charts. Use the filters to customize your view and discover insights about your creative flow."
+              >
+                <span className="help-icon">📊</span>
+              </HelpTooltip>
+            </h1>
+            <p className="dashboard-subtitle">
+              Track and visualize your energy patterns to optimize your creative flow
+            </p>
+          </div>
+          {/* Quick Tip for Analytics */}
+          <div className="analytics-quick-tip">
+            <QuickTip
+              title="Analytics Pro Tip"
+              description="Switch between data sources to compare your actual patterns with sample data. Look for trends in your peak energy times!"
+              icon="🔍"
+            />
+          </div>
         </header>
 
         {/* Controls */}
