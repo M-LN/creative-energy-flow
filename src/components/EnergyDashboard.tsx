@@ -12,6 +12,7 @@ import './EnergyDashboard.css';
 export const EnergyDashboard: React.FC = () => {
   // State for user-added energy data
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
+  // State for AI features
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
 

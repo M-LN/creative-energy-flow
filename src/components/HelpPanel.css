@@ -168,7 +168,7 @@
 .floating-help-button {
   position: fixed;
   top: 80px;
-  right: 20px;
+  left: 20px;
   width: 42px;
   height: 42px;
   background: var(--color-primary);
@@ -244,7 +244,7 @@
   .floating-help-button {
     width: 48px;
     height: 48px;
-    right: 16px;
+    left: 16px;
     top: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   }
@@ -288,7 +288,7 @@
   .floating-help-button {
     width: 44px;
     height: 44px;
-    right: 12px;
+    left: 12px;
     top: 12px;
   }
   

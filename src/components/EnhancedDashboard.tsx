@@ -5,6 +5,7 @@ import { EnergyInputForm } from './EnergyInputForm';
 import { StorageService } from '../services/StorageService';
 import { ToastContainer, useToast } from './ToastNotification';
 import { LoadingSpinner } from './LoadingSpinner';
+import { AIChatAssistant } from './AIChatAssistant';
 import './EnhancedDashboard.css';
 
 interface EnhancedDashboardProps {
@@ -27,6 +28,7 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   const [completedSessions, setCompletedSessions] = useState<ConstraintSession[]>([]);
   const [showEnergyForm, setShowEnergyForm] = useState(false);
   const [energyDataHistory, setEnergyDataHistory] = useState<EnergyLevel[]>([]);
+  const [showAIChat, setShowAIChat] = useState(false);
   const { toasts, removeToast, showSuccess, showError } = useToast();
 
   // Load energy data from storage on mount
@@ -301,6 +303,14 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         isOpen={showEnergyForm}
         onAddEntry={handleAddEnergyEntry}
         onToggleForm={toggleEnergyForm}
+      />
+
+      {/* AI Chat Assistant */}
+      <AIChatAssistant
+        data={energyDataHistory}
+        currentEnergy={currentEnergy}
+        isOpen={showAIChat}
+        onToggle={() => setShowAIChat(!showAIChat)}
       />
 
       {/* Toast Notifications */}

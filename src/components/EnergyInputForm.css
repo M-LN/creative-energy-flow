@@ -20,7 +20,7 @@
 .energy-input-fab {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  right: 20px;
   background-color: var(--energy-creative);
   color: white;
   border: none;
@@ -35,6 +35,11 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+}
+
+.energy-input-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .energy-input-fab:hover {
@@ -327,8 +332,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .energy-input-fab {
-    bottom: 20px;
-    right: 20px;
+    bottom: 25px;
+    right: 15px;
     width: 50px;
     height: 50px;
     font-size: 20px;
