@@ -4,7 +4,7 @@ import { CreativeConstraint, CreativeConstraintEngine, ConstraintSession } from 
 import { EnergyInputForm } from './EnergyInputForm';
 import { StorageService } from '../services/StorageService';
 import { ToastContainer, useToast } from './ToastNotification';
-import { LoadingSpinner, EmptyState } from './LoadingSpinner';
+import { LoadingSpinner } from './LoadingSpinner';
 import './EnhancedDashboard.css';
 
 interface EnhancedDashboardProps {

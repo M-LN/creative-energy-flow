@@ -1,24 +1,50 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { EnergyLevel } from '../types/energy';
-import { AIInsightsEngine } from '../services/AIInsightsEngine';
+import { AIInsightsEngine, PersonalizedConstraint, SmartRecommendation, AIEnergyPrediction } from '../services/AIInsightsEngine';
 import './AIInsightsPanel.css';
 
 interface AIInsightsPanelProps {
   data: EnergyLevel[];
+  currentEnergy: EnergyLevel;
   isOpen: boolean;
   onToggle: () => void;
+  onConstraintSelect?: (constraint: PersonalizedConstraint) => void;
 }
 
 export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
   data,
+  currentEnergy,
   isOpen,
-  onToggle
+  onToggle,
+  onConstraintSelect
 }) => {
-  const [activeTab, setActiveTab] = useState<'insights' | 'predictions'>('insights');
+  const [activeTab, setActiveTab] = useState<'insights' | 'predictions' | 'recommendations' | 'constraints'>('predictions');
+  const [selectedTimeframe] = useState<'next-hour' | 'next-day' | 'next-week'>('next-hour');
   
+  // Enhanced AI insights using the new AI engine
   const insights = useMemo(() => {
     return AIInsightsEngine.generateInsights(data);
   }, [data]);
+
+  const [aiPrediction, setAiPrediction] = useState<AIEnergyPrediction | null>(null);
+  const [smartRecommendations, setSmartRecommendations] = useState<SmartRecommendation[]>([]);
+  const [personalizedConstraints, setPersonalizedConstraints] = useState<PersonalizedConstraint[]>([]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      // Initialize AI engine with data
+      AIInsightsEngine.initialize(data);
+      
+      // Generate advanced AI features
+      const prediction = AIInsightsEngine.predictNextEnergyLevel(selectedTimeframe);
+      const recommendations = AIInsightsEngine.generateSmartRecommendations(currentEnergy?.overall || 75);
+      const constraints = AIInsightsEngine.generatePersonalizedConstraints(currentEnergy?.overall || 75);
+      
+      setAiPrediction(prediction);
+      setSmartRecommendations(recommendations);
+      setPersonalizedConstraints(constraints);
+    }
+  }, [data, currentEnergy, selectedTimeframe]);
 
   const predictions = useMemo(() => {
     return AIInsightsEngine.generatePredictions(data);
@@ -49,7 +75,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
     return 'ai-prediction-confidence-low';
   };
 
-  const handleTabClick = (tab: 'insights' | 'predictions') => {
+  const handleTabClick = (tab: 'insights' | 'predictions' | 'recommendations' | 'constraints') => {
     setActiveTab(tab);
   };
 
@@ -109,6 +135,8 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
               💡 Insights ({insights.length})
             </button>
           )}
+          
+          {/* New AI Predictions Tab */}
           {activeTab === 'predictions' ? (
             <button
               className="ai-insights-tab ai-insights-tab-active"
@@ -118,7 +146,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
               aria-controls="predictions-panel"
               id="predictions-tab"
             >
-              🔮 Predictions ({predictions.length})
+              🔮 Classic Predictions ({predictions.length})
             </button>
           ) : (
             <button
@@ -129,7 +157,49 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
               aria-controls="predictions-panel"
               id="predictions-tab"
             >
-              🔮 Predictions ({predictions.length})
+              🔮 Classic Predictions ({predictions.length})
+            </button>
+          )}
+
+          {/* New AI Smart Recommendations Tab */}
+          {activeTab === 'recommendations' ? (
+            <button
+              className="ai-insights-tab ai-insights-tab-active"
+              onClick={() => handleTabClick('recommendations')}
+              role="tab"
+              aria-selected="true"
+            >
+              🤖 AI Recommendations ({smartRecommendations.length})
+            </button>
+          ) : (
+            <button
+              className="ai-insights-tab"
+              onClick={() => handleTabClick('recommendations')}
+              role="tab"
+              aria-selected="false"
+            >
+              🤖 AI Recommendations ({smartRecommendations.length})
+            </button>
+          )}
+
+          {/* New AI Constraints Tab */}
+          {activeTab === 'constraints' ? (
+            <button
+              className="ai-insights-tab ai-insights-tab-active"
+              onClick={() => handleTabClick('constraints')}
+              role="tab"
+              aria-selected="true"
+            >
+              🎯 AI Constraints ({personalizedConstraints.length})
+            </button>
+          ) : (
+            <button
+              className="ai-insights-tab"
+              onClick={() => handleTabClick('constraints')}
+              role="tab"
+              aria-selected="false"
+            >
+              🎯 AI Constraints ({personalizedConstraints.length})
             </button>
           )}
         </div>
@@ -252,6 +322,122 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
                         ))}
                       </ul>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* New AI Recommendations Tab Content */}
+        {activeTab === 'recommendations' && (
+          <div className="ai-insights-content">
+            <div className="ai-advanced-prediction">
+              <h3>⚡ Next Hour Energy Prediction</h3>
+              {aiPrediction ? (
+                <div className="ai-prediction-card">
+                  <div className="ai-prediction-main">
+                    <div className="ai-prediction-value">
+                      <span className="ai-energy-number">
+                        {aiPrediction.predictedEnergy}
+                      </span>
+                      <span className="ai-energy-unit">/100</span>
+                    </div>
+                    <div className="ai-confidence">
+                      {aiPrediction.accuracy}% confident
+                    </div>
+                  </div>
+                  <p className="ai-prediction-recommendation">{aiPrediction.recommendation}</p>
+                  <details className="ai-prediction-factors">
+                    <summary>AI Analysis Factors</summary>
+                    <ul>
+                      {aiPrediction.factors.map((factor, index) => (
+                        <li key={index}>{factor}</li>
+                      ))}
+                    </ul>
+                  </details>
+                </div>
+              ) : (
+                <p>Loading AI prediction...</p>
+              )}
+            </div>
+
+            <div className="ai-recommendations-grid">
+              <h3>💡 Smart Recommendations</h3>
+              {smartRecommendations.length === 0 ? (
+                <p>No recommendations available yet.</p>
+              ) : (
+                smartRecommendations.map(rec => (
+                  <div key={rec.id} className={`ai-recommendation-card ${rec.type}`}>
+                    <div className="ai-rec-header">
+                      <span className="ai-rec-icon">{rec.icon}</span>
+                      <div className="ai-rec-title-area">
+                        <h4>{rec.title}</h4>
+                        <span className="ai-rec-type">{rec.type}</span>
+                      </div>
+                      <span className="ai-rec-confidence">
+                        {Math.round(rec.confidence * 100)}%
+                      </span>
+                    </div>
+                    <p>{rec.description}</p>
+                    <div className="ai-rec-meta">
+                      <span className={`ai-rec-impact ${rec.energyImpact}`}>
+                        {rec.energyImpact} energy
+                      </span>
+                      {rec.estimatedMinutes && (
+                        <span className="ai-rec-time">~{rec.estimatedMinutes}min</span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* New AI Constraints Tab Content */}
+        {activeTab === 'constraints' && (
+          <div className="ai-insights-content">
+            <h3>🎯 AI-Personalized Creative Constraints</h3>
+            {personalizedConstraints.length === 0 ? (
+              <p>Loading personalized constraints...</p>
+            ) : (
+              <div className="ai-constraints-grid">
+                {personalizedConstraints.map(constraint => (
+                  <div key={constraint.id} className="ai-constraint-card">
+                    <div className="ai-constraint-header">
+                      <h4>{constraint.title}</h4>
+                      <div className="ai-constraint-meta">
+                        <span className={`ai-difficulty ${constraint.adaptedDifficulty}`}>
+                          {constraint.adaptedDifficulty}
+                        </span>
+                        <span className="ai-duration">{constraint.duration}min</span>
+                      </div>
+                    </div>
+                    <p>{constraint.description}</p>
+                    <div className="ai-personalization">
+                      <span className="ai-personalization-icon">🤖</span>
+                      <p className="ai-personalization-reason">{constraint.personalizedReason}</p>
+                    </div>
+                    <div className="ai-constraint-details">
+                      <div className="ai-energy-impact">
+                        Energy Impact: 
+                        <span className={constraint.estimatedEnergyImpact > 0 ? 'positive' : 'negative'}>
+                          {constraint.estimatedEnergyImpact > 0 ? '+' : ''}{constraint.estimatedEnergyImpact}
+                        </span>
+                      </div>
+                      <div className="ai-confidence-score">
+                        AI Confidence: {Math.round(constraint.aiConfidence * 100)}%
+                      </div>
+                    </div>
+                    {onConstraintSelect && (
+                      <button 
+                        className="ai-constraint-select"
+                        onClick={() => onConstraintSelect(constraint)}
+                      >
+                        Start AI Constraint
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

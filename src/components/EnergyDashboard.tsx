@@ -7,7 +7,6 @@ import { AIInsightsPanel } from './AIInsightsPanel';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
 import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
-import { LoadingSpinner } from './LoadingSpinner';
 import './EnergyDashboard.css';
 
 export const EnergyDashboard: React.FC = () => {
@@ -306,6 +305,14 @@ export const EnergyDashboard: React.FC = () => {
         {/* AI Insights Panel */}
         <AIInsightsPanel
           data={combinedEnergyData}
+          currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+            timestamp: new Date(), 
+            overall: 75, 
+            physical: 75, 
+            mental: 75, 
+            emotional: 75, 
+            creative: 75 
+          }}
           isOpen={showAIInsights}
           onToggle={() => setShowAIInsights(!showAIInsights)}
         />
