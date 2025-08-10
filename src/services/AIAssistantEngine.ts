@@ -1,4 +1,5 @@
 import { EnergyLevel } from '../types/energy';
+import { openAIService } from './OpenAIService';
 
 export interface ChatMessage {
   id: string;
@@ -365,6 +366,48 @@ export class AIAssistantEngine {
       relevantPatterns: [] as PatternInsight[],
     };
 
+    // Try to get real AI response first
+    if (openAIService.isReady()) {
+      try {
+        // Build energy context for AI
+        const energyContext = {
+          currentEnergy: this.energyData.length > 0 ? this.energyData[this.energyData.length - 1] : null,
+          recentPatterns: this.discoveredPatterns.slice(-3).map((i: PatternInsight) => i.title).join(', '),
+          activeInsights: this.discoveredPatterns.length,
+          totalInteractions: this.chatHistory.length
+        };
+
+        // Get conversation history for context (last 6 messages)
+        const conversationHistory = this.chatHistory.slice(-6).map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }));
+
+        // Get AI response
+        const aiResponse = await openAIService.generateResponseWithRateLimit(
+          originalMessage, 
+          energyContext, 
+          conversationHistory
+        );
+
+        response.content = aiResponse;
+        response.confidence = 0.9; // High confidence for real AI
+        response.sources = ['OpenAI GPT-3.5', 'Energy data context'];
+        
+        // Extract action items from AI response (simple keyword detection)
+        if (aiResponse.toLowerCase().includes('try') || aiResponse.toLowerCase().includes('consider') || aiResponse.toLowerCase().includes('suggest')) {
+          response.actionItems = ['Follow AI suggestions from response'];
+        }
+
+        return response;
+        
+      } catch (error) {
+        console.error('OpenAI integration error:', error);
+        // Fall through to mock responses on error
+      }
+    }
+
+    // Fallback to original mock responses
     switch (intent.category) {
       case 'energy-analysis':
         response.content = await this.generateEnergyAnalysisResponse(intent, originalMessage);
