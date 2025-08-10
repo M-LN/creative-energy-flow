@@ -106,13 +106,44 @@ Your personality:
 Keep responses concise (2-3 sentences typically) but helpful.`;
 
     if (energyContext) {
-      const contextInfo = `
+      let contextInfo = `
 
-Current user data context:
-- Current energy level: ${energyContext.currentEnergy || 'Not specified'}
-- Recent patterns: ${energyContext.recentPatterns || 'Not available'}
-- Active insights: ${energyContext.activeInsights || 'None'}
-- Time of day: ${new Date().toLocaleTimeString()}`;
+Current user data context:`;
+
+      // Current energy levels
+      if (energyContext.currentEnergy) {
+        contextInfo += `
+- Current energy levels:
+  • Physical: ${energyContext.currentEnergy.physical}/100
+  • Mental: ${energyContext.currentEnergy.mental}/100  
+  • Emotional: ${energyContext.currentEnergy.emotional}/100
+  • Creative: ${energyContext.currentEnergy.creative}/100
+  • Overall: ${energyContext.currentEnergy.overall}/100
+  • Recorded: ${new Date(energyContext.currentEnergy.timestamp).toLocaleString()}`;
+      }
+
+      // Recent trends
+      if (energyContext.recentEnergyTrends) {
+        contextInfo += `
+- Recent energy trends (positive = improving, negative = declining):
+  • Physical trend: ${energyContext.recentEnergyTrends.physicalTrend > 0 ? '+' : ''}${energyContext.recentEnergyTrends.physicalTrend}
+  • Mental trend: ${energyContext.recentEnergyTrends.mentalTrend > 0 ? '+' : ''}${energyContext.recentEnergyTrends.mentalTrend}
+  • Emotional trend: ${energyContext.recentEnergyTrends.emotionalTrend > 0 ? '+' : ''}${energyContext.recentEnergyTrends.emotionalTrend}
+  • Creative trend: ${energyContext.recentEnergyTrends.creativeTrend > 0 ? '+' : ''}${energyContext.recentEnergyTrends.creativeTrend}`;
+      }
+
+      // Social battery context
+      if (energyContext.socialBattery) {
+        contextInfo += `
+- Social battery: ${energyContext.socialBattery.note}`;
+      }
+
+      // Additional context
+      contextInfo += `
+- Recent patterns discovered: ${energyContext.recentPatterns || 'None yet'}
+- Total discovered insights: ${energyContext.activeInsights || 0}
+- Current time context: ${energyContext.timeOfDay} on ${energyContext.dayOfWeek}
+- Conversation history: ${energyContext.totalInteractions} previous interactions`;
 
       return baseContext + contextInfo;
     }

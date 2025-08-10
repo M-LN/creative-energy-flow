@@ -369,12 +369,41 @@ export class AIAssistantEngine {
     // Try to get real AI response first
     if (openAIService.isReady()) {
       try {
-        // Build energy context for AI
+        // Build comprehensive energy context for AI
+        const currentEnergyData = this.energyData.length > 0 ? this.energyData[this.energyData.length - 1] : null;
+        const recentEnergyData = this.energyData.slice(-7); // Last week
+        
         const energyContext = {
-          currentEnergy: this.energyData.length > 0 ? this.energyData[this.energyData.length - 1] : null,
+          // Current energy levels
+          currentEnergy: currentEnergyData ? {
+            physical: currentEnergyData.physical,
+            mental: currentEnergyData.mental,
+            emotional: currentEnergyData.emotional,
+            creative: currentEnergyData.creative,
+            overall: currentEnergyData.overall,
+            timestamp: currentEnergyData.timestamp
+          } : null,
+          
+          // Recent patterns and trends
           recentPatterns: this.discoveredPatterns.slice(-3).map((i: PatternInsight) => i.title).join(', '),
+          recentEnergyTrends: recentEnergyData.length > 3 ? {
+            physicalTrend: this.calculateTrend(recentEnergyData, 'physical'),
+            mentalTrend: this.calculateTrend(recentEnergyData, 'mental'),
+            emotionalTrend: this.calculateTrend(recentEnergyData, 'emotional'),
+            creativeTrend: this.calculateTrend(recentEnergyData, 'creative')
+          } : null,
+          
+          // Social battery context (placeholder - will be enhanced)
+          socialBattery: {
+            note: "Social battery tracking is available in the app but not yet integrated with AI context",
+            suggestion: "User can track social interactions, meeting drain, and social energy levels"
+          },
+          
+          // Analytics
           activeInsights: this.discoveredPatterns.length,
-          totalInteractions: this.chatHistory.length
+          totalInteractions: this.chatHistory.length,
+          timeOfDay: new Date().toLocaleTimeString(),
+          dayOfWeek: new Date().toLocaleDateString('en-US', { weekday: 'long' })
         };
 
         // Get conversation history for context (last 6 messages)
