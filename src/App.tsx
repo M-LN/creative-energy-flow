@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyDashboard } from './components/EnergyDashboard';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
+import ModernEnergyDashboard from './components/ModernEnergyDashboard';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { DataExportPanel } from './components/DataExportPanel';
 import { GoalDashboard } from './components/goals/GoalDashboard';
@@ -25,7 +26,7 @@ import './styles/responsive-enhancements.css';
 import './styles/chart-enhancements.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'enhanced' | 'analytics' | 'goals' | 'recommendations' | 'social-optimization' | 'integration' | 'data'>('enhanced');
+  const [currentView, setCurrentView] = useState<'modern' | 'enhanced' | 'analytics' | 'goals' | 'recommendations' | 'social-optimization' | 'integration' | 'data'>('modern');
   const [showWelcome, setShowWelcome] = useState(() => {
     // Show welcome tour for first-time users
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
@@ -126,6 +127,28 @@ function App() {
 
         {/* View Toggle */}
         <div className="view-toggle">
+        {currentView === 'modern' ? (
+          <button
+            type="button"
+            onClick={() => setCurrentView('modern')}
+            className="view-toggle-button active"
+            aria-pressed="true"
+            aria-label="Switch to modern view"
+          >
+            ⚡ Modern
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrentView('modern')}
+            className="view-toggle-button"
+            aria-pressed="false"
+            aria-label="Switch to modern view"
+          >
+            ⚡ Modern
+          </button>
+        )}
+
         {currentView === 'enhanced' ? (
           <button
             type="button"
@@ -282,7 +305,9 @@ function App() {
       </div>
 
       {/* Main Content */}
-      {currentView === 'enhanced' ? (
+      {currentView === 'modern' ? (
+        <ModernEnergyDashboard />
+      ) : currentView === 'enhanced' ? (
         <EnhancedDashboard
           currentEnergy={currentEnergy}
           onEnergyUpdate={setCurrentEnergy}

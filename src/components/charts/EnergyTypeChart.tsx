@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { EnergyLevel, EnergyType } from '../../types/energy';
+import { EnergyLevel, EnergyType, TimeRange } from '../../types/energy';
 import { ENERGY_COLORS, getEnergyTypeColor } from '../../utils/colors';
 import { format } from 'date-fns';
 import './EnergyTypeChart.css';
@@ -27,7 +27,7 @@ interface EnergyTypeChartProps {
   data: EnergyLevel[];
   energyTypes: EnergyType[];
   stacked?: boolean;
-  timeRange?: 'day' | 'week' | 'month' | 'quarter' | 'year';
+  timeRange?: TimeRange;
   height?: number;
 }
 

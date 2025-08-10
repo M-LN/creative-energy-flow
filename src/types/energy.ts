@@ -70,7 +70,7 @@ export interface EnergyInsight {
 }
 
 export type EnergyType = 'physical' | 'mental' | 'emotional' | 'creative';
-export type TimeRange = 'day' | 'week' | 'month' | 'quarter' | 'year';
+export type TimeRange = '7d' | '30d' | '90d' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 export type ViewMode = 'line' | 'area' | 'bar' | 'heatmap' | 'radar';
 
 export interface ChartConfiguration {
