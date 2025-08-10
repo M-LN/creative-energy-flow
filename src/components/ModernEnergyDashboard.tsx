@@ -29,6 +29,7 @@ export const ModernEnergyDashboard: React.FC = () => {
   // Existing state
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
   const [showAIInsights, setShowAIInsights] = useState(false);
+  const [showLegacyAIPanel, setShowLegacyAIPanel] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
@@ -285,19 +286,31 @@ export const ModernEnergyDashboard: React.FC = () => {
 
             {/* Legacy AI Insights Panel */}
             <div className="legacy-insights-section">
-              <AIInsightsPanel
-                data={combinedEnergyData}
-                currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
-                  timestamp: new Date(), 
-                  overall: 75, 
-                  physical: 75, 
-                  mental: 75, 
-                  emotional: 75, 
-                  creative: 75 
-                }}
-                isOpen={true}
-                onToggle={() => {}}
-              />
+              <div className="legacy-insights-header">
+                <h3>Advanced AI Chat</h3>
+                <button 
+                  className="toggle-legacy-ai-btn"
+                  onClick={() => setShowLegacyAIPanel(!showLegacyAIPanel)}
+                >
+                  {showLegacyAIPanel ? 'Hide Chat' : 'Open AI Chat'} 💬
+                </button>
+              </div>
+
+              {showLegacyAIPanel && (
+                <AIInsightsPanel
+                  data={combinedEnergyData}
+                  currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+                    timestamp: new Date(), 
+                    overall: 75, 
+                    physical: 75, 
+                    mental: 75, 
+                    emotional: 75, 
+                    creative: 75 
+                  }}
+                  isOpen={true}
+                  onToggle={() => setShowLegacyAIPanel(false)}
+                />
+              )}
             </div>
           </div>
         )}
