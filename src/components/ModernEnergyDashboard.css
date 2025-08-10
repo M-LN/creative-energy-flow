@@ -605,6 +605,60 @@
   margin: 0;
 }
 
+/* AI Chat Section */
+.ai-chat-section {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.ai-chat-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.ai-chat-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.ai-chat-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.toggle-ai-chat-btn {
+  align-self: flex-start;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-ai-chat-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.toggle-ai-chat-btn:active {
+  transform: translateY(0);
+}
+
 /* Legacy Insights Section */
 .legacy-insights-section {
   margin-top: var(--spacing-xl);
@@ -614,8 +668,8 @@
 
 .legacy-insights-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -624,6 +678,13 @@
   color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.legacy-insights-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .toggle-legacy-ai-btn {
@@ -637,6 +698,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
+  align-self: flex-start;
 }
 
 .toggle-legacy-ai-btn:hover {
@@ -646,6 +708,17 @@
 
 .toggle-legacy-ai-btn:active {
   transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .legacy-insights-header {
+    text-align: center;
+  }
+  
+  .toggle-legacy-ai-btn {
+    align-self: center;
+    width: 100%;
+  }
 }
 
 /* Mobile Responsiveness */

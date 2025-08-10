@@ -4,6 +4,7 @@ import { SocialBatteryChart } from './charts/SocialBatteryChart';
 import { EnergyTypeChart } from './charts/EnergyTypeChart';
 import { WeeklyEnergyHeatmap } from './charts/WeeklyEnergyHeatmap';
 import { AIInsightsPanel } from './AIInsightsPanel';
+import { AIChatAssistant } from './AIChatAssistant';
 import ProactiveInsights from './ProactiveInsights';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
@@ -30,6 +31,7 @@ export const ModernEnergyDashboard: React.FC = () => {
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [showLegacyAIPanel, setShowLegacyAIPanel] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
@@ -284,15 +286,46 @@ export const ModernEnergyDashboard: React.FC = () => {
               onActionClick={handleInsightAction}
             />
 
+            {/* AI Chat Section */}
+            <div className="ai-chat-section">
+              <div className="ai-chat-header">
+                <h3>AI Energy Coach</h3>
+                <p>Chat with your personal AI energy assistant for tailored advice and insights</p>
+                <button 
+                  className="toggle-ai-chat-btn"
+                  onClick={() => setShowAIChat(!showAIChat)}
+                >
+                  {showAIChat ? 'Hide AI Chat' : 'Open AI Chat'} 💬
+                </button>
+              </div>
+
+              {showAIChat && (
+                <AIChatAssistant
+                  data={combinedEnergyData}
+                  currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+                    timestamp: new Date(), 
+                    overall: 75, 
+                    physical: 75, 
+                    mental: 75, 
+                    emotional: 75, 
+                    creative: 75 
+                  }}
+                  isOpen={true}
+                  onToggle={() => setShowAIChat(false)}
+                />
+              )}
+            </div>
+
             {/* Legacy AI Insights Panel */}
             <div className="legacy-insights-section">
               <div className="legacy-insights-header">
-                <h3>Advanced AI Chat</h3>
+                <h3>Advanced AI Analytics</h3>
+                <p>Detailed predictions, recommendations, and constraints analysis</p>
                 <button 
                   className="toggle-legacy-ai-btn"
                   onClick={() => setShowLegacyAIPanel(!showLegacyAIPanel)}
                 >
-                  {showLegacyAIPanel ? 'Hide Chat' : 'Open AI Chat'} 💬
+                  {showLegacyAIPanel ? 'Hide Analytics' : 'Show Advanced Analytics'} �
                 </button>
               </div>
 
