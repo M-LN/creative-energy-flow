@@ -609,7 +609,7 @@
 .ai-chat-section {
   margin-top: var(--spacing-xl);
   padding: var(--spacing-lg);
-  background: var(--bg-primary);
+  background: #ffffff;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
@@ -620,39 +620,69 @@
   flex-direction: column;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
+  background: #f8fafc;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
 }
 
 .ai-chat-header h3 {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin: 0 !important;
+  color: #1e293b !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .ai-chat-header p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  margin: 0 !important;
+  color: #334155 !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Remove any gradient or transparency effects */
+.ai-chat-header h3,
+.ai-chat-header p {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  background-clip: initial !important;
+}
+
+/* Remove gradient text that's causing visibility issues */
+/* Fallback for Firefox and other browsers */
+@supports not (-webkit-background-clip: text) {
+  .ai-chat-header p {
+    color: #334155 !important;
+    font-weight: 500 !important;
+  }
 }
 
 .toggle-ai-chat-btn {
   align-self: flex-start;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--primary-gradient);
   color: white;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  margin-top: var(--spacing-sm);
 }
 
 .toggle-ai-chat-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, #667eea 10%, #764ba2 90%);
 }
 
 .toggle-ai-chat-btn:active {
