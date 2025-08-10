@@ -659,6 +659,55 @@
   transform: translateY(0);
 }
 
+/* Embedded AI Chat Assistant Overrides */
+.ai-chat-section .ai-chat-assistant {
+  position: static !important;
+  width: 100% !important;
+  max-width: none !important;
+  max-height: 600px !important;
+  margin: var(--spacing-lg) 0 0 0 !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md) !important;
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+.ai-chat-section .ai-chat-header {
+  background: var(--primary-gradient) !important;
+  border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+}
+
+.ai-chat-section .ai-chat-content {
+  max-height: 400px !important;
+  background: var(--bg-primary) !important;
+}
+
+.ai-chat-section .ai-chat-messages {
+  max-height: 350px !important;
+  background: var(--bg-primary) !important;
+}
+
+.ai-chat-section .ai-chat-input-container {
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--border-light) !important;
+}
+
+/* Hide the close button since we have our own toggle */
+.ai-chat-section .ai-close-btn {
+  display: none !important;
+}
+
+/* Ensure proper responsive design */
+@media (max-width: 768px) {
+  .ai-chat-section .ai-chat-assistant {
+    max-height: 500px !important;
+  }
+  
+  .ai-chat-section .ai-chat-messages {
+    max-height: 300px !important;
+  }
+}
+
 /* Legacy Insights Section */
 .legacy-insights-section {
   margin-top: var(--spacing-xl);
