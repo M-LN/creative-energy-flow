@@ -12,7 +12,7 @@ import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
 import './ModernEnergyDashboard.css';
 
 // Tab configuration for better UX
-type TabId = 'overview' | 'insights' | 'analytics' | 'social' | 'settings';
+type TabId = 'overview' | 'insights' | 'social' | 'settings';
 
 interface DashboardTab {
   id: TabId;
@@ -32,12 +32,13 @@ export const ModernEnergyDashboard: React.FC = () => {
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [showLegacyAIPanel, setShowLegacyAIPanel] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
+  const [showAdvancedAnalytics, setShowAdvancedAnalytics] = useState(false);
   const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [showSocialCorrelation, setShowSocialCorrelation] = useState(false);
 
-  // Smart tab configuration
+  // Smart tab configuration - Simplified for everyday use
   const tabs: DashboardTab[] = useMemo(() => [
     {
       id: 'overview',
@@ -52,12 +53,6 @@ export const ModernEnergyDashboard: React.FC = () => {
       icon: '🧠',
       description: 'Smart proactive insights',
       badgeCount: 3 // Number of daily insights
-    },
-    {
-      id: 'analytics',
-      label: 'Analytics',
-      icon: '📈',
-      description: 'Detailed charts and trends',
     },
     {
       id: 'social',
@@ -172,7 +167,9 @@ export const ModernEnergyDashboard: React.FC = () => {
         setActiveTab('overview');
         break;
       case 'View detailed analytics':
-        setActiveTab('analytics');
+        // Navigate to settings and show advanced analytics
+        setActiveTab('settings');
+        setShowAdvancedAnalytics(true);
         break;
       case 'Plan your day':
       case 'Set energy goals':
@@ -348,73 +345,6 @@ export const ModernEnergyDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <div className="tab-panel analytics-panel">
-            <div className="panel-header">
-              <h2>Detailed Analytics</h2>
-              <p>Deep dive into your energy trends and patterns</p>
-            </div>
-
-            {/* Controls */}
-            <div className="analytics-controls">
-              <div className="control-group">
-                <label htmlFor="time-range-select">Time Range:</label>
-                <select
-                  id="time-range-select"
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(e.target.value as TimeRange)}
-                  className="control-select"
-                  title="Select time range for analytics"
-                >
-                  <option value="7d">Last 7 days</option>
-                  <option value="30d">Last 30 days</option>
-                  <option value="90d">Last 90 days</option>
-                </select>
-              </div>
-
-              <div className="control-group">
-                <label>Energy Types:</label>
-                <div className="energy-type-toggles">
-                  {(['physical', 'mental', 'emotional', 'creative'] as EnergyType[]).map(type => (
-                    <label key={type} className="energy-toggle">
-                      <input
-                        type="checkbox"
-                        checked={selectedEnergyTypes.includes(type)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedEnergyTypes([...selectedEnergyTypes, type]);
-                          } else {
-                            setSelectedEnergyTypes(selectedEnergyTypes.filter(t => t !== type));
-                          }
-                        }}
-                      />
-                      {type}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Charts Grid */}
-            <div className="analytics-charts-grid">
-              <div className="chart-section">
-                <EnergyTypeChart
-                  data={filteredData}
-                  energyTypes={selectedEnergyTypes}
-                />
-              </div>
-
-              <div className="chart-section">
-                <WeeklyEnergyHeatmap
-                  data={filteredData}
-                  energyType={'overall'}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Social Battery Tab */}
         {activeTab === 'social' && (
           <div className="tab-panel social-panel">
@@ -503,7 +433,88 @@ export const ModernEnergyDashboard: React.FC = () => {
                   Enable Smart Insights
                 </label>
               </div>
+
+              <div className="setting-group">
+                <h3>Advanced Options</h3>
+                <label className="setting-toggle">
+                  <input
+                    type="checkbox"
+                    checked={showAdvancedAnalytics}
+                    onChange={(e) => setShowAdvancedAnalytics(e.target.checked)}
+                  />
+                  Show Advanced Analytics
+                </label>
+                <p className="setting-description">
+                  Display detailed charts, trends, and data visualizations for power users
+                </p>
+              </div>
             </div>
+
+            {/* Advanced Analytics Section */}
+            {showAdvancedAnalytics && (
+              <div className="advanced-analytics-section">
+                <div className="panel-header">
+                  <h2>📈 Advanced Analytics</h2>
+                  <p>Detailed charts and data analysis for deeper insights</p>
+                </div>
+
+                {/* Time Range and Energy Type Filters */}
+                <div className="analytics-controls">
+                  <div className="control-group">
+                    <label htmlFor="analytics-time-range">Time Range:</label>
+                    <select
+                      id="analytics-time-range"
+                      value={timeRange}
+                      onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+                      className="setting-select"
+                    >
+                      <option value="7d">Last 7 days</option>
+                      <option value="30d">Last 30 days</option>
+                      <option value="90d">Last 90 days</option>
+                    </select>
+                  </div>
+
+                  <div className="control-group">
+                    <label>Energy Types:</label>
+                    <div className="energy-type-checkboxes">
+                      {(['physical', 'mental', 'emotional', 'creative'] as const).map(type => (
+                        <label key={type} className="checkbox-option">
+                          <input
+                            type="checkbox"
+                            checked={selectedEnergyTypes.includes(type)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedEnergyTypes([...selectedEnergyTypes, type]);
+                              } else {
+                                setSelectedEnergyTypes(selectedEnergyTypes.filter(t => t !== type));
+                              }
+                            }}
+                          />
+                          {type}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Charts Grid */}
+                <div className="analytics-charts-grid">
+                  <div className="chart-section">
+                    <EnergyTypeChart
+                      data={filteredData}
+                      energyTypes={selectedEnergyTypes}
+                    />
+                  </div>
+
+                  <div className="chart-section">
+                    <WeeklyEnergyHeatmap
+                      data={filteredData}
+                      energyType={'overall'}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
