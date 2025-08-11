@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-globals */
+/* eslint-disable no-undef */
 // Service Worker for Creative Energy Flow PWA
 const CACHE_NAME = 'creative-energy-flow-v1';
 const urlsToCache = [
@@ -58,6 +59,40 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+});
+
+// Handle notification clicks
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked:', event.notification);
+  
+  event.notification.close();
+  
+  // Handle different notification actions
+  if (event.action === 'open_app') {
+    event.waitUntil(
+      clients.openWindow('/')
+    );
+  } else if (event.action === 'quick_entry') {
+    event.waitUntil(
+      clients.openWindow('/?action=quick_entry')
+    );
+  } else {
+    // Default action - open the app
+    event.waitUntil(
+      clients.matchAll().then((clientList) => {
+        if (clientList.length > 0) {
+          return clientList[0].focus();
+        }
+        return clients.openWindow('/');
+      })
+    );
+  }
+});
+
+// Handle notification close
+self.addEventListener('notificationclose', (event) => {
+  console.log('Notification closed:', event.notification);
+  // Could track analytics here
 });
 
 // Background sync for offline data storage

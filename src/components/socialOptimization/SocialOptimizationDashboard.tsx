@@ -19,7 +19,7 @@ interface SocialOptimizationDashboardProps {
 export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardProps> = ({ 
   className = '' 
 }) => {
-  const [activeTab, setActiveTab] = useState<'suggestions' | 'analysis' | 'metrics'>('suggestions');
+  const [activeTab, setActiveTab] = useState<'today' | 'suggestions' | 'analysis' | 'metrics'>('today');
   const [suggestions, setSuggestions] = useState<SocialOptimizationSuggestion[]>([]);
   const [analysis, setAnalysis] = useState<SocialOptimizationAnalysis | null>(null);
   const [metrics, setMetrics] = useState<SocialOptimizationMetrics | null>(null);
@@ -48,6 +48,87 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
       setLoading(false);
     }
   }, [filter, sortBy]);
+
+  // Get today's priority social optimization actions
+  const getTodaysSocialActions = () => {
+    const currentHour = new Date().getHours();
+    const timeOfDay = currentHour < 12 ? 'morning' : currentHour < 18 ? 'afternoon' : 'evening';
+    
+    const actions = [];
+    
+    // Morning social battery planning
+    if (timeOfDay === 'morning') {
+      actions.push({
+        id: 'morning-battery-check',
+        title: 'Social Battery Check-in',
+        description: 'How full is your social battery this morning?',
+        icon: '🔋',
+        action: 'Log Battery Level',
+        type: 'immediate',
+        difficulty: 'easy'
+      });
+      actions.push({
+        id: 'day-planning',
+        title: 'Plan Social Interactions',
+        description: 'Review today\'s meetings and social commitments.',
+        icon: '📅',
+        action: 'Review Schedule',
+        type: 'daily-routine',
+        difficulty: 'easy'
+      });
+    }
+    
+    // Afternoon recharge suggestions
+    if (timeOfDay === 'afternoon') {
+      actions.push({
+        id: 'recharge-break',
+        title: 'Social Recharge Break',
+        description: 'Take 10 minutes of quiet time to recharge your social battery.',
+        icon: '🧘',
+        action: 'Take Break',
+        type: 'immediate',
+        difficulty: 'easy'
+      });
+      actions.push({
+        id: 'boundary-check',
+        title: 'Boundary Assessment',
+        description: 'Are you respecting your social energy limits today?',
+        icon: '🛡️',
+        action: 'Self-Check',
+        type: 'immediate',
+        difficulty: 'medium'
+      });
+    }
+    
+    // Evening reflection
+    if (timeOfDay === 'evening') {
+      actions.push({
+        id: 'evening-reflect',
+        title: 'Social Energy Reflection',
+        description: 'How did your social interactions affect your energy today?',
+        icon: '🌙',
+        action: 'Reflect',
+        type: 'daily-routine',
+        difficulty: 'easy'
+      });
+      actions.push({
+        id: 'tomorrow-prep',
+        title: 'Prepare for Tomorrow',
+        description: 'Set social boundaries for tomorrow based on today\'s energy.',
+        icon: '🔮',
+        action: 'Plan Boundaries',
+        type: 'daily-routine',
+        difficulty: 'medium'
+      });
+    }
+    
+    return actions;
+  };
+
+  // Get today's immediate suggestions
+  const todaysSuggestions = suggestions
+    .filter(suggestion => suggestion.type === 'immediate' || suggestion.type === 'daily-routine')
+    .slice(0, 3);
 
   useEffect(() => {
     loadOptimizationData();
@@ -106,6 +187,144 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
       case 'lifestyle-change': return '🔄';
       default: return '📝';
     }
+  };
+
+  const renderTodayTab = () => {
+    const dailyActions = getTodaysSocialActions();
+    const currentHour = new Date().getHours();
+    const timeOfDay = currentHour < 12 ? 'morning' : currentHour < 18 ? 'afternoon' : 'evening';
+    
+    return (
+      <div className="today-tab">
+        <div className="today-header">
+          <h3>🌟 Today's Social Energy Management</h3>
+          <p>Daily actions and insights for optimal social battery management</p>
+        </div>
+
+        {/* Current Social Battery Status */}
+        <div className="current-status-section">
+          <div className="status-card">
+            <h4>🔋 Current Social Battery</h4>
+            <div className="battery-indicator">
+              <div className="battery-level">
+                <div className="battery-fill" data-level="75"></div>
+              </div>
+              <span className="battery-percentage">75%</span>
+            </div>
+            <p className="status-message">
+              Good energy for {timeOfDay === 'morning' ? 'the day ahead' : 
+                               timeOfDay === 'afternoon' ? 'remaining interactions' : 
+                               'winding down'}
+            </p>
+          </div>
+        </div>
+
+        {/* Daily Action Items */}
+        <div className="daily-actions-section">
+          <h4>📋 {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Action Items</h4>
+          <div className="actions-grid">
+            {dailyActions.map(action => (
+              <div key={action.id} className={`action-card ${action.type} ${action.difficulty}`}>
+                <div className="action-header">
+                  <span className="action-icon">{action.icon}</span>
+                  <h5>{action.title}</h5>
+                  <span className={`difficulty-badge ${action.difficulty}`}>
+                    {action.difficulty === 'easy' ? '😊' : 
+                     action.difficulty === 'medium' ? '🤔' : '🔥'}
+                  </span>
+                </div>
+                <p className="action-description">{action.description}</p>
+                <button className="btn-action primary">
+                  {action.action}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Today's Quick Wins */}
+        {todaysSuggestions.length > 0 && (
+          <div className="today-suggestions-section">
+            <h4>⚡ Quick Social Wins</h4>
+            <div className="suggestions-grid compact">
+              {todaysSuggestions.map(suggestion => (
+                <div key={suggestion.id} className={`suggestion-card compact ${suggestion.type}`}>
+                  <div className="suggestion-header">
+                    <span className="type-icon">{getTypeIcon(suggestion.type)}</span>
+                    <h5>{suggestion.title}</h5>
+                    <span className="priority-badge">{getPriorityIcon(suggestion.priority)}</span>
+                  </div>
+                  <p className="suggestion-description">{suggestion.description}</p>
+                  <div className="suggestion-actions">
+                    <button 
+                      className="btn primary small"
+                      onClick={() => handleImplementSuggestion(suggestion.id)}
+                    >
+                      Try Now
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Energy Tips for the Time of Day */}
+        <div className="time-specific-tips">
+          <h4>💡 {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Social Energy Tips</h4>
+          <div className="tips-grid">
+            {timeOfDay === 'morning' && (
+              <>
+                <div className="tip-card">
+                  <span className="tip-icon">☀️</span>
+                  <p>Start with high-energy people to build momentum for the day</p>
+                </div>
+                <div className="tip-card">
+                  <span className="tip-icon">📝</span>
+                  <p>Schedule challenging conversations when your battery is full</p>
+                </div>
+              </>
+            )}
+            {timeOfDay === 'afternoon' && (
+              <>
+                <div className="tip-card">
+                  <span className="tip-icon">⚡</span>
+                  <p>Take micro-breaks between social interactions to recharge</p>
+                </div>
+                <div className="tip-card">
+                  <span className="tip-icon">🧘</span>
+                  <p>Practice deep breathing before your next meeting</p>
+                </div>
+              </>
+            )}
+            {timeOfDay === 'evening' && (
+              <>
+                <div className="tip-card">
+                  <span className="tip-icon">🌙</span>
+                  <p>Reflect on which interactions energized vs. drained you</p>
+                </div>
+                <div className="tip-card">
+                  <span className="tip-icon">🛁</span>
+                  <p>Create a calming evening routine to recharge for tomorrow</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Empty state for no suggestions */}
+        {suggestions.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">🧘‍♀️</div>
+            <h4>Building Your Social Insights</h4>
+            <p>Keep tracking your social interactions and we'll provide personalized optimization suggestions!</p>
+            <button className="btn-primary">
+              Log Social Interaction
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderSuggestionsTab = () => (
@@ -478,16 +697,22 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
   return (
     <div className={`social-optimization-dashboard ${className}`}>
       <div className="dashboard-header">
-        <h2>🧘‍♀️ Social Battery Optimization</h2>
-        <p>Intelligent suggestions to improve your social energy management</p>
+        <h2>🧘‍♀️ Social Energy Management</h2>
+        <p>Daily insights and optimization for your social battery</p>
       </div>
 
       <div className="dashboard-tabs">
         <button
+          className={`tab-btn ${activeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveTab('today')}
+        >
+          🌟 Today's Focus
+        </button>
+        <button
           className={`tab-btn ${activeTab === 'suggestions' ? 'active' : ''}`}
           onClick={() => setActiveTab('suggestions')}
         >
-          💡 Suggestions ({suggestions.length})
+          💡 All Suggestions ({suggestions.length})
         </button>
         <button
           className={`tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
@@ -504,6 +729,7 @@ export const SocialOptimizationDashboard: React.FC<SocialOptimizationDashboardPr
       </div>
 
       <div className="dashboard-content">
+        {activeTab === 'today' && renderTodayTab()}
         {activeTab === 'suggestions' && renderSuggestionsTab()}
         {activeTab === 'analysis' && renderAnalysisTab()}
         {activeTab === 'metrics' && renderMetricsTab()}

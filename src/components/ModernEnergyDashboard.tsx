@@ -33,7 +33,6 @@ export const ModernEnergyDashboard: React.FC = () => {
   const [showLegacyAIPanel, setShowLegacyAIPanel] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
   const [showAdvancedAnalytics, setShowAdvancedAnalytics] = useState(false);
-  const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [showSocialCorrelation, setShowSocialCorrelation] = useState(false);
@@ -77,7 +76,6 @@ export const ModernEnergyDashboard: React.FC = () => {
         timestamp: new Date(entry.timestamp)
       }));
       setUserEnergyData(processedData);
-      setDataSource('both');
     }
   }, []);
 
@@ -88,27 +86,15 @@ export const ModernEnergyDashboard: React.FC = () => {
     }
   }, [userEnergyData]);
 
-  // Generate sample data
-  const sampleEnergyData = useMemo(() => EnergyDataService.generateEnergyData(30), []);
-  const socialData = useMemo(() => EnergyDataService.generateSocialBatteryData(30), []);
+  // Use only user data - no sample data
+  const socialData: any[] = []; // Empty social data until user adds some
   
-  // Combine user data with sample data based on data source selection
-  const combinedEnergyData = useMemo(() => {
-    switch (dataSource) {
-      case 'user':
-        return userEnergyData.length > 0 ? userEnergyData : sampleEnergyData;
-      case 'sample':
-        return sampleEnergyData;
-      case 'both':
-      default:
-        return userEnergyData.length > 0 
-          ? [...sampleEnergyData, ...userEnergyData].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-          : sampleEnergyData;
-    }
-  }, [dataSource, userEnergyData, sampleEnergyData]);
-
   // Filter data based on selected time range
   const filteredData = useMemo(() => {
+    if (userEnergyData.length === 0) {
+      return []; // No user data available
+    }
+
     const now = new Date();
     const msInDay = 24 * 60 * 60 * 1000;
     
@@ -121,8 +107,8 @@ export const ModernEnergyDashboard: React.FC = () => {
     }
     
     const cutoffDate = new Date(now.getTime() - days * msInDay);
-    return combinedEnergyData.filter(entry => entry.timestamp >= cutoffDate);
-  }, [combinedEnergyData, timeRange]);
+    return userEnergyData.filter((entry: EnergyLevel) => entry.timestamp >= cutoffDate);
+  }, [userEnergyData, timeRange]);
 
   // Calculate daily averages for correlation (future use)
   // const dailyAverages = useMemo(() => {
@@ -310,7 +296,7 @@ export const ModernEnergyDashboard: React.FC = () => {
             </div>
 
             <ProactiveInsights
-              energyData={combinedEnergyData}
+              energyData={userEnergyData}
               onActionClick={handleInsightAction}
             />
 
@@ -329,8 +315,8 @@ export const ModernEnergyDashboard: React.FC = () => {
 
               {showAIChat && (
                 <AIChatAssistant
-                  data={combinedEnergyData}
-                  currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+                  data={userEnergyData}
+                  currentEnergy={userEnergyData[userEnergyData.length - 1] || { 
                     timestamp: new Date(), 
                     overall: 75, 
                     physical: 75, 
@@ -359,8 +345,8 @@ export const ModernEnergyDashboard: React.FC = () => {
 
               {showLegacyAIPanel && (
                 <AIInsightsPanel
-                  data={combinedEnergyData}
-                  currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+                  data={userEnergyData}
+                  currentEnergy={userEnergyData[userEnergyData.length - 1] || { 
                     timestamp: new Date(), 
                     overall: 75, 
                     physical: 75, 
@@ -491,31 +477,6 @@ export const ModernEnergyDashboard: React.FC = () => {
                 <p className="setting-description">
                   Display detailed charts, trends, and data visualizations for power users
                 </p>
-              </div>
-
-              <div className="setting-group technical-settings">
-                <h3>Data Source</h3>
-                <p className="setting-description">
-                  Choose what data to display in your dashboard
-                </p>
-                <div className="setting-options">
-                  {(['sample', 'user', 'both'] as const).map(source => (
-                    <label key={source} className="radio-option">
-                      <input
-                        type="radio"
-                        name="dataSource"
-                        value={source}
-                        checked={dataSource === source}
-                        onChange={(e) => setDataSource(e.target.value as any)}
-                      />
-                      <span className="radio-label">
-                        {source === 'sample' ? 'Demo Data' : 
-                         source === 'user' ? 'My Data Only' : 
-                         'Combined Data'}
-                      </span>
-                    </label>
-                  ))}
-                </div>
               </div>
             </div>
 

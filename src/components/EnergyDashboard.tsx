@@ -14,7 +14,6 @@ export const EnergyDashboard: React.FC = () => {
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
   // State for AI features
   const [showAIInsights, setShowAIInsights] = useState(false);
-  const [dataSource, setDataSource] = useState<'sample' | 'user' | 'both'>('sample');
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -26,9 +25,6 @@ export const EnergyDashboard: React.FC = () => {
         timestamp: new Date(entry.timestamp)
       }));
       setUserEnergyData(processedData);
-      
-      // If user has data, default to showing it
-      setDataSource('both');
     }
   }, []);
 
@@ -39,23 +35,14 @@ export const EnergyDashboard: React.FC = () => {
     }
   }, [userEnergyData]);
 
-  // Generate sample data
-  const sampleEnergyData = useMemo(() => EnergyDataService.generateEnergyData(30), []);
-  const socialData = useMemo(() => EnergyDataService.generateSocialBatteryData(30), []);
-  
-  // Combine user data with sample data based on data source selection
-  const combinedEnergyData = useMemo(() => {
-    switch (dataSource) {
-      case 'user':
-        return userEnergyData.length > 0 ? userEnergyData : sampleEnergyData;
-      case 'both':
-        return [...sampleEnergyData, ...userEnergyData].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-      default:
-        return sampleEnergyData;
-    }
-  }, [sampleEnergyData, userEnergyData, dataSource]);
+  // Use only user data - no sample data
+  const energyData = userEnergyData;
+  const socialData: any[] = []; // Empty social data until user adds some
 
-  const dailyAverages = useMemo(() => EnergyDataService.getDailyAverages(combinedEnergyData), [combinedEnergyData]);
+  const dailyAverages = useMemo(() => 
+    energyData.length > 0 ? EnergyDataService.getDailyAverages(energyData) : [], 
+    [energyData]
+  );
   
   // State for chart configuration
   const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
@@ -69,11 +56,11 @@ export const EnergyDashboard: React.FC = () => {
     const startDate = new Date(now.getTime() - daysBack * 24 * 60 * 60 * 1000);
     
     return EnergyDataService.getEnergyDataByRange(
-      timeRange === 'day' ? combinedEnergyData : dailyAverages, 
+      timeRange === 'day' ? energyData : dailyAverages, 
       startDate, 
       now
     );
-  }, [combinedEnergyData, dailyAverages, timeRange]);
+  }, [energyData, dailyAverages, timeRange]);
 
   const handleEnergyTypeToggle = (energyType: EnergyType) => {
     setSelectedEnergyTypes(prev => 
@@ -101,28 +88,6 @@ export const EnergyDashboard: React.FC = () => {
         {/* Controls */}
         <div className="controls-panel">
           <div className="controls-grid">
-            {/* Data Source Selector */}
-            <div className="control-group">
-              <label 
-                htmlFor="data-source-select"
-                className="control-label"
-              >
-                Data Source
-              </label>
-              <select
-                id="data-source-select"
-                aria-label="Select data source for energy tracking"
-                title="Choose which data to display: sample data, your personal data, or both"
-                value={dataSource}
-                onChange={(e) => setDataSource(e.target.value as 'sample' | 'user' | 'both')}
-                className="control-select"
-              >
-                <option value="sample">Sample Data Only</option>
-                <option value="user">My Data Only {userEnergyData.length > 0 ? `(${userEnergyData.length} entries)` : '(No entries yet)'}</option>
-                <option value="both">Sample + My Data</option>
-              </select>
-            </div>
-
             {/* Time Range Selector */}
             <div className="control-group">
               <label 
@@ -305,8 +270,8 @@ export const EnergyDashboard: React.FC = () => {
 
         {/* AI Insights Panel */}
         <AIInsightsPanel
-          data={combinedEnergyData}
-          currentEnergy={combinedEnergyData[combinedEnergyData.length - 1] || { 
+          data={energyData}
+          currentEnergy={energyData[energyData.length - 1] || { 
             timestamp: new Date(), 
             overall: 75, 
             physical: 75, 

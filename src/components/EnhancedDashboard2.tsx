@@ -234,7 +234,7 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             <div className="summary-label">Avg Minutes</div>
           </div>
           <div className="summary-card">
-            <div className="summary-number">{Math.round(completedSessions.reduce((sum, s) => sum + s.duration, 0) / 60)}</div>
+            <div className="summary-number">{Math.round(Math.max(0, completedSessions.reduce((sum, s) => sum + s.duration, 0) / 60))}</div>
             <div className="summary-label">Total Hours</div>
           </div>
         </div>

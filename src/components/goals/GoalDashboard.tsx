@@ -1,4 +1,3 @@
-// Goal Management Dashboard - Main interface for viewing and managing energy goals
 import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyGoal, GoalStats, GoalSuggestion } from '../../types/goals';
 import { EnergyLevel } from '../../types/energy';
@@ -6,7 +5,6 @@ import { GoalService } from '../../services/GoalService';
 import { GoalCard } from './GoalCard';
 import { GoalCreationForm } from './GoalCreationForm';
 import { GoalSuggestions } from './GoalSuggestions';
-import { GoalStatsPanel } from './GoalStatsPanel';
 import './GoalDashboard.css';
 
 interface GoalDashboardProps {
@@ -21,7 +19,7 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
   const [goals, setGoals] = useState<EnergyGoal[]>([]);
   const [goalStats, setGoalStats] = useState<GoalStats | null>(null);
   const [suggestions, setSuggestions] = useState<GoalSuggestion[]>([]);
-  const [activeTab, setActiveTab] = useState<'active' | 'completed' | 'suggestions' | 'stats'>('active');
+  const [activeTab, setActiveTab] = useState<'today' | 'active' | 'completed' | 'suggestions'>('today');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -153,6 +151,16 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
 
   const activeGoals = goals.filter(g => g.status === 'active');
   const completedGoals = goals.filter(g => g.status === 'completed');
+  
+  // Today's priority goals (due today or daily goals)
+  const todayGoals = activeGoals.filter(goal => {
+    if (goal.endDate) {
+      const isToday = new Date(goal.endDate).toDateString() === new Date().toDateString();
+      const isOverdue = new Date(goal.endDate) < new Date();
+      return isToday || isOverdue;
+    }
+    return goal.goalType === 'daily';
+  }).slice(0, 3); // Limit to 3 for focus
 
   if (isLoading) {
     return (
@@ -202,36 +210,140 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
         </div>
       )}
 
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs - Daily-Use Focused */}
       <div className="goal-tabs">
+        <button 
+          className={`tab-btn ${activeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveTab('today')}
+        >
+          📅 Today's Focus
+        </button>
         <button 
           className={`tab-btn ${activeTab === 'active' ? 'active' : ''}`}
           onClick={() => setActiveTab('active')}
         >
-          🎯 Active ({activeGoals.length})
+          🎯 My Goals ({activeGoals.length})
         </button>
         <button 
           className={`tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
           onClick={() => setActiveTab('completed')}
         >
-          ✅ Completed ({completedGoals.length})
+          ✅ Achieved ({completedGoals.length})
         </button>
         <button 
           className={`tab-btn ${activeTab === 'suggestions' ? 'active' : ''}`}
           onClick={() => setActiveTab('suggestions')}
         >
-          💡 Suggestions ({suggestions.length})
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
-          onClick={() => setActiveTab('stats')}
-        >
-          📊 Statistics
+          � Quick Wins ({suggestions.length})
         </button>
       </div>
 
       {/* Tab Content */}
       <div className="tab-content">
+        {activeTab === 'today' && (
+          <div className="today-content">
+            <div className="today-header">
+              <h3>🌅 Today's Energy Focus</h3>
+              <p>What will you accomplish today to boost your creative energy?</p>
+            </div>
+
+            {/* Today's Priority Goals */}
+            {todayGoals.length > 0 && (
+              <div className="today-section">
+                <h4>🎯 Priority Goals for Today</h4>
+                <div className="goals-grid">
+                  {todayGoals.map(goal => (
+                    <div key={goal.id} className="goal-card today-priority">
+                      <div className="goal-header">
+                        <h5>{goal.title}</h5>
+                        <div className="goal-actions">
+                          <button 
+                            className="btn-complete"
+                            onClick={() => handleCompleteGoal(goal.id)}
+                            title="Mark as completed"
+                          >
+                            ✓
+                          </button>
+                        </div>
+                      </div>
+                      {goal.description && <p className="goal-description">{goal.description}</p>}
+                      {goal.endDate && (
+                        <div className="goal-deadline">
+                          ⏰ Due: {new Date(goal.endDate).toLocaleDateString()}
+                        </div>
+                      )}
+                      <div className="goal-progress">
+                        <div className="progress-bar">
+                          <div 
+                            className={`progress-fill progress-${Math.floor(goal.progress / 10) * 10}`}
+                          ></div>
+                        </div>
+                        <span>{goal.progress}% complete</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quick Win Suggestions for Today */}
+            {suggestions.slice(0, 3).length > 0 && (
+              <div className="today-section">
+                <h4>⚡ Quick Energy Wins</h4>
+                <div className="suggestions-grid">
+                  {suggestions.slice(0, 3).map((suggestion, index) => (
+                    <div key={index} className="suggestion-card today-suggestion">
+                      <div className="suggestion-header">
+                        <span className="suggestion-icon">
+                          {suggestion.energyType === 'physical' ? '💪' :
+                           suggestion.energyType === 'mental' ? '🧠' :
+                           suggestion.energyType === 'emotional' ? '❤️' :
+                           suggestion.energyType === 'creative' ? '🎨' : '⚡'}
+                        </span>
+                        <h5>{suggestion.title}</h5>
+                      </div>
+                      <p>{suggestion.description}</p>
+                      <button 
+                        className="btn-action"
+                        onClick={() => handleCreateFromSuggestion(suggestion)}
+                      >
+                        Start Now
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Daily Energy Checkup */}
+            <div className="today-section">
+              <div className="daily-checkup">
+                <h4>🔋 Daily Energy Checkup</h4>
+                <p>How are you feeling about your goals today?</p>
+                <div className="checkup-actions">
+                  <button className="checkup-btn good">😊 On Track</button>
+                  <button className="checkup-btn okay">😐 Some Challenges</button>
+                  <button className="checkup-btn struggling">😔 Need Support</button>
+                </div>
+              </div>
+            </div>
+
+            {todayGoals.length === 0 && (
+              <div className="empty-state">
+                <div className="empty-icon">🎯</div>
+                <h4>Ready to Focus?</h4>
+                <p>No goals set for today yet. Pick a priority goal or try a quick win!</p>
+                <button 
+                  className="btn-primary"
+                  onClick={() => setActiveTab('suggestions')}
+                >
+                  Explore Quick Wins
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'active' && (
           <div className="active-goals">
             {activeGoals.length === 0 ? (
@@ -288,14 +400,6 @@ export const GoalDashboard: React.FC<GoalDashboardProps> = ({
           <GoalSuggestions
             suggestions={suggestions}
             onCreateFromSuggestion={handleCreateFromSuggestion}
-          />
-        )}
-
-        {activeTab === 'stats' && goalStats && (
-          <GoalStatsPanel
-            stats={goalStats}
-            goals={goals}
-            energyData={energyData}
           />
         )}
       </div>

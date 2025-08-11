@@ -92,6 +92,22 @@ export class CreativeConstraintEngine {
           duration: 12,
           difficulty: 'easy',
           materials: ['phone camera', 'lamp', 'various objects']
+        },
+        {
+          title: 'Coffee Shop Sketch',
+          description: 'Draw the energy of your current space in 5 minutes using only curved lines',
+          energyLevel: 'medium',
+          duration: 8,
+          difficulty: 'easy',
+          materials: ['pen', 'paper', 'phone']
+        },
+        {
+          title: 'Color Harmony Hunt',
+          description: 'Find 3 objects that create perfect color harmony and photograph them together',
+          energyLevel: 'low',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['phone camera', 'nearby objects']
         }
       ]
     },
@@ -130,6 +146,30 @@ export class CreativeConstraintEngine {
           duration: 12,
           difficulty: 'easy',
           materials: ['notebook', 'phone']
+        },
+        {
+          title: 'Future Self Letter',
+          description: 'Write a postcard to yourself 5 years from now about today\'s creative energy',
+          energyLevel: 'medium',
+          duration: 12,
+          difficulty: 'easy',
+          materials: ['paper', 'pen', 'phone']
+        },
+        {
+          title: 'Three-Word Philosophy',
+          description: 'Create your personal philosophy of creativity using exactly three words',
+          energyLevel: 'low',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['phone', 'paper']
+        },
+        {
+          title: 'Conversation Overheard',
+          description: 'Write a short dialogue based on the next conversation you overhear (or imagine)',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['notebook', 'phone']
         }
       ]
     },
@@ -160,6 +200,22 @@ export class CreativeConstraintEngine {
           duration: 20,
           difficulty: 'medium',
           materials: ['design app', 'paper', 'pen']
+        },
+        {
+          title: 'Pattern Generator',
+          description: 'Create a repeating pattern using only keyboard symbols (*, +, -, |, etc.)',
+          energyLevel: 'low',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['computer', 'phone', 'text editor']
+        },
+        {
+          title: 'Color Mood Board',
+          description: 'Create a digital mood board with 5 colors that represent your current energy',
+          energyLevel: 'medium',
+          duration: 18,
+          difficulty: 'medium',
+          materials: ['design app', 'computer', 'phone']
         }
       ]
     },
@@ -190,6 +246,344 @@ export class CreativeConstraintEngine {
           duration: 12,
           difficulty: 'easy',
           materials: ['scrap paper']
+        },
+        {
+          title: 'Tea Bag Architecture',
+          description: 'Build a tiny architectural structure using only sugar packets, napkins, or tea bags',
+          energyLevel: 'low',
+          duration: 15,
+          difficulty: 'easy',
+          materials: ['sugar packets', 'napkins', 'tea bags', 'coffee stirrers']
+        },
+        {
+          title: 'Hand Gesture Dance',
+          description: 'Create a 30-second hand dance that expresses your current creative energy',
+          energyLevel: 'medium',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['hands', 'optional: phone to record']
+        }
+      ]
+    },
+    // Music/Sound Constraints  
+    {
+      type: 'music',
+      templates: [
+        {
+          title: 'Ambient Room Remix',
+          description: 'Record 1 minute of ambient sounds and mentally remix them into a song',
+          energyLevel: 'low',
+          duration: 8,
+          difficulty: 'easy',
+          materials: ['phone', 'ears']
+        },
+        {
+          title: 'Beatbox Heartbeat',
+          description: 'Create a simple rhythm that matches your current heartbeat and energy level',
+          energyLevel: 'medium',
+          duration: 10,
+          difficulty: 'medium',
+          materials: ['voice', 'hands']
+        },
+        {
+          title: 'Object Orchestra',
+          description: 'Compose a 30-second percussion piece using 3 objects within reach',
+          energyLevel: 'medium',
+          duration: 12,
+          difficulty: 'medium',
+          materials: ['3 nearby objects', 'optional: phone to record']
+        },
+        {
+          title: 'Humming Meditation',
+          description: 'Create a continuous hum that evolves with your breathing for 3 minutes',
+          energyLevel: 'low',
+          duration: 5,
+          difficulty: 'easy',
+          materials: ['voice', 'breathing']
+        }
+      ]
+    },
+    // Mixed/Experimental Constraints
+    {
+      type: 'mixed',
+      templates: [
+        {
+          title: 'Five Senses Story',
+          description: 'Create something (visual, written, or performed) that engages all five senses',
+          energyLevel: 'high',
+          duration: 25,
+          difficulty: 'hard',
+          materials: ['various materials', 'imagination', 'phone']
+        },
+        {
+          title: 'Time Capsule Moment',
+          description: 'Document this exact moment creatively - combine photo, sound, and written word',
+          energyLevel: 'medium',
+          duration: 18,
+          difficulty: 'medium',
+          materials: ['phone', 'paper', 'pen']
+        },
+        {
+          title: 'Random Wiki Art',
+          description: 'Go to a random Wikipedia page and create something inspired by the first image you see',
+          energyLevel: 'medium',
+          duration: 20,
+          difficulty: 'medium',
+          materials: ['internet', 'art materials', 'phone']
+        },
+        {
+          title: 'Energy Transfer',
+          description: 'Create something that captures your current energy and could transfer it to someone else',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['any materials', 'creativity']
+        },
+        {
+          title: 'Constraint Remix',
+          description: 'Take any creative rule you know and deliberately break it to make something new',
+          energyLevel: 'high',
+          duration: 22,
+          difficulty: 'hard',
+          materials: ['rule-breaking mindset', 'art materials']
+        }
+      ]
+    },
+    // Writing Constraints
+    {
+      type: 'writing',
+      templates: [
+        {
+          title: 'Six-Word Story',
+          description: 'Tell a complete story about your day in exactly six words',
+          energyLevel: 'low',
+          duration: 8,
+          difficulty: 'easy',
+          materials: ['phone', 'notebook']
+        },
+        {
+          title: 'Alphabet Feelings',
+          description: 'Write 26 words describing how you feel right now, one for each letter A-Z',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['notebook', 'phone']
+        },
+        {
+          title: 'Reverse Dictionary',
+          description: 'Describe the concept of "creativity" without using any creative-related words',
+          energyLevel: 'medium',
+          duration: 10,
+          difficulty: 'medium',
+          materials: ['notebook', 'phone']
+        },
+        {
+          title: 'Sound Poetry',
+          description: 'Write a poem using only the sounds you can hear right now as inspiration',
+          energyLevel: 'low',
+          duration: 12,
+          difficulty: 'easy',
+          materials: ['notebook', 'phone']
+        },
+        {
+          title: 'Future Self Letter',
+          description: 'Write a postcard to yourself 5 years from now about today\'s creative energy',
+          energyLevel: 'medium',
+          duration: 12,
+          difficulty: 'easy',
+          materials: ['paper', 'pen', 'phone']
+        },
+        {
+          title: 'Three-Word Philosophy',
+          description: 'Create your personal philosophy of creativity using exactly three words',
+          energyLevel: 'low',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['phone', 'paper']
+        },
+        {
+          title: 'Conversation Overheard',
+          description: 'Write a short dialogue based on the next conversation you overhear (or imagine)',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['notebook', 'phone']
+        }
+      ]
+    },
+    // Digital Constraints
+    {
+      type: 'digital',
+      templates: [
+        {
+          title: 'Color Gradient Message',
+          description: 'Create a digital message to your future self using only gradients and simple shapes',
+          energyLevel: 'low',
+          duration: 15,
+          difficulty: 'easy',
+          materials: ['design app', 'phone', 'computer']
+        },
+        {
+          title: 'Emoji Story',
+          description: 'Tell the story of your perfect day using only emojis (max 20)',
+          energyLevel: 'low',
+          duration: 8,
+          difficulty: 'easy',
+          materials: ['phone', 'emoji keyboard']
+        },
+        {
+          title: 'Minimalist Interface',
+          description: 'Design a simple app interface for tracking one thing you care about',
+          energyLevel: 'medium',
+          duration: 20,
+          difficulty: 'medium',
+          materials: ['design app', 'paper', 'pen']
+        },
+        {
+          title: 'Pattern Generator',
+          description: 'Create a repeating pattern using only keyboard symbols (*, +, -, |, etc.)',
+          energyLevel: 'low',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['computer', 'phone', 'text editor']
+        },
+        {
+          title: 'Color Mood Board',
+          description: 'Create a digital mood board with 5 colors that represent your current energy',
+          energyLevel: 'medium',
+          duration: 18,
+          difficulty: 'medium',
+          materials: ['design app', 'computer', 'phone']
+        }
+      ]
+    },
+    // Physical Constraints
+    {
+      type: 'physical',
+      templates: [
+        {
+          title: 'Pocket Sculpture',
+          description: 'Create a small sculpture using only items currently in your pockets or bag',
+          energyLevel: 'low',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['pocket contents', 'bag contents']
+        },
+        {
+          title: 'Balance Challenge',
+          description: 'Arrange 5 everyday objects into a balanced composition that tells a story',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['5 nearby objects']
+        },
+        {
+          title: 'Origami from Scrap',
+          description: 'Fold something beautiful from a piece of paper you were about to throw away',
+          energyLevel: 'low',
+          duration: 12,
+          difficulty: 'easy',
+          materials: ['scrap paper']
+        },
+        {
+          title: 'Tea Bag Architecture',
+          description: 'Build a tiny architectural structure using only sugar packets, napkins, or tea bags',
+          energyLevel: 'low',
+          duration: 15,
+          difficulty: 'easy',
+          materials: ['sugar packets', 'napkins', 'tea bags', 'coffee stirrers']
+        },
+        {
+          title: 'Hand Gesture Dance',
+          description: 'Create a 30-second hand dance that expresses your current creative energy',
+          energyLevel: 'medium',
+          duration: 10,
+          difficulty: 'easy',
+          materials: ['hands', 'optional: phone to record']
+        }
+      ]
+    },
+    // Music/Sound Constraints  
+    {
+      type: 'music',
+      templates: [
+        {
+          title: 'Ambient Room Remix',
+          description: 'Record 1 minute of ambient sounds and mentally remix them into a song',
+          energyLevel: 'low',
+          duration: 8,
+          difficulty: 'easy',
+          materials: ['phone', 'ears']
+        },
+        {
+          title: 'Beatbox Heartbeat',
+          description: 'Create a simple rhythm that matches your current heartbeat and energy level',
+          energyLevel: 'medium',
+          duration: 10,
+          difficulty: 'medium',
+          materials: ['voice', 'hands']
+        },
+        {
+          title: 'Object Orchestra',
+          description: 'Compose a 30-second percussion piece using 3 objects within reach',
+          energyLevel: 'medium',
+          duration: 12,
+          difficulty: 'medium',
+          materials: ['3 nearby objects', 'optional: phone to record']
+        },
+        {
+          title: 'Humming Meditation',
+          description: 'Create a continuous hum that evolves with your breathing for 3 minutes',
+          energyLevel: 'low',
+          duration: 5,
+          difficulty: 'easy',
+          materials: ['voice', 'breathing']
+        }
+      ]
+    },
+    // Mixed/Experimental Constraints
+    {
+      type: 'mixed',
+      templates: [
+        {
+          title: 'Five Senses Story',
+          description: 'Create something (visual, written, or performed) that engages all five senses',
+          energyLevel: 'high',
+          duration: 25,
+          difficulty: 'hard',
+          materials: ['various materials', 'imagination', 'phone']
+        },
+        {
+          title: 'Time Capsule Moment',
+          description: 'Document this exact moment creatively - combine photo, sound, and written word',
+          energyLevel: 'medium',
+          duration: 18,
+          difficulty: 'medium',
+          materials: ['phone', 'paper', 'pen']
+        },
+        {
+          title: 'Random Wiki Art',
+          description: 'Go to a random Wikipedia page and create something inspired by the first image you see',
+          energyLevel: 'medium',
+          duration: 20,
+          difficulty: 'medium',
+          materials: ['internet', 'art materials', 'phone']
+        },
+        {
+          title: 'Energy Transfer',
+          description: 'Create something that captures your current energy and could transfer it to someone else',
+          energyLevel: 'medium',
+          duration: 15,
+          difficulty: 'medium',
+          materials: ['any materials', 'creativity']
+        },
+        {
+          title: 'Constraint Remix',
+          description: 'Take any creative rule you know and deliberately break it to make something new',
+          energyLevel: 'high',
+          duration: 22,
+          difficulty: 'hard',
+          materials: ['rule-breaking mindset', 'art materials']
         }
       ]
     }

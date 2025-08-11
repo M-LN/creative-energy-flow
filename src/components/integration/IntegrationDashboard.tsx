@@ -17,7 +17,7 @@ import './IntegrationDashboard.css';
 interface IntegrationDashboardProps {}
 
 const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'calendar' | 'tasks' | 'optimizations' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'today' | 'overview' | 'calendar' | 'tasks' | 'optimizations' | 'settings'>('today');
   const [loading, setLoading] = useState(true);
   
   // State for integrations
@@ -142,6 +142,63 @@ const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
     setOptimizations(opts => opts.filter(opt => opt.id !== optimizationId));
   };
 
+  // Get today's schedule and optimization opportunities
+  const getTodaysSchedule = () => {
+    const today = new Date();
+    const todaysEvents = events.filter(event => {
+      const eventDate = new Date(event.startTime);
+      return eventDate.toDateString() === today.toDateString();
+    });
+    
+    return todaysEvents.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getTodaysTasks = () => {
+    const today = new Date();
+    return tasks.filter(task => {
+      const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+      const isCompleted = task.status === 'completed';
+      return !isCompleted && (!dueDate || dueDate.toDateString() === today.toDateString() || dueDate < today);
+    }).slice(0, 5); // Limit to 5 most important
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getTodaysOptimizations = () => {
+    return optimizations.filter(opt => 
+      opt.type === 'break-suggestion' || opt.type === 'energy-block'
+    ).slice(0, 3);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getEnergyOptimizedSchedule = () => {
+    const schedule = getTodaysSchedule();
+    
+    return schedule.map(event => {
+      const eventHour = new Date(event.startTime).getHours();
+      let energyImpact = 'neutral';
+      let suggestion = '';
+      
+      // Morning high energy
+      if (eventHour >= 8 && eventHour <= 11) {
+        energyImpact = 'good';
+        suggestion = 'Peak energy time - great for important meetings';
+      }
+      // Afternoon dip
+      else if (eventHour >= 13 && eventHour <= 15) {
+        energyImpact = 'caution';
+        suggestion = 'Post-lunch dip - consider lighter activities';
+      }
+      // Evening recharge
+      else if (eventHour >= 17 && eventHour <= 19) {
+        energyImpact = 'moderate';
+        suggestion = 'End-of-day energy - good for wrapping up';
+      }
+      
+      return { ...event, energyImpact, suggestion };
+    });
+  };
+
   if (loading) {
     return (
       <div className="integration-dashboard loading">
@@ -157,8 +214,8 @@ const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
     <div className="integration-dashboard">
       <div className="integration-header">
         <div className="header-content">
-          <h2>📅 Calendar & Productivity Integration</h2>
-          <p>Connect your calendar and productivity apps for energy-optimized scheduling</p>
+          <h2>📅 Productivity Integration</h2>
+          <p>Daily energy-optimized scheduling and task management</p>
         </div>
         <button 
           className="sync-btn primary"
@@ -171,6 +228,12 @@ const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
 
       {/* Integration Tabs */}
       <div className="integration-tabs">
+        <button 
+          className={`tab-btn ${activeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveTab('today')}
+        >
+          🌟 Today's Focus
+        </button>
         <button 
           className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
@@ -193,7 +256,7 @@ const IntegrationDashboard: React.FC<IntegrationDashboardProps> = () => {
           className={`tab-btn ${activeTab === 'optimizations' ? 'active' : ''}`}
           onClick={() => setActiveTab('optimizations')}
         >
-          ⚡ Optimizations
+          ⚡ Smart Scheduling
         </button>
         <button 
           className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}

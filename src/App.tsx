@@ -2,35 +2,38 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { EnergyDashboard } from './components/EnergyDashboard';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
 import ModernEnergyDashboard from './components/ModernEnergyDashboard';
+import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { DataExportPanel } from './components/DataExportPanel';
 import { GoalDashboard } from './components/goals/GoalDashboard';
 import RecommendationDashboard from './components/recommendations/RecommendationDashboard';
 import { SocialOptimizationDashboard } from './components/socialOptimization/SocialOptimizationDashboard';
-import IntegrationDashboard from './components/integration/IntegrationDashboard';
 import { ThemeToggle } from './components/ThemeToggle';
 import { WelcomeTooltip } from './components/WelcomeTooltip';
 import { HelpPanel, FloatingHelpButton } from './components/HelpPanel';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { EnergyLevel, EnergyReading, SocialBatteryData } from './types/energy';
 import { PWAService } from './services/PWAService';
-import { EnergyRecommendationService } from './services/EnergyRecommendationService';
+import { SmartNotificationService } from './services/SmartNotificationService';
 import { SocialOptimizationService } from './services/SocialOptimizationService';
-import { calendarService } from './services/CalendarIntegrationService';
-import { productivityService } from './services/ProductivityIntegrationService';
-import { SampleEnergyReadings } from './data/sampleEnergyReadings';
-import { EnergyDataService } from './data/energyDataService';
+import './components/onboarding/OnboardingFlow.css';
 import './styles/globals.css';
 import './App.css';
 import './styles/responsive-enhancements.css';
 import './styles/chart-enhancements.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'modern' | 'enhanced' | 'analytics' | 'goals' | 'recommendations' | 'social-optimization' | 'integration' | 'data'>('modern');
+  const [currentView, setCurrentView] = useState<'modern' | 'enhanced' | 'goals' | 'recommendations' | 'social-optimization' | 'advanced'>('modern');
   const [showWelcome, setShowWelcome] = useState(() => {
     // Show welcome tour for first-time users
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
     return !hasSeenWelcome;
+  });
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Show onboarding for new users (different from welcome tour)
+    const hasCompletedOnboarding = localStorage.getItem('hasCompletedOnboarding');
+    const hasAnyData = localStorage.getItem('energyReadings') || localStorage.getItem('userPreferences');
+    return !hasCompletedOnboarding && !hasAnyData;
   });
   const [showHelpPanel, setShowHelpPanel] = useState(false);
   const [currentEnergy, setCurrentEnergy] = useState<EnergyLevel>({
@@ -42,46 +45,30 @@ function App() {
     overall: 67.5
   });
   
-  // Sample energy readings for export/import demo and goal tracking
+  // User energy readings for export/import and goal tracking
   const [energyReadings, setEnergyReadings] = useState<EnergyReading[]>([]);
   const [energyData, setEnergyData] = useState<EnergyLevel[]>([]);
-  const [socialData, setSocialData] = useState<SocialBatteryData[]>([]);
+  const [socialData] = useState<SocialBatteryData[]>([]);
 
-  // Initialize sample data and PWA service
+  // Initialize PWA service
   useEffect(() => {
     PWAService.getInstance();
     
-    // Load sample energy readings
-    const sampleData = SampleEnergyReadings.generateSampleReadings(30);
-    setEnergyReadings(sampleData);
+    // Initialize smart notifications
+    SmartNotificationService.getInstance().requestPermission();
     
-    // Load sample social battery data
-    const sampleSocialData = EnergyDataService.generateSocialBatteryData(30);
-    setSocialData(sampleSocialData);
-    
-    // Convert readings to EnergyLevel format for goal tracking
-    const energyLevels: EnergyLevel[] = sampleData.map(reading => ({
-      timestamp: new Date(reading.timestamp),
-      physical: reading.type === 'physical' ? reading.level * 10 : 65,
-      mental: reading.type === 'mental' ? reading.level * 10 : 70,
-      emotional: reading.type === 'emotional' ? reading.level * 10 : 60,
-      creative: reading.type === 'creative' ? reading.level * 10 : 75,
-      overall: reading.level * 10
-    }));
-    setEnergyData(energyLevels);
-    
-    // Initialize recommendations with sample data
-    EnergyRecommendationService.analyzeAndRecommend(sampleData).catch(console.error);
-    
-    // Initialize integration services
-    calendarService.loadFromStorage();
-    productivityService.loadFromStorage();
+    // Load user energy data from localStorage if available
+    // No sample data is generated - app starts with empty state
   }, []);
 
-  // Initialize social optimization analysis
+  // Initialize social optimization analysis with user data when available
   const initializeSocialOptimization = useCallback(async () => {
+    if (socialData.length === 0 || energyData.length === 0) {
+      return; // No user data available yet
+    }
+    
     try {
-      // Generate social optimization analysis with sample data
+      // Generate social optimization analysis with user data
       await SocialOptimizationService.generateOptimizationAnalysis(socialData, energyData);
     } catch (error) {
       console.error('Error initializing social optimization:', error);
@@ -107,6 +94,39 @@ function App() {
 
   const handleEnergyDataUpdate = (updatedEnergyData: EnergyLevel[]) => {
     setEnergyData(updatedEnergyData);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('hasCompletedOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingComplete = (userPreferences: any, firstEnergyEntry?: EnergyLevel) => {
+    // Mark onboarding as completed
+    localStorage.setItem('hasCompletedOnboarding', 'true');
+    setShowOnboarding(false);
+
+    // Save user preferences
+    localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
+
+    // If user provided first energy entry, save it
+    if (firstEnergyEntry) {
+      setCurrentEnergy(firstEnergyEntry);
+      setEnergyData([firstEnergyEntry]);
+    }
+
+    // Start smart notification system for engaged users
+    const notificationService = SmartNotificationService.getInstance();
+    const schedules = [{
+      id: 'daily-energy-checkin',
+      type: 'daily-checkin' as const,
+      title: 'Energy Check-in Time! 🌟',
+      body: 'How are your energy levels today?',
+      scheduledTime: userPreferences.preferredNotificationTime || '18:00',
+      days: [1, 2, 3, 4, 5, 6, 0], // Every day
+      enabled: true
+    }];
+    notificationService.scheduleNotifications(schedules);
   };
 
   // Using direct string literals for ARIA values instead of expressions
@@ -171,25 +191,25 @@ function App() {
           </button>
         )}
         
-        {currentView === 'analytics' ? (
+        {currentView === 'advanced' ? (
           <button
             type="button"
-            onClick={() => setCurrentView('analytics')}
+            onClick={() => setCurrentView('advanced')}
             className="view-toggle-button active"
             aria-pressed="true"
-            aria-label="Switch to analytics view"
+            aria-label="Switch to advanced analytics view"
           >
-            📊 Analytics
+            ⚙️ Advanced
           </button>
         ) : (
           <button
             type="button"
-            onClick={() => setCurrentView('analytics')}
+            onClick={() => setCurrentView('advanced')}
             className="view-toggle-button"
             aria-pressed="false"
-            aria-label="Switch to analytics view"
+            aria-label="Switch to advanced analytics view"
           >
-            📊 Analytics
+            ⚙️ Advanced
           </button>
         )}
         
@@ -258,50 +278,6 @@ function App() {
             🧘‍♀️ Social
           </button>
         )}
-        
-        {currentView === 'integration' ? (
-          <button
-            type="button"
-            onClick={() => setCurrentView('integration')}
-            className="view-toggle-button active"
-            aria-pressed="true"
-            aria-label="Switch to integration view"
-          >
-            📅 Integration
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setCurrentView('integration')}
-            className="view-toggle-button"
-            aria-pressed="false"
-            aria-label="Switch to integration view"
-          >
-            📅 Integration
-          </button>
-        )}
-        
-        {currentView === 'data' ? (
-          <button
-            type="button"
-            onClick={() => setCurrentView('data')}
-            className="view-toggle-button active"
-            aria-pressed="true"
-            aria-label="Switch to data management view"
-          >
-            📁 Data
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setCurrentView('data')}
-            className="view-toggle-button"
-            aria-pressed="false"
-            aria-label="Switch to data management view"
-          >
-            📁 Data
-          </button>
-        )}
       </div>
 
       {/* Main Content */}
@@ -313,8 +289,6 @@ function App() {
           onEnergyUpdate={setCurrentEnergy}
           onEnergyDataUpdate={handleEnergyDataUpdate}
         />
-      ) : currentView === 'analytics' ? (
-        <EnergyDashboard />
       ) : currentView === 'goals' ? (
         <GoalDashboard
           energyData={energyData}
@@ -324,17 +298,44 @@ function App() {
         <RecommendationDashboard />
       ) : currentView === 'social-optimization' ? (
         <SocialOptimizationDashboard />
-      ) : currentView === 'integration' ? (
-        <IntegrationDashboard />
+      ) : currentView === 'advanced' ? (
+        <div className="advanced-dashboard">
+          <div className="advanced-header">
+            <h2>⚙️ Advanced Analytics & Data</h2>
+            <p>Detailed analytics and data management tools</p>
+          </div>
+          
+          <div className="advanced-tabs">
+            <div className="advanced-tab-content">
+              <div className="analytics-section">
+                <h3>📊 Analytics Dashboard</h3>
+                <EnergyDashboard />
+              </div>
+              
+              <div className="data-section">
+                <h3>📁 Data Management</h3>
+                <DataExportPanel
+                  energyData={energyReadings}
+                  onDataImported={handleDataImported}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       ) : (
-        <DataExportPanel
-          energyData={energyReadings}
-          onDataImported={handleDataImported}
+        <ModernEnergyDashboard />
+      )}
+
+      {/* Onboarding Flow for New Users */}
+      {showOnboarding && (
+        <OnboardingFlow 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
         />
       )}
 
       {/* Welcome Tour for First-Time Users */}
-      {showWelcome && (
+      {showWelcome && !showOnboarding && (
         <WelcomeTooltip onComplete={() => setShowWelcome(false)} />
       )}
 

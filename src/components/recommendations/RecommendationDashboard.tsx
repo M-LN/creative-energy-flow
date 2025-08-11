@@ -17,7 +17,7 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
   const [analysis, setAnalysis] = useState<PatternAnalysis | null>(null);
   const [recommendations, setRecommendations] = useState<EnergyRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'patterns' | 'recommendations' | 'insights'>('recommendations');
+  const [activeTab, setActiveTab] = useState<'today' | 'recommendations' | 'patterns' | 'insights'>('today');
   const [filter] = useState<RecommendationFilter>({});
   const [sortBy] = useState<RecommendationSort>({ field: 'priority', direction: 'desc' });
 
@@ -38,6 +38,81 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
       setLoading(false);
     }
   }, [filter, sortBy]);
+
+  // Get today's priority recommendations
+  const todayRecommendations = recommendations
+    .filter(rec => rec.priority === 'high' || rec.category === 'daily-routine')
+    .slice(0, 3);
+
+  // Generate daily action items based on current energy patterns
+  const getDailyActionItems = () => {
+    const currentHour = new Date().getHours();
+    const timeOfDay = currentHour < 12 ? 'morning' : currentHour < 18 ? 'afternoon' : 'evening';
+    
+    const actionItems = [];
+    
+    // Morning actions
+    if (timeOfDay === 'morning') {
+      actionItems.push({
+        id: 'morning-check',
+        title: 'Morning Energy Check-in',
+        description: 'How are you feeling this morning? Log your current energy levels.',
+        icon: '🌅',
+        action: 'Log Energy',
+        category: 'check-in'
+      });
+      actionItems.push({
+        id: 'morning-priorities',
+        title: 'Set Today\'s Priorities',
+        description: 'Review your goals and pick 1-2 priorities for today.',
+        icon: '🎯',
+        action: 'Set Priorities',
+        category: 'planning'
+      });
+    }
+    
+    // Afternoon actions
+    if (timeOfDay === 'afternoon') {
+      actionItems.push({
+        id: 'afternoon-boost',
+        title: 'Energy Boost Check',
+        description: 'Time for a quick energy recharge. Try a short walk or stretching.',
+        icon: '⚡',
+        action: 'Take Break',
+        category: 'recharge'
+      });
+      actionItems.push({
+        id: 'progress-check',
+        title: 'Progress Review',
+        description: 'How are you progressing on today\'s priorities?',
+        icon: '📊',
+        action: 'Review Progress',
+        category: 'reflection'
+      });
+    }
+    
+    // Evening actions
+    if (timeOfDay === 'evening') {
+      actionItems.push({
+        id: 'evening-reflect',
+        title: 'Evening Reflection',
+        description: 'Reflect on your energy levels throughout the day.',
+        icon: '🌙',
+        action: 'Reflect',
+        category: 'reflection'
+      });
+      actionItems.push({
+        id: 'tomorrow-prep',
+        title: 'Prepare for Tomorrow',
+        description: 'What energy pattern insights can you apply tomorrow?',
+        icon: '🔮',
+        action: 'Plan Ahead',
+        category: 'planning'
+      });
+    }
+    
+    return actionItems;
+  };
 
   useEffect(() => {
     loadRecommendations();
@@ -253,6 +328,97 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
     );
   };
 
+  const renderTodayContent = () => {
+    const dailyActions = getDailyActionItems();
+    
+    return (
+      <div className="today-content">
+        <div className="today-header">
+          <h3>🌟 Today's Energy Focus</h3>
+          <p>Actionable insights and recommendations for your daily energy optimization</p>
+        </div>
+
+        {/* Daily Action Items */}
+        <div className="daily-actions-section">
+          <h4>📋 Today's Action Items</h4>
+          <div className="actions-grid">
+            {dailyActions.map(action => (
+              <div key={action.id} className={`action-card ${action.category}`}>
+                <div className="action-header">
+                  <span className="action-icon">{action.icon}</span>
+                  <h5>{action.title}</h5>
+                </div>
+                <p className="action-description">{action.description}</p>
+                <button className="btn-action primary">
+                  {action.action}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Today's Priority Recommendations */}
+        {todayRecommendations.length > 0 && (
+          <div className="today-recommendations-section">
+            <h4>🔥 Priority Recommendations</h4>
+            <div className="recommendations-grid compact">
+              {todayRecommendations.map(rec => (
+                <div key={rec.id} className="recommendation-card compact today-focus">
+                  <div className="recommendation-header">
+                    <div className="recommendation-title-section">
+                      <span className="category-icon">{getCategoryIcon(rec.category)}</span>
+                      <h5>{rec.title}</h5>
+                      <span className="priority-badge">{getPriorityIcon(rec.priority)}</span>
+                    </div>
+                  </div>
+                  <p className="recommendation-description">{rec.description}</p>
+                  <div className="recommendation-actions">
+                    <button 
+                      className="btn primary small"
+                      onClick={() => handleImplementRecommendation(rec.id)}
+                    >
+                      Try Now
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quick Energy Insights */}
+        {analysis && analysis.insights.length > 0 && (
+          <div className="today-insights-section">
+            <h4>💡 Quick Insights</h4>
+            <div className="insights-grid compact">
+              {analysis.insights.slice(0, 2).map(insight => (
+                <div key={insight.id} className={`insight-card compact ${insight.significance}`}>
+                  <h5>{insight.title}</h5>
+                  <p className="insight-description">{insight.description}</p>
+                  <span className={`significance-badge small ${insight.significance}`}>
+                    {insight.significance}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty state for no data */}
+        {recommendations.length === 0 && (!analysis || analysis.insights.length === 0) && (
+          <div className="empty-state">
+            <div className="empty-icon">📈</div>
+            <h4>Building Your Insights</h4>
+            <p>Keep logging your energy levels and we'll provide personalized daily insights!</p>
+            <button className="btn-primary">
+              Log Energy Now
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderInsights = () => {
     if (!analysis || !analysis.insights.length) {
       return (
@@ -300,8 +466,8 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
     <div className={`recommendation-dashboard ${className}`}>
       <div className="dashboard-header">
         <div className="header-content">
-          <h2>Energy Pattern Recommendations</h2>
-          <p>Personalized insights and suggestions based on your energy data</p>
+          <h2>💡 Energy Insights</h2>
+          <p>Daily actionable insights based on your energy patterns</p>
         </div>
         {analysis && (
           <div className="analysis-info">
@@ -323,26 +489,34 @@ const RecommendationDashboard: React.FC<RecommendationDashboardProps> = ({ class
 
       <div className="dashboard-tabs">
         <button 
+          className={`tab-btn ${activeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveTab('today')}
+        >
+          🌟 Today's Focus
+        </button>
+        <button 
           className={`tab-btn ${activeTab === 'recommendations' ? 'active' : ''}`}
           onClick={() => setActiveTab('recommendations')}
         >
-          📋 Recommendations
+          📋 All Recommendations
         </button>
         <button 
           className={`tab-btn ${activeTab === 'patterns' ? 'active' : ''}`}
           onClick={() => setActiveTab('patterns')}
         >
-          📊 Patterns
+          📊 Energy Patterns
         </button>
         <button 
           className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}
           onClick={() => setActiveTab('insights')}
         >
-          🔍 Insights
+          🔍 Deep Insights
         </button>
       </div>
 
       <div className="tab-content">
+        {activeTab === 'today' && renderTodayContent()}
+        
         {activeTab === 'recommendations' && (
           <div className="recommendations-content">
             {recommendations.length === 0 ? (

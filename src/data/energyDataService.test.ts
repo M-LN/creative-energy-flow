@@ -1,70 +1,98 @@
 import { EnergyDataService } from './energyDataService';
+import { EnergyLevel } from '../types/energy';
 
 describe('EnergyDataService', () => {
-  test('generateEnergyData creates correct number of entries', () => {
-    const data = EnergyDataService.generateEnergyData(7);
-    // Each day has 3 entries (morning, afternoon, evening), plus today
-    expect(data.length).toBe(24); // 8 days * 3 entries per day
-  });
+  // Create sample user data for testing
+  const sampleUserData: EnergyLevel[] = [
+    {
+      timestamp: new Date('2025-01-01T08:00:00Z'),
+      physical: 70,
+      mental: 80,
+      emotional: 60,
+      creative: 75,
+      overall: 71.25
+    },
+    {
+      timestamp: new Date('2025-01-01T14:00:00Z'),
+      physical: 65,
+      mental: 70,
+      emotional: 65,
+      creative: 80,
+      overall: 70
+    },
+    {
+      timestamp: new Date('2025-01-02T08:00:00Z'),
+      physical: 75,
+      mental: 85,
+      emotional: 70,
+      creative: 85,
+      overall: 78.75
+    }
+  ];
 
-  test('generateEnergyData creates valid energy levels', () => {
-    const data = EnergyDataService.generateEnergyData(1);
-    data.forEach(entry => {
-      expect(entry.physical).toBeGreaterThanOrEqual(0);
-      expect(entry.physical).toBeLessThanOrEqual(100);
-      expect(entry.mental).toBeGreaterThanOrEqual(0);
-      expect(entry.mental).toBeLessThanOrEqual(100);
-      expect(entry.emotional).toBeGreaterThanOrEqual(0);
-      expect(entry.emotional).toBeLessThanOrEqual(100);
-      expect(entry.creative).toBeGreaterThanOrEqual(0);
-      expect(entry.creative).toBeLessThanOrEqual(100);
-      expect(entry.overall).toBeGreaterThanOrEqual(0);
-      expect(entry.overall).toBeLessThanOrEqual(100);
-    });
-  });
-
-  test('generateSocialBatteryData creates correct structure', () => {
-    const data = EnergyDataService.generateSocialBatteryData(3);
-    expect(data.length).toBe(4); // 4 days including today
+  test('getEnergyDataByRange filters data correctly', () => {
+    const startDate = new Date('2025-01-01T00:00:00Z');
+    const endDate = new Date('2025-01-01T23:59:59Z');
     
-    data.forEach(entry => {
-      expect(entry.level).toBeGreaterThanOrEqual(0);
-      expect(entry.level).toBeLessThanOrEqual(100);
-      expect(entry.socialInteractions).toBeGreaterThanOrEqual(0);
-      expect(Array.isArray(entry.drainEvents)).toBe(true);
-      expect(Array.isArray(entry.rechargeEvents)).toBe(true);
+    const filteredData = EnergyDataService.getEnergyDataByRange(sampleUserData, startDate, endDate);
+    
+    expect(filteredData.length).toBe(2); // Only entries from Jan 1st
+    filteredData.forEach(entry => {
+      expect(entry.timestamp.getDate()).toBe(1);
     });
   });
 
-  test('calculateStatistics returns valid statistics', () => {
-    const data = EnergyDataService.generateEnergyData(5);
-    const stats = EnergyDataService.calculateStatistics(data, 'physical');
+  test('getDailyAverages aggregates data correctly', () => {
+    const dailyAverages = EnergyDataService.getDailyAverages(sampleUserData);
+    
+    // Should have 2 days worth of data
+    expect(dailyAverages.length).toBe(2);
+    
+    // First day should be average of first two entries
+    const firstDay = dailyAverages[0];
+    expect(firstDay.physical).toBe(67.5); // (70 + 65) / 2
+    expect(firstDay.mental).toBe(75); // (80 + 70) / 2
+    expect(firstDay.emotional).toBe(62.5); // (60 + 65) / 2
+    expect(firstDay.creative).toBe(77.5); // (75 + 80) / 2
+    expect(firstDay.overall).toBe(70.625); // (71.25 + 70) / 2
+    
+    // Second day should be the single entry
+    const secondDay = dailyAverages[1];
+    expect(secondDay.physical).toBe(75);
+    expect(secondDay.mental).toBe(85);
+    expect(secondDay.emotional).toBe(70);
+    expect(secondDay.creative).toBe(85);
+    expect(secondDay.overall).toBe(78.75);
+  });
+
+  test('calculateStatistics returns valid statistics for user data', () => {
+    const stats = EnergyDataService.calculateStatistics(sampleUserData, 'physical');
     
     expect(stats).toBeDefined();
-    expect(stats!.average).toBeGreaterThanOrEqual(0);
-    expect(stats!.average).toBeLessThanOrEqual(100);
-    expect(stats!.min).toBeGreaterThanOrEqual(0);
-    expect(stats!.max).toBeLessThanOrEqual(100);
-    expect(stats!.min).toBeLessThanOrEqual(stats!.max);
+    expect(stats!.average).toBe(70); // (70 + 65 + 75) / 3
+    expect(stats!.min).toBe(65);
+    expect(stats!.max).toBe(75);
     expect(typeof stats!.trend).toBe('number');
     expect(stats!.variance).toBeGreaterThanOrEqual(0);
     expect(stats!.correlationWithSocial).toBeGreaterThanOrEqual(-1);
     expect(stats!.correlationWithSocial).toBeLessThanOrEqual(1);
   });
 
-  test('getDailyAverages aggregates data correctly', () => {
-    const data = EnergyDataService.generateEnergyData(2);
-    const dailyAverages = EnergyDataService.getDailyAverages(data);
+  test('calculateStatistics returns null for empty data', () => {
+    const stats = EnergyDataService.calculateStatistics([], 'physical');
+    expect(stats).toBeNull();
+  });
+
+  test('getEnergyDataByRange returns empty array when no data matches range', () => {
+    const startDate = new Date('2024-12-01T00:00:00Z');
+    const endDate = new Date('2024-12-31T23:59:59Z');
     
-    // Should have fewer entries than original (aggregated by day)
-    expect(dailyAverages.length).toBeLessThan(data.length);
-    expect(dailyAverages.length).toBeGreaterThan(0);
-    
-    dailyAverages.forEach(entry => {
-      expect(entry.physical).toBeGreaterThanOrEqual(0);
-      expect(entry.physical).toBeLessThanOrEqual(100);
-      expect(entry.overall).toBeGreaterThanOrEqual(0);
-      expect(entry.overall).toBeLessThanOrEqual(100);
-    });
+    const filteredData = EnergyDataService.getEnergyDataByRange(sampleUserData, startDate, endDate);
+    expect(filteredData.length).toBe(0);
+  });
+
+  test('getDailyAverages returns empty array for empty input', () => {
+    const dailyAverages = EnergyDataService.getDailyAverages([]);
+    expect(dailyAverages.length).toBe(0);
   });
 });
