@@ -267,6 +267,37 @@ export const ModernEnergyDashboard: React.FC = () => {
                 ) : null;
               })}
             </div>
+
+            {/* Daily Action Cards */}
+            <div className="daily-actions">
+              <h3>Today's Energy Focus</h3>
+              <div className="action-cards-grid">
+                <div className="action-card">
+                  <span className="action-icon">🌅</span>
+                  <div className="action-content">
+                    <h4>Morning Boost</h4>
+                    <p>Start your day with intention</p>
+                    <button className="action-btn">Set Morning Goal</button>
+                  </div>
+                </div>
+                <div className="action-card">
+                  <span className="action-icon">⚡</span>
+                  <div className="action-content">
+                    <h4>Energy Break</h4>
+                    <p>Take a mindful pause</p>
+                    <button className="action-btn">5-Min Break</button>
+                  </div>
+                </div>
+                <div className="action-card">
+                  <span className="action-icon">🎯</span>
+                  <div className="action-content">
+                    <h4>Evening Reflect</h4>
+                    <p>Review your energy patterns</p>
+                    <button className="action-btn">Quick Reflection</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -350,9 +381,40 @@ export const ModernEnergyDashboard: React.FC = () => {
           <div className="tab-panel social-panel">
             <div className="panel-header">
               <h2>Social Battery</h2>
-              <p>Track your social energy and interactions</p>
+              <p>Track your social energy and manage your social interactions</p>
             </div>
 
+            {/* Quick Social Energy Log */}
+            <div className="social-quick-log">
+              <h3>How's your social battery today?</h3>
+              <div className="social-battery-levels">
+                <button className="social-level-btn full">🔋 Fully Charged</button>
+                <button className="social-level-btn medium">🔋 Half Full</button>
+                <button className="social-level-btn low">🪫 Running Low</button>
+                <button className="social-level-btn empty">📱 Need Recharge</button>
+              </div>
+            </div>
+
+            {/* Quick Social Tips */}
+            <div className="social-tips">
+              <h3>Daily Social Tips</h3>
+              <div className="tips-grid">
+                <div className="tip-card">
+                  <span className="tip-icon">🏠</span>
+                  <span>Schedule alone time to recharge</span>
+                </div>
+                <div className="tip-card">
+                  <span className="tip-icon">👥</span>
+                  <span>Limit social events when battery is low</span>
+                </div>
+                <div className="tip-card">
+                  <span className="tip-icon">📱</span>
+                  <span>Use text instead of calls when drained</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Battery Visualization */}
             <div className="social-controls">
               <label className="social-correlation-toggle">
                 <input
@@ -360,7 +422,7 @@ export const ModernEnergyDashboard: React.FC = () => {
                   checked={showSocialCorrelation}
                   onChange={(e) => setShowSocialCorrelation(e.target.checked)}
                 />
-                Show Energy Correlation
+                Show detailed energy correlation analysis
               </label>
             </div>
 
@@ -384,30 +446,9 @@ export const ModernEnergyDashboard: React.FC = () => {
 
             <div className="settings-groups">
               <div className="setting-group">
-                <h3>Data Source</h3>
-                <div className="setting-options">
-                  {(['sample', 'user', 'both'] as const).map(source => (
-                    <label key={source} className="radio-option">
-                      <input
-                        type="radio"
-                        name="dataSource"
-                        value={source}
-                        checked={dataSource === source}
-                        onChange={(e) => setDataSource(e.target.value as any)}
-                      />
-                      <span className="radio-label">
-                        {source === 'sample' ? 'Sample Data' : 
-                         source === 'user' ? 'Your Data Only' : 
-                         'Combined Data'}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="setting-group">
-                <h3>Default Time Range</h3>
+                <h3>Daily Preferences</h3>
                 <label htmlFor="default-time-range">
+                  View Range:
                   <select
                     id="default-time-range"
                     value={timeRange}
@@ -415,27 +456,30 @@ export const ModernEnergyDashboard: React.FC = () => {
                     className="setting-select"
                     title="Select default time range"
                   >
-                    <option value="7d">7 days</option>
-                    <option value="30d">30 days</option>
-                    <option value="90d">90 days</option>
+                    <option value="7d">Last 7 days</option>
+                    <option value="30d">Last 30 days</option>
+                    <option value="90d">Last 90 days</option>
                   </select>
                 </label>
               </div>
 
               <div className="setting-group">
-                <h3>AI Features</h3>
+                <h3>AI Assistant</h3>
                 <label className="setting-toggle">
                   <input
                     type="checkbox"
                     checked={showAIInsights}
                     onChange={(e) => setShowAIInsights(e.target.checked)}
                   />
-                  Enable Smart Insights
+                  Get daily AI insights and tips
                 </label>
+                <p className="setting-description">
+                  Receive personalized energy recommendations each day
+                </p>
               </div>
 
               <div className="setting-group">
-                <h3>Advanced Options</h3>
+                <h3>Power User Features</h3>
                 <label className="setting-toggle">
                   <input
                     type="checkbox"
@@ -447,6 +491,31 @@ export const ModernEnergyDashboard: React.FC = () => {
                 <p className="setting-description">
                   Display detailed charts, trends, and data visualizations for power users
                 </p>
+              </div>
+
+              <div className="setting-group technical-settings">
+                <h3>Data Source</h3>
+                <p className="setting-description">
+                  Choose what data to display in your dashboard
+                </p>
+                <div className="setting-options">
+                  {(['sample', 'user', 'both'] as const).map(source => (
+                    <label key={source} className="radio-option">
+                      <input
+                        type="radio"
+                        name="dataSource"
+                        value={source}
+                        checked={dataSource === source}
+                        onChange={(e) => setDataSource(e.target.value as any)}
+                      />
+                      <span className="radio-label">
+                        {source === 'sample' ? 'Demo Data' : 
+                         source === 'user' ? 'My Data Only' : 
+                         'Combined Data'}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
 
