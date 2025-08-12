@@ -1,0 +1,25 @@
+/* Social Battery Notification */
+.social-battery-notification {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--success-gradient);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-align: center;
+  animation: fadeInScale 0.3s ease-out;
+  box-shadow: var(--shadow-md);
+  border: none;
+  font-size: 0.9rem;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

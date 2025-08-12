@@ -12,27 +12,39 @@ export const WelcomeTooltip: React.FC<WelcomeTooltipProps> = ({ onComplete }) =>
   const steps = [
     {
       title: "Welcome to Creative Energy Flow! 🌟",
-      description: "Track your physical, mental, emotional, and creative energy levels throughout the day.",
+      description: "Your personal energy management dashboard with AI-powered insights. Track your physical, mental, emotional, and creative energy levels with an intuitive button-based interface.",
       position: "center",
       highlight: null
     },
     {
-      title: "Add Your First Energy Entry ➕",
-      description: "Click the + button to record your current energy levels. This helps track patterns over time.",
-      position: "bottom-right",
-      highlight: ".energy-input-fab"
+      title: "Quick Energy Logging 🎯",
+      description: "Use the 'Log Current Energy' section in Overview to quickly record your energy levels using simple buttons - no more sliders! Just tap the level that matches how you feel.",
+      position: "top",
+      highlight: ".quick-energy-form"
+    },
+    {
+      title: "Explore Your Social Battery 🔋",
+      description: "Check out the Social Battery tab to track your social energy and get AI-powered recommendations for social interactions based on your current state.",
+      position: "top",
+      highlight: "[data-tab='social-battery']"
+    },
+    {
+      title: "AI-Powered Insights 🤖",
+      description: "Visit the AI Insights tab to get personalized recommendations, energy predictions, and smart tips. Click 'Advanced AI Analytics' for detailed analysis and learning dashboard.",
+      position: "top",
+      highlight: "[data-tab='ai-insights']"
     },
     {
       title: "View Your Analytics 📊",
-      description: "Switch to the Analytics tab to see charts and insights about your energy patterns.",
+      description: "Check the Analytics tab to see beautiful charts of your energy patterns, weekly heatmaps, and detailed breakdowns of your energy types.",
       position: "top",
-      highlight: "[aria-label='Switch to analytics view']"
+      highlight: "[data-tab='analytics']"
     },
     {
-      title: "Get AI Insights 🤖",
-      description: "On the Analytics screen, click the AI button for personalized insights and recommendations.",
-      position: "bottom-right",
-      highlight: ".ai-insights-fab"
+      title: "AI Chat Assistant 💬",
+      description: "Access the AI Chat tab for personalized energy coaching, daily focus recommendations, and interactive conversations about optimizing your energy.",
+      position: "top",
+      highlight: "[data-tab='ai-chat']"
     }
   ];
 

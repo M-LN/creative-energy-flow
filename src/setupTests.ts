@@ -50,3 +50,50 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'width', {
   value: 800,
   writable: true,
 });
+
+// Mock window.matchMedia for theme context tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Enhanced chart.js mocking to prevent canvas context errors
+jest.mock('chart.js', () => ({
+  Chart: {
+    register: jest.fn(),
+    defaults: {
+      global: {
+        defaultFontFamily: 'Arial',
+      },
+    },
+  },
+  CategoryScale: jest.fn(),
+  LinearScale: jest.fn(),
+  LineElement: jest.fn(),
+  PointElement: jest.fn(),
+  Title: jest.fn(),
+  Tooltip: jest.fn(),
+  Legend: jest.fn(),
+  ArcElement: jest.fn(),
+  BarElement: jest.fn(),
+  PieController: jest.fn(),
+  LineController: jest.fn(),
+  BarController: jest.fn(),
+}));
+
+// Mock react-chartjs-2 components
+jest.mock('react-chartjs-2', () => ({
+  Line: () => null,
+  Bar: () => null,
+  Pie: () => null,
+  Doughnut: () => null,
+}));

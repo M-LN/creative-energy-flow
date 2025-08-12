@@ -1,5 +1,13 @@
 import { EnergyLevel } from '../types/energy';
 
+// Extend NotificationOptions to include actions for service worker
+interface ExtendedNotificationOptions extends NotificationOptions {
+  actions?: Array<{
+    action: string;
+    title: string;
+  }>;
+}
+
 export interface NotificationSchedule {
   id: string;
   type: 'daily-checkin' | 'creative-challenge' | 'energy-reminder' | 'weekly-reflection';
@@ -96,7 +104,7 @@ export class SmartNotificationService {
     try {
       if (this.serviceWorkerRegistration) {
         // Use service worker for better reliability
-        await this.serviceWorkerRegistration.showNotification(title, {
+        const swNotificationOptions: ExtendedNotificationOptions = {
           ...options,
           badge: '/icon-192.png',
           icon: '/icon-192.png',
@@ -104,7 +112,9 @@ export class SmartNotificationService {
             action: btn.action,
             title: btn.title
           }))
-        });
+        };
+        
+        await this.serviceWorkerRegistration.showNotification(title, swNotificationOptions);
       } else {
         // Fallback to regular notification
         new Notification(title, {

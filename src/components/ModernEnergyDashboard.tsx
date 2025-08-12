@@ -8,11 +8,11 @@ import { AIChatAssistant } from './AIChatAssistant';
 import ProactiveInsights from './ProactiveInsights';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
-import { EnergyType, TimeRange, EnergyLevel } from '../types/energy';
+import { EnergyType, TimeRange, EnergyLevel, SocialBatteryData } from '../types/energy';
 import './ModernEnergyDashboard.css';
 
 // Tab configuration for better UX
-type TabId = 'overview' | 'insights' | 'social' | 'settings';
+type TabId = 'overview' | 'insights' | 'chat' | 'social' | 'settings';
 
 interface DashboardTab {
   id: TabId;
@@ -29,13 +29,32 @@ export const ModernEnergyDashboard: React.FC = () => {
 
   // Existing state
   const [userEnergyData, setUserEnergyData] = useState<EnergyLevel[]>([]);
-  const [showAIInsights, setShowAIInsights] = useState(false);
-  const [showLegacyAIPanel, setShowLegacyAIPanel] = useState(false);
-  const [showAIChat, setShowAIChat] = useState(false);
-  const [showAdvancedAnalytics, setShowAdvancedAnalytics] = useState(false);
-  const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(['physical', 'mental', 'emotional', 'creative']);
-  const [timeRange, setTimeRange] = useState<TimeRange>('7d');
-  const [showSocialCorrelation, setShowSocialCorrelation] = useState(false);
+  const [showAIInsights, setShowAIInsights] = useState(() => {
+    const saved = localStorage.getItem('energyFlow_showAIInsights');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+  const [showAdvancedAnalytics, setShowAdvancedAnalytics] = useState(() => {
+    const saved = localStorage.getItem('energyFlow_showAdvancedAnalytics');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+  const [selectedEnergyTypes, setSelectedEnergyTypes] = useState<EnergyType[]>(() => {
+    const saved = localStorage.getItem('energyFlow_selectedEnergyTypes');
+    return saved !== null ? JSON.parse(saved) : ['physical', 'mental', 'emotional', 'creative'];
+  });
+  const [timeRange, setTimeRange] = useState<TimeRange>(() => {
+    const saved = localStorage.getItem('energyFlow_timeRange');
+    return saved !== null ? saved as TimeRange : '7d';
+  });
+  const [showSocialCorrelation, setShowSocialCorrelation] = useState(() => {
+    const saved = localStorage.getItem('energyFlow_showSocialCorrelation');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+  const [socialBatteryData, setSocialBatteryData] = useState<SocialBatteryData[]>([]);
+  const [socialBatteryNotification, setSocialBatteryNotification] = useState<string | null>(null);
+
+  // AI Daily Focus state
+  const [dailyFocusCompleted, setDailyFocusCompleted] = useState<Set<string>>(new Set());
+  const [focusNotification, setFocusNotification] = useState<string | null>(null);
 
   // Smart tab configuration - Simplified for everyday use
   const tabs: DashboardTab[] = useMemo(() => [
@@ -43,15 +62,19 @@ export const ModernEnergyDashboard: React.FC = () => {
       id: 'overview',
       label: 'Overview',
       icon: '📊',
-      description: 'Energy dashboard and tracking',
-      badgeCount: userEnergyData.length > 0 ? 1 : undefined
+      description: 'Energy dashboard and tracking'
     },
     {
       id: 'insights',
       label: 'AI Insights',
       icon: '🧠',
-      description: 'Smart proactive insights',
-      badgeCount: 3 // Number of daily insights
+      description: 'Smart proactive insights'
+    },
+    {
+      id: 'chat',
+      label: 'AI Chat',
+      icon: '💬',
+      description: 'Chat with your AI assistant'
     },
     {
       id: 'social',
@@ -65,7 +88,7 @@ export const ModernEnergyDashboard: React.FC = () => {
       icon: '⚙️',
       description: 'Customize your experience',
     }
-  ], [userEnergyData.length]);
+  ], []);
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -86,9 +109,27 @@ export const ModernEnergyDashboard: React.FC = () => {
     }
   }, [userEnergyData]);
 
-  // Use only user data - no sample data
-  const socialData: any[] = []; // Empty social data until user adds some
-  
+  // Persist settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('energyFlow_showAIInsights', JSON.stringify(showAIInsights));
+  }, [showAIInsights]);
+
+  useEffect(() => {
+    localStorage.setItem('energyFlow_showAdvancedAnalytics', JSON.stringify(showAdvancedAnalytics));
+  }, [showAdvancedAnalytics]);
+
+  useEffect(() => {
+    localStorage.setItem('energyFlow_selectedEnergyTypes', JSON.stringify(selectedEnergyTypes));
+  }, [selectedEnergyTypes]);
+
+  useEffect(() => {
+    localStorage.setItem('energyFlow_timeRange', timeRange);
+  }, [timeRange]);
+
+  useEffect(() => {
+    localStorage.setItem('energyFlow_showSocialCorrelation', JSON.stringify(showSocialCorrelation));
+  }, [showSocialCorrelation]);
+
   // Filter data based on selected time range
   const filteredData = useMemo(() => {
     if (userEnergyData.length === 0) {
@@ -166,6 +207,272 @@ export const ModernEnergyDashboard: React.FC = () => {
     }
   };
 
+  // Handle social battery level selection
+  const handleSocialBatteryLevel = (level: number) => {
+    const newEntry: SocialBatteryData = {
+      timestamp: new Date(),
+      level,
+      socialInteractions: 0, // Could be expanded to track interactions
+      drainEvents: [],
+      rechargeEvents: []
+    };
+    
+    setSocialBatteryData(prev => [...prev, newEntry]);
+    
+    // Show feedback to user
+    const levelNames = {
+      100: 'Fully Charged',
+      50: 'Half Full', 
+      25: 'Running Low',
+      5: 'Need Recharge'
+    };
+    
+    const levelName = levelNames[level as keyof typeof levelNames];
+    setSocialBatteryNotification(`✅ Social battery set to: ${levelName}`);
+    
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      setSocialBatteryNotification(null);
+    }, 3000);
+    
+    console.log(`Social battery level set to: ${levelName}`);
+  };
+
+  // AI-Powered Daily Focus Functions
+  const getTimeOfDay = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'morning';
+    if (hour < 17) return 'afternoon';
+    return 'evening';
+  };
+
+  const getAverageEnergyForTimeOfDay = (timeOfDay: string) => {
+    const relevantData = userEnergyData.filter(entry => {
+      const entryHour = new Date(entry.timestamp).getHours();
+      const entryTimeOfDay = entryHour < 12 ? 'morning' : entryHour < 17 ? 'afternoon' : 'evening';
+      return entryTimeOfDay === timeOfDay;
+    });
+
+    if (relevantData.length === 0) return 70; // Default if no data
+
+    const avgPhysical = relevantData.reduce((sum, entry) => sum + entry.physical, 0) / relevantData.length;
+    const avgMental = relevantData.reduce((sum, entry) => sum + entry.mental, 0) / relevantData.length;
+    const avgEmotional = relevantData.reduce((sum, entry) => sum + entry.emotional, 0) / relevantData.length;
+    const avgCreative = relevantData.reduce((sum, entry) => sum + entry.creative, 0) / relevantData.length;
+
+    return {
+      physical: Math.round(avgPhysical),
+      mental: Math.round(avgMental),
+      emotional: Math.round(avgEmotional),
+      creative: Math.round(avgCreative),
+      overall: Math.round((avgPhysical + avgMental + avgEmotional + avgCreative) / 4)
+    };
+  };
+
+  const generateAIDailyFocus = () => {
+    const timeOfDay = getTimeOfDay();
+    const historicalAverage = getAverageEnergyForTimeOfDay(timeOfDay);
+    const currentEnergy = userEnergyData[userEnergyData.length - 1] || null;
+    
+    if (timeOfDay === 'morning') {
+      return {
+        id: 'morning-focus',
+        icon: '🌅',
+        title: 'Morning Energy Boost',
+        description: currentEnergy 
+          ? `Your ${currentEnergy.physical < 60 ? 'body' : currentEnergy.mental < 60 ? 'mind' : 'creative self'} could use some attention today`
+          : 'Start your day with intention and energy awareness',
+        actionText: currentEnergy ? 'Get Personalized Plan' : 'Set Morning Intention',
+        aiTip: typeof historicalAverage === 'object' 
+          ? `Historically, your ${historicalAverage.physical < 70 ? 'physical' : historicalAverage.mental < 70 ? 'mental' : 'creative'} energy peaks in the morning. Use this time wisely!`
+          : 'Morning is a great time to set energy intentions for the day'
+      };
+    } else if (timeOfDay === 'afternoon') {
+      return {
+        id: 'afternoon-focus',
+        icon: '⚡',
+        title: 'Afternoon Recharge',
+        description: currentEnergy
+          ? `Your current ${currentEnergy.overall < 50 ? 'energy is low' : 'energy looks good'} - ${currentEnergy.overall < 50 ? 'time for a break' : 'maintain your momentum'}`
+          : 'Mid-day energy maintenance and productivity',
+        actionText: currentEnergy && currentEnergy.overall < 50 ? '5-Min Energy Break' : 'Power Hour Focus',
+        aiTip: 'Research shows afternoon energy dips are normal. A short break can boost your productivity for the rest of the day!'
+      };
+    } else {
+      return {
+        id: 'evening-focus',
+        icon: '🎯',
+        title: 'Evening Reflection',
+        description: userEnergyData.length > 0 
+          ? `You logged ${userEnergyData.length} energy entries. Let's reflect on your patterns`
+          : 'Review your energy patterns and prepare for tomorrow',
+        actionText: userEnergyData.length > 3 ? 'Smart Reflection' : 'Quick Check-in',
+        aiTip: 'Evening reflection helps your brain process the day and improves energy awareness over time.'
+      };
+    }
+  };
+
+  const handleDailyFocusAction = (focusId: string) => {
+    // Mark as completed
+    setDailyFocusCompleted(prev => {
+      const newSet = new Set(prev);
+      newSet.add(focusId);
+      return newSet;
+    });
+    
+    // Show personalized feedback
+    if (focusId === 'morning-focus') {
+      setFocusNotification('🌅 Great start! Your morning intention is set. Consider logging your current energy level.');
+    } else if (focusId === 'afternoon-focus') {
+      const currentEnergy = userEnergyData[userEnergyData.length - 1];
+      if (currentEnergy && currentEnergy.overall < 50) {
+        setFocusNotification('⚡ Take a 5-minute break: deep breathing, stretch, or step outside. Your energy will thank you!');
+      } else {
+        setFocusNotification('🚀 You\'re in your power hour! Focus on your most important task while your energy is high.');
+      }
+    } else if (focusId === 'evening-focus') {
+      const insights = userEnergyData.length > 0 
+        ? `Today you averaged ${Math.round(userEnergyData.reduce((sum, entry) => sum + entry.overall, 0) / userEnergyData.length)}% energy. `
+        : '';
+      setFocusNotification(`🎯 ${insights}Reflection complete! Rest well and prepare for tomorrow's energy journey.`);
+    }
+
+    // Clear notification after 5 seconds
+    setTimeout(() => {
+      setFocusNotification(null);
+    }, 5000);
+  };
+
+  // AI Social Intelligence Functions
+  const getCurrentSocialBatteryLevel = () => {
+    if (socialBatteryData.length === 0) return 75; // Default assumption
+    const latest = socialBatteryData[socialBatteryData.length - 1];
+    return latest.level;
+  };
+
+  const generateAISocialTip = () => {
+    const timeOfDay = getTimeOfDay();
+    const currentLevel = getCurrentSocialBatteryLevel();
+    // Note: historicalAverage could be used for future enhancements
+
+    // High Social Battery (80-100%)
+    if (currentLevel >= 80) {
+      if (timeOfDay === 'morning') {
+        return {
+          id: 'social-morning-high',
+          title: '🌟 Peak Social Energy',
+          description: 'Your social battery is fully charged! Perfect time for important conversations, networking, or team collaborations.',
+          icon: '🔋',
+          action: 'Schedule that important meeting or social call'
+        };
+      } else if (timeOfDay === 'afternoon') {
+        return {
+          id: 'social-afternoon-high',
+          title: '🤝 Social Connection Time',
+          description: 'Great energy for meaningful interactions! Consider reaching out to friends or engaging in collaborative work.',
+          icon: '💬',
+          action: 'Connect with colleagues or friends'
+        };
+      } else {
+        return {
+          id: 'social-evening-high',
+          title: '🎉 Social Evening Energy',
+          description: 'You have energy for social activities! Perfect for dinner with friends, social events, or quality time with loved ones.',
+          icon: '✨',
+          action: 'Plan a social activity or gather with friends'
+        };
+      }
+    }
+    
+    // Medium Social Battery (40-79%)
+    else if (currentLevel >= 40) {
+      if (timeOfDay === 'morning') {
+        return {
+          id: 'social-morning-medium',
+          title: '⚡ Selective Social Mode',
+          description: 'Moderate social energy today. Focus on meaningful, low-energy social interactions like close friends or family.',
+          icon: '🎯',
+          action: 'Choose quality over quantity in social interactions'
+        };
+      } else if (timeOfDay === 'afternoon') {
+        return {
+          id: 'social-afternoon-medium',
+          title: '🔄 Social Balance Needed',
+          description: 'Your social battery is moderate. Mix social time with brief recharge breaks to maintain energy.',
+          icon: '⚖️',
+          action: 'Take 10-minute breaks between social interactions'
+        };
+      } else {
+        return {
+          id: 'social-evening-medium',
+          title: '🏠 Cozy Social Time',
+          description: 'Perfect energy for intimate, low-key social activities. Consider small gatherings or one-on-one time.',
+          icon: '🕯️',
+          action: 'Opt for quiet, close-knit social activities'
+        };
+      }
+    }
+    
+    // Low Social Battery (0-39%)
+    else {
+      if (timeOfDay === 'morning') {
+        return {
+          id: 'social-morning-low',
+          title: '🛡️ Social Protection Mode',
+          description: 'Your social battery is low. Prioritize essential interactions only and focus on recharging activities.',
+          icon: '🪫',
+          action: 'Limit social commitments and practice self-care'
+        };
+      } else if (timeOfDay === 'afternoon') {
+        return {
+          id: 'social-afternoon-low',
+          title: '🔇 Quiet Recharge Time',
+          description: 'Social energy is running low. Consider postponing non-essential social activities and take alone time.',
+          icon: '🔕',
+          action: 'Cancel optional social plans and rest'
+        };
+      } else {
+        return {
+          id: 'social-evening-low',
+          title: '🧘 Solo Recovery Evening',
+          description: 'Your social battery needs recharging. Perfect time for solo activities, meditation, or early rest.',
+          icon: '🌙',
+          action: 'Enjoy solo activities and prepare for tomorrow'
+        };
+      }
+    }
+  };
+
+  const handleSocialTipAction = (tipId: string) => {
+    const socialTip = generateAISocialTip();
+    if (!socialTip) return;
+    
+    // Mark social tip as completed
+    setDailyFocusCompleted(prev => new Set([...Array.from(prev), tipId]));
+    
+    // Show personalized social feedback
+    const currentLevel = getCurrentSocialBatteryLevel();
+    let feedback = '';
+    
+    if (currentLevel >= 80) {
+      feedback = '🌟 Great job leveraging your high social energy! Keep building those meaningful connections.';
+    } else if (currentLevel >= 40) {
+      feedback = '⚖️ Perfect balance! You\'re managing your social energy wisely.';
+    } else {
+      feedback = '🛡️ Excellent self-care! Protecting your social energy is crucial for long-term wellbeing.';
+    }
+    
+    setFocusNotification(feedback);
+    
+    // Clear notification after 4 seconds
+    setTimeout(() => {
+      setFocusNotification(null);
+    }, 4000);
+  };
+
+  // Generate current AI social tip
+  const socialTip = generateAISocialTip();
+
   return (
     <div className="modern-energy-dashboard">
       {/* Mobile Header */}
@@ -219,9 +526,12 @@ export const ModernEnergyDashboard: React.FC = () => {
 
             {/* Quick Add Energy Form */}
             <div className="quick-add-section">
-              <h3>Log Current Energy</h3>
+              <h3>Log Current Energy & Social Battery</h3>
               <div className="quick-add-form">
-                <QuickEnergyForm onSubmit={addEnergyEntry} />
+                <QuickEnergyForm 
+                  onSubmit={addEnergyEntry}
+                  onSocialBatterySubmit={handleSocialBatteryLevel}
+                />
               </div>
             </div>
 
@@ -254,35 +564,40 @@ export const ModernEnergyDashboard: React.FC = () => {
               })}
             </div>
 
-            {/* Daily Action Cards */}
+            {/* AI-Powered Daily Focus */}
             <div className="daily-actions">
-              <h3>Today's Energy Focus</h3>
+              <h3>Today's AI Energy Focus</h3>
               <div className="action-cards-grid">
-                <div className="action-card">
-                  <span className="action-icon">🌅</span>
-                  <div className="action-content">
-                    <h4>Morning Boost</h4>
-                    <p>Start your day with intention</p>
-                    <button className="action-btn">Set Morning Goal</button>
-                  </div>
-                </div>
-                <div className="action-card">
-                  <span className="action-icon">⚡</span>
-                  <div className="action-content">
-                    <h4>Energy Break</h4>
-                    <p>Take a mindful pause</p>
-                    <button className="action-btn">5-Min Break</button>
-                  </div>
-                </div>
-                <div className="action-card">
-                  <span className="action-icon">🎯</span>
-                  <div className="action-content">
-                    <h4>Evening Reflect</h4>
-                    <p>Review your energy patterns</p>
-                    <button className="action-btn">Quick Reflection</button>
-                  </div>
-                </div>
+                {(() => {
+                  const aiSuggestion = generateAIDailyFocus();
+                  const isCompleted = dailyFocusCompleted.has(aiSuggestion.id);
+                  
+                  return (
+                    <div className={`action-card ai-powered ${isCompleted ? 'completed' : ''}`}>
+                      <span className="action-icon">{aiSuggestion.icon}</span>
+                      <div className="action-content">
+                        <h4>{aiSuggestion.title}</h4>
+                        <p>{aiSuggestion.description}</p>
+                        <div className="ai-tip">💡 {aiSuggestion.aiTip}</div>
+                        <button 
+                          className={`action-btn ${isCompleted ? 'completed' : ''}`}
+                          onClick={() => handleDailyFocusAction(aiSuggestion.id)}
+                          disabled={isCompleted}
+                        >
+                          {isCompleted ? '✅ Completed' : aiSuggestion.actionText}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
+              
+              {/* Focus Notification */}
+              {focusNotification && (
+                <div className="focus-notification">
+                  {focusNotification}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -300,50 +615,23 @@ export const ModernEnergyDashboard: React.FC = () => {
               onActionClick={handleInsightAction}
             />
 
-            {/* AI Chat Section */}
-            <div className="ai-chat-section">
-              <div className="ai-chat-header">
-                <h3>AI Energy Coach</h3>
-                <p>Chat with your personal AI energy assistant for tailored advice and insights</p>
+            {/* Advanced AI Analytics Panel */}
+            <div className="advanced-analytics-section">
+              <div className="advanced-analytics-header">
+                <div className="analytics-title-with-badge">
+                  <h3>🔬 Advanced AI Analytics</h3>
+                  <span className="analytics-feature-badge">NEW</span>
+                </div>
+                <p>Deep insights with predictions, recommendations, and constraint analysis</p>
                 <button 
-                  className="toggle-ai-chat-btn"
-                  onClick={() => setShowAIChat(!showAIChat)}
+                  className="toggle-analytics-btn"
+                  onClick={() => setShowAdvancedAnalytics(!showAdvancedAnalytics)}
                 >
-                  {showAIChat ? 'Hide AI Chat' : 'Open AI Chat'} 💬
+                  {showAdvancedAnalytics ? 'Hide Advanced Analytics' : 'Show Advanced Analytics'} 📊
                 </button>
               </div>
 
-              {showAIChat && (
-                <AIChatAssistant
-                  data={userEnergyData}
-                  currentEnergy={userEnergyData[userEnergyData.length - 1] || { 
-                    timestamp: new Date(), 
-                    overall: 75, 
-                    physical: 75, 
-                    mental: 75, 
-                    emotional: 75, 
-                    creative: 75 
-                  }}
-                  isOpen={true}
-                  onToggle={() => setShowAIChat(false)}
-                />
-              )}
-            </div>
-
-            {/* Legacy AI Insights Panel */}
-            <div className="legacy-insights-section">
-              <div className="legacy-insights-header">
-                <h3>Advanced AI Analytics</h3>
-                <p>Detailed predictions, recommendations, and constraints analysis</p>
-                <button 
-                  className="toggle-legacy-ai-btn"
-                  onClick={() => setShowLegacyAIPanel(!showLegacyAIPanel)}
-                >
-                  {showLegacyAIPanel ? 'Hide Analytics' : 'Show Advanced Analytics'} �
-                </button>
-              </div>
-
-              {showLegacyAIPanel && (
+              {showAdvancedAnalytics && (
                 <AIInsightsPanel
                   data={userEnergyData}
                   currentEnergy={userEnergyData[userEnergyData.length - 1] || { 
@@ -355,9 +643,36 @@ export const ModernEnergyDashboard: React.FC = () => {
                     creative: 75 
                   }}
                   isOpen={true}
-                  onToggle={() => setShowLegacyAIPanel(false)}
+                  onToggle={() => setShowAdvancedAnalytics(false)}
                 />
               )}
+            </div>
+          </div>
+        )}
+
+        {/* AI Chat Tab */}
+        {activeTab === 'chat' && (
+          <div className="tab-panel chat-panel">
+            <div className="panel-header">
+              <h2>AI Energy Assistant</h2>
+              <p>Chat with your personal AI coach for energy insights and advice</p>
+            </div>
+
+            <div className="ai-chat-full-section">
+              <AIChatAssistant
+                data={userEnergyData}
+                currentEnergy={userEnergyData[userEnergyData.length - 1] || { 
+                  timestamp: new Date(), 
+                  overall: 75, 
+                  physical: 75, 
+                  mental: 75, 
+                  emotional: 75, 
+                  creative: 75 
+                }}
+                isOpen={true}
+                onToggle={() => {}}
+                fullscreen={true}
+              />
             </div>
           </div>
         )}
@@ -374,28 +689,65 @@ export const ModernEnergyDashboard: React.FC = () => {
             <div className="social-quick-log">
               <h3>How's your social battery today?</h3>
               <div className="social-battery-levels">
-                <button className="social-level-btn full">🔋 Fully Charged</button>
-                <button className="social-level-btn medium">🔋 Half Full</button>
-                <button className="social-level-btn low">🪫 Running Low</button>
-                <button className="social-level-btn empty">📱 Need Recharge</button>
+                <button 
+                  className="social-level-btn full" 
+                  onClick={() => handleSocialBatteryLevel(100)}
+                >
+                  🔋 Fully Charged
+                </button>
+                <button 
+                  className="social-level-btn medium" 
+                  onClick={() => handleSocialBatteryLevel(50)}
+                >
+                  🔋 Half Full
+                </button>
+                <button 
+                  className="social-level-btn low" 
+                  onClick={() => handleSocialBatteryLevel(25)}
+                >
+                  🪫 Running Low
+                </button>
+                <button 
+                  className="social-level-btn empty" 
+                  onClick={() => handleSocialBatteryLevel(5)}
+                >
+                  📱 Need Recharge
+                </button>
               </div>
+              
+              {/* Notification display */}
+              {socialBatteryNotification && (
+                <div className="social-battery-notification">
+                  {socialBatteryNotification}
+                </div>
+              )}
             </div>
 
-            {/* Quick Social Tips */}
+            {/* AI-Powered Daily Social Tips */}
             <div className="social-tips">
-              <h3>Daily Social Tips</h3>
-              <div className="tips-grid">
-                <div className="tip-card">
-                  <span className="tip-icon">🏠</span>
-                  <span>Schedule alone time to recharge</span>
+              <h3>🤖 AI Daily Social Focus</h3>
+              <div className="ai-social-tip-card">
+                <div className="social-tip-header">
+                  <span className="social-tip-icon">{socialTip.icon}</span>
+                  <div className="social-tip-content">
+                    <h4>{socialTip.title}</h4>
+                    <p>{socialTip.description}</p>
+                  </div>
                 </div>
-                <div className="tip-card">
-                  <span className="tip-icon">👥</span>
-                  <span>Limit social events when battery is low</span>
-                </div>
-                <div className="tip-card">
-                  <span className="tip-icon">📱</span>
-                  <span>Use text instead of calls when drained</span>
+                <div className="social-tip-actions">
+                  {!dailyFocusCompleted.has(socialTip.id) ? (
+                    <button 
+                      className="social-tip-action-btn"
+                      onClick={() => handleSocialTipAction(socialTip.id)}
+                    >
+                      ✅ {socialTip.action}
+                    </button>
+                  ) : (
+                    <div className="social-tip-completed">
+                      <span className="completion-check">✅</span>
+                      <span>Completed: {socialTip.action}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -414,7 +766,7 @@ export const ModernEnergyDashboard: React.FC = () => {
 
             <div className="chart-section">
               <SocialBatteryChart
-                socialData={socialData}
+                socialData={socialBatteryData}
                 energyData={undefined}
                 showCorrelation={false}
               />
@@ -476,6 +828,91 @@ export const ModernEnergyDashboard: React.FC = () => {
                 </label>
                 <p className="setting-description">
                   Display detailed charts, trends, and data visualizations for power users
+                </p>
+              </div>
+
+              <div className="setting-group">
+                <h3>Social Energy</h3>
+                <label className="setting-toggle">
+                  <input
+                    type="checkbox"
+                    checked={showSocialCorrelation}
+                    onChange={(e) => setShowSocialCorrelation(e.target.checked)}
+                  />
+                  Show social energy correlation analysis
+                </label>
+                <p className="setting-description">
+                  Display how social interactions impact your overall energy levels
+                </p>
+              </div>
+
+              <div className="setting-group">
+                <h3>Data Management</h3>
+                <div className="setting-buttons">
+                  <button 
+                    className="setting-btn secondary"
+                    onClick={() => {
+                      const settings = {
+                        showAIInsights,
+                        showAdvancedAnalytics,
+                        selectedEnergyTypes,
+                        timeRange,
+                        showSocialCorrelation
+                      };
+                      const blob = new Blob([JSON.stringify(settings, null, 2)], 
+                        { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'energy-flow-settings.json';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                  >
+                    📤 Export Settings
+                  </button>
+                  
+                  <button 
+                    className="setting-btn danger"
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to reset all settings to default? This cannot be undone.')) {
+                        // Reset all settings to defaults
+                        setShowAIInsights(false);
+                        setShowAdvancedAnalytics(false);
+                        setSelectedEnergyTypes(['physical', 'mental', 'emotional', 'creative']);
+                        setTimeRange('7d');
+                        setShowSocialCorrelation(false);
+                        
+                        // Clear localStorage
+                        localStorage.removeItem('energyFlow_showAIInsights');
+                        localStorage.removeItem('energyFlow_showAdvancedAnalytics');
+                        localStorage.removeItem('energyFlow_selectedEnergyTypes');
+                        localStorage.removeItem('energyFlow_timeRange');
+                        localStorage.removeItem('energyFlow_showSocialCorrelation');
+                        
+                        alert('Settings have been reset to default values.');
+                      }
+                    }}
+                  >
+                    🔄 Reset to Defaults
+                  </button>
+
+                  <button 
+                    className="setting-btn danger"
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to clear all energy data? This cannot be undone.')) {
+                        setUserEnergyData([]);
+                        setSocialBatteryData([]);
+                        StorageService.clearAllData();
+                        alert('All energy data has been cleared.');
+                      }
+                    }}
+                  >
+                    🗑️ Clear All Data
+                  </button>
+                </div>
+                <p className="setting-description">
+                  Export your settings, reset to defaults, or clear all stored data
                 </p>
               </div>
             </div>
@@ -552,60 +989,162 @@ export const ModernEnergyDashboard: React.FC = () => {
   );
 };
 
-// Quick Energy Input Form Component
-const QuickEnergyForm: React.FC<{ onSubmit: (entry: Omit<EnergyLevel, 'timestamp'>) => void }> = ({ onSubmit }) => {
-  const [energy, setEnergy] = useState({
-    physical: 70,
-    mental: 70,
-    emotional: 70,
-    creative: 70,
-    overall: 70
+// Quick Energy Input Form Component - Button-based like Social Battery
+const QuickEnergyForm: React.FC<{ 
+  onSubmit: (entry: Omit<EnergyLevel, 'timestamp'>) => void;
+  onSocialBatterySubmit?: (level: number) => void;
+}> = ({ onSubmit, onSocialBatterySubmit }) => {
+  const [selectedEnergy, setSelectedEnergy] = useState({
+    physical: 0,
+    mental: 0,
+    emotional: 0,
+    creative: 0,
+    social: 0
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(energy);
-    // Reset form or provide feedback
+  const [showNotification, setShowNotification] = useState<string | null>(null);
+
+  const energyLevels = [
+    { value: 90, label: 'High Energy', icon: '🔥', class: 'high' },
+    { value: 70, label: 'Good Energy', icon: '⚡', class: 'good' },
+    { value: 50, label: 'Moderate', icon: '🔋', class: 'moderate' },
+    { value: 30, label: 'Low Energy', icon: '🪫', class: 'low' },
+    { value: 10, label: 'Drained', icon: '📱', class: 'drained' }
+  ];
+
+  const socialLevels = [
+    { value: 100, label: 'Fully Charged', icon: '🔋', class: 'full' },
+    { value: 50, label: 'Half Full', icon: '🔋', class: 'medium' },
+    { value: 25, label: 'Running Low', icon: '🪫', class: 'low' },
+    { value: 5, label: 'Need Recharge', icon: '📱', class: 'empty' }
+  ];
+
+  const handleEnergySelect = (type: keyof typeof selectedEnergy, value: number) => {
+    if (type === 'social') {
+      setSelectedEnergy(prev => ({ ...prev, [type]: value }));
+      if (onSocialBatterySubmit) {
+        onSocialBatterySubmit(value);
+      }
+    } else {
+      setSelectedEnergy(prev => ({ ...prev, [type]: value }));
+    }
   };
 
-  const handleEnergyChange = (type: keyof typeof energy, value: number) => {
-    const newEnergy = { ...energy, [type]: value };
+  const canSubmitEnergy = selectedEnergy.physical > 0 && selectedEnergy.mental > 0 && 
+                         selectedEnergy.emotional > 0 && selectedEnergy.creative > 0;
+
+  const handleSubmit = () => {
+    if (!canSubmitEnergy) return;
+
+    const overall = Math.round(
+      (selectedEnergy.physical + selectedEnergy.mental + selectedEnergy.emotional + selectedEnergy.creative) / 4
+    );
+
+    onSubmit({
+      physical: selectedEnergy.physical,
+      mental: selectedEnergy.mental,
+      emotional: selectedEnergy.emotional,
+      creative: selectedEnergy.creative,
+      overall: overall
+    });
+
+    // Show success notification
+    setShowNotification('✅ Energy logged successfully!');
     
-    // Auto-calculate overall as average
-    if (type !== 'overall') {
-      newEnergy.overall = Math.round(
-        (newEnergy.physical + newEnergy.mental + newEnergy.emotional + newEnergy.creative) / 4
-      );
-    }
-    
-    setEnergy(newEnergy);
+    // Reset form
+    setSelectedEnergy({
+      physical: 0,
+      mental: 0,
+      emotional: 0,
+      creative: 0,
+      social: 0
+    });
+
+    // Clear notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(null);
+    }, 3000);
   };
+
+  const EnergyTypeSection = ({ 
+    type, 
+    title, 
+    levels 
+  }: { 
+    type: keyof typeof selectedEnergy, 
+    title: string,
+    levels: typeof energyLevels 
+  }) => (
+    <div className="energy-type-section">
+      <h4>{title} {selectedEnergy[type] > 0 && `- ${selectedEnergy[type]}%`}</h4>
+      <div className="energy-level-buttons">
+        {levels.map((level) => (
+          <button
+            key={`${type}-${level.value}`}
+            type="button"
+            className={`energy-level-btn ${level.class} ${
+              selectedEnergy[type] === level.value ? 'selected' : ''
+            }`}
+            onClick={() => handleEnergySelect(type, level.value)}
+          >
+            <span className="level-icon">{level.icon}</span>
+            <span className="level-label">{level.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
-    <form onSubmit={handleSubmit} className="quick-energy-form">
-      {Object.entries(energy).map(([type, value]) => (
-        <div key={type} className="energy-slider-group">
-          <label className="energy-label" htmlFor={`energy-${type}`}>
-            {type.charAt(0).toUpperCase() + type.slice(1)}: {value}%
-          </label>
-          <input
-            id={`energy-${type}`}
-            type="range"
-            min="0"
-            max="100"
-            value={value}
-            onChange={(e) => handleEnergyChange(type as keyof typeof energy, parseInt(e.target.value))}
-            className={`energy-slider energy-slider-${type}`}
-            disabled={type === 'overall'}
-            title={`${type.charAt(0).toUpperCase() + type.slice(1)} energy level: ${value}%`}
-            aria-label={`${type.charAt(0).toUpperCase() + type.slice(1)} energy level`}
-          />
+    <div className="quick-energy-form button-style">
+      {/* Energy Type Sections */}
+      <div className="energy-types-grid">
+        <EnergyTypeSection 
+          type="physical" 
+          title="💪 Physical Energy" 
+          levels={energyLevels}
+        />
+        <EnergyTypeSection 
+          type="mental" 
+          title="🧠 Mental Energy" 
+          levels={energyLevels}
+        />
+        <EnergyTypeSection 
+          type="emotional" 
+          title="❤️ Emotional Energy" 
+          levels={energyLevels}
+        />
+        <EnergyTypeSection 
+          type="creative" 
+          title="🎨 Creative Energy" 
+          levels={energyLevels}
+        />
+        <EnergyTypeSection 
+          type="social" 
+          title="🤝 Social Battery" 
+          levels={socialLevels}
+        />
+      </div>
+
+      {/* Submit Button */}
+      <div className="form-actions">
+        <button 
+          type="button"
+          className={`submit-energy-btn ${canSubmitEnergy ? 'ready' : 'disabled'}`}
+          onClick={handleSubmit}
+          disabled={!canSubmitEnergy}
+        >
+          {canSubmitEnergy ? '⚡ Log Energy & Social Battery' : '📝 Select all energy levels first'}
+        </button>
+      </div>
+
+      {/* Success Notification */}
+      {showNotification && (
+        <div className="energy-log-notification">
+          {showNotification}
         </div>
-      ))}
-      <button type="submit" className="submit-energy-btn">
-        Log Energy ⚡
-      </button>
-    </form>
+      )}
+    </div>
   );
 };
 

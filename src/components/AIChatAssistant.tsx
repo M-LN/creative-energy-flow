@@ -10,13 +10,15 @@ interface AIChatAssistantProps {
   currentEnergy: EnergyLevel;
   isOpen: boolean;
   onToggle: () => void;
+  fullscreen?: boolean;
 }
 
 export const AIChatAssistant: React.FC<AIChatAssistantProps> = ({
   data,
   currentEnergy,
   isOpen,
-  onToggle
+  onToggle,
+  fullscreen = false
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -191,14 +193,16 @@ What would you like to explore first?`,
   }
 
   return (
-    <div className="ai-chat-assistant">
-      <button
-        className="ai-chat-close"
-        onClick={onToggle}
-        aria-label="Close AI Chat Assistant"
-      >
-        ✕
-      </button>
+    <div className={`ai-chat-assistant ${fullscreen ? 'fullscreen' : ''}`}>
+      {!fullscreen && (
+        <button
+          className="ai-chat-close"
+          onClick={onToggle}
+          aria-label="Close AI Chat Assistant"
+        >
+          ✕
+        </button>
+      )}
       
       <div className="ai-chat-header">
         <div className="ai-header-top">

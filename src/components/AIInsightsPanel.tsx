@@ -96,19 +96,20 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
 
   return (
     <div className="ai-insights-panel">
-      {/* Header */}
-      <div className="ai-insights-header">
-        <h2 className="ai-insights-title">
-          🤖 AI Insights
-        </h2>
-        <button
-          className="ai-insights-close"
-          onClick={onToggle}
-          aria-label="Close AI Insights Panel"
-        >
-          ×
-        </button>
-      </div>
+      <div className="ai-insights-content-wrapper">
+        {/* Header */}
+        <div className="ai-insights-header">
+          <h2 className="ai-insights-title">
+            🤖 AI Insights
+          </h2>
+          <button
+            className="ai-insights-close"
+            onClick={onToggle}
+            aria-label="Close AI Insights Panel"
+          >
+            ×
+          </button>
+        </div>
 
         {/* Tabs */}
         <div className="ai-insights-tabs" role="tablist" aria-label="AI Insights Navigation">
@@ -444,6 +445,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
             )}
           </div>
         )}
+      </div>
     </div>
   );
 };
