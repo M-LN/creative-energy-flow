@@ -12,39 +12,27 @@ export const WelcomeTooltip: React.FC<WelcomeTooltipProps> = ({ onComplete }) =>
   const steps = [
     {
       title: "Welcome to Creative Energy Flow! 🌟",
-      description: "Your personal energy management dashboard with AI-powered insights. Track your physical, mental, emotional, and creative energy levels with an intuitive button-based interface.",
+      description: "Your personal energy management dashboard with AI insights. Let's get you started!",
       position: "center",
       highlight: null
     },
     {
-      title: "Quick Energy Logging 🎯",
-      description: "Use the 'Log Current Energy' section in Overview to quickly record your energy levels using simple buttons - no more sliders! Just tap the level that matches how you feel.",
+      title: "Log Your Energy 📊",
+      description: "Use the button-based energy logging in Overview - just tap the levels that match how you feel right now.",
       position: "top",
       highlight: ".quick-energy-form"
     },
     {
       title: "Explore Your Social Battery 🔋",
-      description: "Check out the Social Battery tab to track your social energy and get AI-powered recommendations for social interactions based on your current state.",
+      description: "Check the Social Battery tab to track your social energy and get smart recommendations.",
       position: "top",
       highlight: "[data-tab='social-battery']"
     },
     {
-      title: "AI-Powered Insights 🤖",
-      description: "Visit the AI Insights tab to get personalized recommendations, energy predictions, and smart tips. Click 'Advanced AI Analytics' for detailed analysis and learning dashboard.",
+      title: "Get AI Insights 🤖",
+      description: "Visit AI Insights for personalized tips and advanced analytics about your energy patterns.",
       position: "top",
       highlight: "[data-tab='ai-insights']"
-    },
-    {
-      title: "View Your Analytics 📊",
-      description: "Check the Analytics tab to see beautiful charts of your energy patterns, weekly heatmaps, and detailed breakdowns of your energy types.",
-      position: "top",
-      highlight: "[data-tab='analytics']"
-    },
-    {
-      title: "AI Chat Assistant 💬",
-      description: "Access the AI Chat tab for personalized energy coaching, daily focus recommendations, and interactive conversations about optimizing your energy.",
-      position: "top",
-      highlight: "[data-tab='ai-chat']"
     }
   ];
 

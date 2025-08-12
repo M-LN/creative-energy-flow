@@ -267,38 +267,41 @@ const FirstEnergyEntry: React.FC<{userData: any, setUserData: any}> = ({ userDat
   };
 
   const energyTypes = [
-    { key: 'physical', label: 'Physical Energy', icon: '💪', desc: 'How energetic is your body?' },
-    { key: 'mental', label: 'Mental Energy', icon: '🧠', desc: 'How sharp is your mind?' },
-    { key: 'emotional', label: 'Emotional Energy', icon: '❤️', desc: 'How positive do you feel?' },
-    { key: 'creative', label: 'Creative Energy', icon: '⚡', desc: 'How inspired are you?' }
+    { key: 'physical', label: '💪 Physical Energy', icon: '💪', desc: 'How energetic is your body?' },
+    { key: 'mental', label: '🧠 Mental Energy', icon: '🧠', desc: 'How sharp is your mind?' },
+    { key: 'emotional', label: '❤️ Emotional Energy', icon: '❤️', desc: 'How positive do you feel?' },
+    { key: 'creative', label: '🎨 Creative Energy', icon: '🎨', desc: 'How inspired are you?' }
+  ];
+
+  const energyLevels = [
+    { value: 90, label: 'High Energy', icon: '🔥', class: 'high', color: '#22c55e' },
+    { value: 70, label: 'Good Energy', icon: '⚡', class: 'good', color: '#667eea' },
+    { value: 50, label: 'Moderate', icon: '🔋', class: 'moderate', color: '#f59e0b' },
+    { value: 30, label: 'Low Energy', icon: '🪫', class: 'low', color: '#ef4444' }
   ];
 
   return (
     <div className="first-energy-entry">
-      <div className="energy-sliders">
+      <div className="energy-button-groups">
         {energyTypes.map(type => (
-          <div key={type.key} className="energy-slider-group">
-            <div className="slider-header">
-              <span className="slider-icon">{type.icon}</span>
-              <div className="slider-info">
-                <h4 className="slider-label">{type.label}</h4>
-                <p className="slider-desc">{type.desc}</p>
+          <div key={type.key} className="energy-type-section">
+            <div className="energy-type-header">
+              <div className="energy-type-info">
+                <h4 className="energy-type-label">{type.label}</h4>
+                <p className="energy-type-desc">{type.desc}</p>
               </div>
-              <span className="slider-value">{userData.currentEnergy[type.key]}</span>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={userData.currentEnergy[type.key]}
-              onChange={(e) => handleEnergyChange(type.key, parseInt(e.target.value))}
-              className="energy-slider"
-              aria-label={`Set ${type.label} level`}
-              title={`Current ${type.label}: ${userData.currentEnergy[type.key]}`}
-            />
-            <div className="slider-labels">
-              <span>Low</span>
-              <span>High</span>
+            <div className="energy-level-buttons">
+              {energyLevels.map(level => (
+                <button
+                  key={`${type.key}-${level.value}`}
+                  className={`energy-level-btn ${level.class} ${userData.currentEnergy[type.key] === level.value ? 'selected' : ''}`}
+                  onClick={() => handleEnergyChange(type.key, level.value)}
+                >
+                  <span className="level-icon">{level.icon}</span>
+                  <span className="level-label">{level.label}</span>
+                </button>
+              ))}
             </div>
           </div>
         ))}
@@ -313,26 +316,30 @@ const FeaturesOverview: React.FC = () => (
     <div className="celebration">
       <div className="celebration-icon">🎉</div>
       <h3>You're all set!</h3>
-      <p>Your energy journey begins now. Here's what you can explore:</p>
+      <p>Your personalized energy dashboard is ready. Here's what you can explore:</p>
     </div>
 
     <div className="features-grid">
       <div className="feature-preview">
-        <h4>📊 Track Daily Energy</h4>
-        <p>Log your energy levels throughout the day to discover patterns</p>
+        <h4>📊 Overview Dashboard</h4>
+        <p>Quick energy logging with buttons and real-time insights</p>
       </div>
       <div className="feature-preview">
         <h4>🤖 AI Insights</h4>
-        <p>Get personalized recommendations based on your unique patterns</p>
+        <p>Get personalized recommendations and advanced analytics</p>
       </div>
       <div className="feature-preview">
-        <h4>🎨 Creative Challenges</h4>
-        <p>Daily challenges adapted to your current energy levels</p>
+        <h4>💬 AI Chat</h4>
+        <p>Interactive energy coaching and daily focus recommendations</p>
       </div>
       <div className="feature-preview">
-        <h4>📈 Progress Tracking</h4>
-        <p>Watch your energy patterns evolve and improve over time</p>
+        <h4>� Social Battery</h4>
+        <p>Track your social energy and get smart interaction tips</p>
       </div>
+    </div>
+
+    <div className="next-steps">
+      <p><strong>💡 Pro tip:</strong> Start by logging your energy in the Overview tab - just tap the buttons that match how you feel!</p>
     </div>
   </div>
 );

@@ -531,6 +531,7 @@ export const ModernEnergyDashboard: React.FC = () => {
                 <QuickEnergyForm 
                   onSubmit={addEnergyEntry}
                   onSocialBatterySubmit={handleSocialBatteryLevel}
+                  currentSocialBatteryLevel={getCurrentSocialBatteryLevel()}
                 />
               </div>
             </div>
@@ -690,25 +691,25 @@ export const ModernEnergyDashboard: React.FC = () => {
               <h3>How's your social battery today?</h3>
               <div className="social-battery-levels">
                 <button 
-                  className="social-level-btn full" 
+                  className={`social-level-btn full ${getCurrentSocialBatteryLevel() === 100 ? 'selected' : ''}`}
                   onClick={() => handleSocialBatteryLevel(100)}
                 >
                   🔋 Fully Charged
                 </button>
                 <button 
-                  className="social-level-btn medium" 
+                  className={`social-level-btn medium ${getCurrentSocialBatteryLevel() === 50 ? 'selected' : ''}`}
                   onClick={() => handleSocialBatteryLevel(50)}
                 >
                   🔋 Half Full
                 </button>
                 <button 
-                  className="social-level-btn low" 
+                  className={`social-level-btn low ${getCurrentSocialBatteryLevel() === 25 ? 'selected' : ''}`}
                   onClick={() => handleSocialBatteryLevel(25)}
                 >
                   🪫 Running Low
                 </button>
                 <button 
-                  className="social-level-btn empty" 
+                  className={`social-level-btn empty ${getCurrentSocialBatteryLevel() === 5 ? 'selected' : ''}`}
                   onClick={() => handleSocialBatteryLevel(5)}
                 >
                   📱 Need Recharge
@@ -993,7 +994,8 @@ export const ModernEnergyDashboard: React.FC = () => {
 const QuickEnergyForm: React.FC<{ 
   onSubmit: (entry: Omit<EnergyLevel, 'timestamp'>) => void;
   onSocialBatterySubmit?: (level: number) => void;
-}> = ({ onSubmit, onSocialBatterySubmit }) => {
+  currentSocialBatteryLevel?: number;
+}> = ({ onSubmit, onSocialBatterySubmit, currentSocialBatteryLevel = 75 }) => {
   const [selectedEnergy, setSelectedEnergy] = useState({
     physical: 0,
     mental: 0,
@@ -1076,14 +1078,14 @@ const QuickEnergyForm: React.FC<{
     levels: typeof energyLevels 
   }) => (
     <div className="energy-type-section">
-      <h4>{title} {selectedEnergy[type] > 0 && `- ${selectedEnergy[type]}%`}</h4>
+      <h4>{title} {(type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]) > 0 && `- ${type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]}%`}</h4>
       <div className="energy-level-buttons">
         {levels.map((level) => (
           <button
             key={`${type}-${level.value}`}
             type="button"
             className={`energy-level-btn ${level.class} ${
-              selectedEnergy[type] === level.value ? 'selected' : ''
+              (type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]) === level.value ? 'selected' : ''
             }`}
             onClick={() => handleEnergySelect(type, level.value)}
           >
