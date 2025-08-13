@@ -37,25 +37,45 @@ export class ProactiveInsightsEngine {
     try {
       // 1. Morning greeting with personalized energy forecast
       if (this.isMorningTime(now)) {
-        const morningInsight = await this.generateMorningInsight(energyData);
-        if (morningInsight) insights.push(morningInsight);
+        try {
+          const morningInsight = await this.generateMorningInsight(energyData);
+          if (morningInsight) insights.push(morningInsight);
+        } catch (error) {
+          console.error('Error generating morning insight:', error);
+        }
       }
       
       // 2. Weekly energy trend analysis
-      const trendInsight = await this.generateTrendInsight(energyData);
-      if (trendInsight) insights.push(trendInsight);
+      try {
+        const trendInsight = await this.generateTrendInsight(energyData);
+        if (trendInsight) insights.push(trendInsight);
+      } catch (error) {
+        console.error('Error generating trend insight:', error);
+      }
       
       // 3. Optimization recommendations
-      const optimizationInsight = await this.generateOptimizationInsight(energyData);
-      if (optimizationInsight) insights.push(optimizationInsight);
+      try {
+        const optimizationInsight = await this.generateOptimizationInsight(energyData);
+        if (optimizationInsight) insights.push(optimizationInsight);
+      } catch (error) {
+        console.error('Error generating optimization insight:', error);
+      }
       
       // 4. Pattern-based predictions
-      const patternInsight = await this.generatePatternInsight(energyData);
-      if (patternInsight) insights.push(patternInsight);
+      try {
+        const patternInsight = await this.generatePatternInsight(energyData);
+        if (patternInsight) insights.push(patternInsight);
+      } catch (error) {
+        console.error('Error generating pattern insight:', error);
+      }
       
       // 5. Achievement recognition
-      const achievementInsight = await this.generateAchievementInsight(energyData);
-      if (achievementInsight) insights.push(achievementInsight);
+      try {
+        const achievementInsight = await this.generateAchievementInsight(energyData);
+        if (achievementInsight) insights.push(achievementInsight);
+      } catch (error) {
+        console.error('Error generating achievement insight:', error);
+      }
       
       this.dailyInsights = insights;
       this.lastInsightGeneration = now;
@@ -108,7 +128,7 @@ export class ProactiveInsightsEngine {
           priority: 'high',
           timestamp: new Date(),
           actionable: true,
-          suggestedActions: ['View energy dashboard', 'Plan your day', 'Set energy goals'],
+          suggestedActions: ['View energy dashboard', 'Plan your day', 'Set energy goals', 'Start energy tracking'],
           energyData: {
             current: yesterday,
             trend: context.weeklyPattern.trend,
@@ -168,7 +188,7 @@ export class ProactiveInsightsEngine {
           priority: 'medium',
           timestamp: new Date(),
           actionable: true,
-          suggestedActions: ['View detailed analytics', 'Adjust daily routine']
+          suggestedActions: ['View detailed analytics', 'Adjust daily routine', 'Track results']
         };
         
       } catch (error) {
@@ -222,7 +242,7 @@ export class ProactiveInsightsEngine {
           priority: 'high',
           timestamp: new Date(),
           actionable: true,
-          suggestedActions: ['Apply suggestion', 'Track results']
+          suggestedActions: ['Apply suggestion', 'Track results', 'View energy dashboard']
         };
         
       } catch (error) {
@@ -248,7 +268,7 @@ export class ProactiveInsightsEngine {
       priority: 'medium',
       timestamp: new Date(),
       actionable: true,
-      suggestedActions: ['Apply suggestion']
+      suggestedActions: ['Apply suggestion', 'Track results', 'Plan your day']
     };
   }
   
@@ -268,7 +288,7 @@ export class ProactiveInsightsEngine {
       priority: highConfidencePattern.impact === 'high' ? 'high' : 'medium',
       timestamp: new Date(),
       actionable: highConfidencePattern.actionable,
-      suggestedActions: highConfidencePattern.suggestions?.slice(0, 2) || ['Review pattern details']
+      suggestedActions: highConfidencePattern.suggestions?.slice(0, 3) || ['Apply suggestion', 'View detailed analytics', 'Track results']
     };
   }
   
@@ -289,7 +309,7 @@ export class ProactiveInsightsEngine {
         priority: 'high',
         timestamp: new Date(),
         actionable: true,
-        suggestedActions: ['Share your success', 'Maintain current routine']
+        suggestedActions: ['View detailed analytics', 'Maintain current routine', 'Set higher goals']
       };
     }
     
@@ -304,7 +324,7 @@ export class ProactiveInsightsEngine {
         priority: 'medium',
         timestamp: new Date(),
         actionable: true,
-        suggestedActions: ['Maintain routine', 'Build on this stability']
+        suggestedActions: ['Maintain routine', 'Build on this stability', 'Track results']
       };
     }
     

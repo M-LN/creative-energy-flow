@@ -61,33 +61,46 @@
   height: 100vh !important;
   max-width: none !important;
   max-height: none !important;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.75);
   z-index: 999999 !important;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 120px 20px 20px 20px;
+  justify-content: center;
+  padding: 160px 20px 40px 20px;
   box-sizing: border-box;
 }
 
 /* Actual panel content */
 .ai-insights-content-wrapper {
-  width: min(450px, calc(100vw - 40px));
-  max-width: 500px;
-  height: calc(100vh - 200px);
-  max-height: calc(100vh - 200px);
+  width: min(500px, calc(100vw - 40px));
+  max-width: 550px;
+  height: calc(100vh - 240px);
+  max-height: calc(100vh - 240px);
   background-color: var(--ai-surface);
   border: 1px solid var(--ai-border);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  margin-top: 20px;
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  margin: 0;
+  transform: translateY(-20px);
+  animation: slideInModal 0.3s ease-out forwards;
+}
+
+@keyframes slideInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
 }
 
 /* Panel Header */
@@ -653,12 +666,19 @@
 
 @media (max-width: 768px) {
   .ai-insights-panel {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    width: auto;
-    max-width: none;
-    max-height: 90vh;
+    padding: 120px 15px 30px 15px !important;
+    justify-content: center !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .ai-insights-content-wrapper {
+    width: calc(100vw - 30px) !important;
+    max-width: 100% !important;
+    height: calc(100vh - 180px) !important;
+    max-height: calc(100vh - 180px) !important;
+    margin: 0 !important;
+    transform: translateY(-10px) !important;
+    border-radius: 16px !important;
   }
   
   .ai-insights-summary {
@@ -749,6 +769,19 @@
 
 /* Mobile responsiveness for floating buttons */
 @media (max-width: 480px) {
+  .ai-insights-panel {
+    padding: 100px 10px 20px 10px !important;
+    justify-content: center !important;
+  }
+  
+  .ai-insights-content-wrapper {
+    width: calc(100vw - 20px) !important;
+    height: calc(100vh - 140px) !important;
+    max-height: calc(100vh - 140px) !important;
+    transform: translateY(0px) !important;
+    border-radius: 12px !important;
+  }
+
   .ai-insights-fab {
     bottom: 30px;
     right: 20px;
@@ -1100,5 +1133,48 @@
   
   .ai-constraint-meta {
     align-self: flex-end;
+  }
+
+  /* AI Insights Panel Mobile Improvements */
+  .ai-insights-panel {
+    padding: 16px;
+  }
+  
+  .ai-insights-close-btn {
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .ai-insights-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
+  .ai-insights-summary {
+    margin-bottom: 16px;
+  }
+  
+  .prediction-energy-item {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  
+  .recommendation-item,
+  .constraint-item {
+    padding: 12px;
+  }
+  
+  .recommendation-title,
+  .constraint-title {
+    font-size: 0.9rem;
+  }
+  
+  .recommendation-desc,
+  .constraint-desc {
+    font-size: 0.8rem;
+    line-height: 1.4;
   }
 }

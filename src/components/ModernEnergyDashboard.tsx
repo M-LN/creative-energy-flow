@@ -6,6 +6,7 @@ import { WeeklyEnergyHeatmap } from './charts/WeeklyEnergyHeatmap';
 import { AIInsightsPanel } from './AIInsightsPanel';
 import { AIChatAssistant } from './AIChatAssistant';
 import ProactiveInsights from './ProactiveInsights';
+import PWAInstallPrompt from './PWAInstallPrompt';
 import { EnergyDataService } from '../data/energyDataService';
 import { StorageService } from '../services/StorageService';
 import { EnergyType, TimeRange, EnergyLevel, SocialBatteryData } from '../types/energy';
@@ -130,6 +131,13 @@ export const ModernEnergyDashboard: React.FC = () => {
     localStorage.setItem('energyFlow_showSocialCorrelation', JSON.stringify(showSocialCorrelation));
   }, [showSocialCorrelation]);
 
+  // Reset advanced analytics when switching away from insights tab
+  useEffect(() => {
+    if (activeTab !== 'insights') {
+      setShowAdvancedAnalytics(false);
+    }
+  }, [activeTab]);
+
   // Filter data based on selected time range
   const filteredData = useMemo(() => {
     if (userEnergyData.length === 0) {
@@ -188,21 +196,166 @@ export const ModernEnergyDashboard: React.FC = () => {
   // Handle proactive insight actions
   const handleInsightAction = (action: string, insight: any) => {
     console.log('Insight action:', action, insight);
+    
+    // Show feedback to user with a temporary notification
+    const showActionFeedback = (message: string, isSuccess: boolean = true) => {
+      console.log('Action applied:', message);
+      
+      // Create a simple toast notification
+      const toast = document.createElement('div');
+      toast.className = `insight-action-toast ${isSuccess ? 'success' : 'info'}`;
+      toast.innerHTML = `
+        <div class="toast-content">
+          <span class="toast-icon">${isSuccess ? '✅' : 'ℹ️'}</span>
+          <span class="toast-message">${message}</span>
+        </div>
+      `;
+      
+      // Add toast styles if not already added
+      if (!document.querySelector('#insight-toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'insight-toast-styles';
+        style.textContent = `
+          .insight-action-toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 300px;
+          }
+          .insight-action-toast.success {
+            border-left: 4px solid #48bb78;
+          }
+          .insight-action-toast.info {
+            border-left: 4px solid #667eea;
+          }
+          .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          .toast-message {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2d3748;
+          }
+          @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      document.body.appendChild(toast);
+      
+      // Remove toast after 3 seconds
+      setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => {
+          if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+          }
+        }, 300);
+      }, 3000);
+    };
+
     // Implement specific actions based on the action type
     switch (action) {
       case 'View energy dashboard':
         setActiveTab('overview');
+        showActionFeedback('📊 Switched to energy dashboard - track your daily energy here!');
         break;
+        
       case 'View detailed analytics':
-        // Navigate to settings and show advanced analytics
-        setActiveTab('settings');
+        setActiveTab('insights');
+        showActionFeedback('📊 Insights tab opened - click "Show Advanced Analytics" to explore deeper patterns!', false);
+        break;
+        
+      case 'Open advanced analytics':
+      case 'Show advanced analytics':
+        setActiveTab('insights');
         setShowAdvancedAnalytics(true);
+        showActionFeedback('🔬 Advanced analytics opened - explore your energy patterns!');
         break;
+        
       case 'Plan your day':
-      case 'Set energy goals':
-        // Could open a planning modal or navigate to settings
+        setActiveTab('overview');
+        showActionFeedback('📅 Ready to plan your day - use the energy logging section below!', false);
+        // Scroll to the energy logging section after a brief delay
+        setTimeout(() => {
+          const energySection = document.querySelector('.quick-add-section');
+          if (energySection) {
+            energySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
         break;
+        
+      case 'Set energy goals':
+        setActiveTab('settings');
+        showActionFeedback('⚙️ Settings opened - customize your energy tracking goals!', false);
+        break;
+        
+      case 'Apply suggestion':
+        showActionFeedback('✨ Great! Suggestion applied - remember to track your progress!');
+        // Mark this insight as "applied" (you could add to localStorage)
+        if (insight && insight.id) {
+          localStorage.setItem(`applied_${insight.id}`, Date.now().toString());
+        }
+        break;
+        
+      case 'Track results':
+        setActiveTab('insights');
+        showActionFeedback('📈 Insights tab opened - see how your energy changes over time!', false);
+        break;
+        
+      case 'Adjust daily routine':
+        setActiveTab('overview');
+        showActionFeedback('🔄 Time to optimize your routine - start by logging your current energy!', false);
+        setTimeout(() => {
+          const energySection = document.querySelector('.energy-types-grid');
+          if (energySection) {
+            energySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+        break;
+        
+      case 'View social battery':
+        setActiveTab('social');
+        showActionFeedback('🔋 Social battery tracker opened - manage your social energy!', false);
+        break;
+        
+      case 'Start energy tracking':
+        setActiveTab('overview');
+        showActionFeedback('🚀 Let\'s start tracking! Use the energy logging section to record your levels.', false);
+        setTimeout(() => {
+          const quickAddSection = document.querySelector('.quick-add-section');
+          if (quickAddSection) {
+            quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+        break;
+        
+      case 'Maintain routine':
+        showActionFeedback('👍 Keep up the great work! Consistency is key to energy management.');
+        break;
+        
+      case 'Share your success':
+        showActionFeedback('🎉 Amazing progress! Consider sharing your energy management journey.');
+        break;
+        
       default:
+        showActionFeedback(`💡 Applied suggestion: "${action}" - keep tracking your progress!`);
         break;
     }
   };
@@ -475,6 +628,8 @@ export const ModernEnergyDashboard: React.FC = () => {
 
   return (
     <div className="modern-energy-dashboard">
+      <PWAInstallPrompt />
+      
       {/* Mobile Header */}
       <div className="mobile-header">
         <div className="mobile-header-content">
@@ -1079,12 +1234,12 @@ const QuickEnergyForm: React.FC<{
   }) => (
     <div className="energy-type-section">
       <h4>{title} {(type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]) > 0 && `- ${type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]}%`}</h4>
-      <div className="energy-level-buttons">
+      <div className={type === 'social' ? 'social-battery-levels' : 'energy-level-buttons'}>
         {levels.map((level) => (
           <button
             key={`${type}-${level.value}`}
             type="button"
-            className={`energy-level-btn ${level.class} ${
+            className={`${type === 'social' ? 'social-level-btn' : 'energy-level-btn'} ${level.class} ${
               (type === 'social' ? currentSocialBatteryLevel : selectedEnergy[type]) === level.value ? 'selected' : ''
             }`}
             onClick={() => handleEnergySelect(type, level.value)}
